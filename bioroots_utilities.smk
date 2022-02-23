@@ -40,11 +40,11 @@ def load_sample(config):
   return pd.DataFrame.from_dict(config["samples"],orient="index")
 
 
-def is_paired(config):
+def set_read_pair_tags(config):
   if not config["is_paired"]:
-    read_pair_tags = ["SE"]
+    read_pair_tags = [""]
     paired = "SE"
   else:
-    read_pair_tags = ["R1", "R2"]
+    read_pair_tags = ["_R1", "_R2"]
     paired = "PE"
   return [read_pair_tags, paired]
