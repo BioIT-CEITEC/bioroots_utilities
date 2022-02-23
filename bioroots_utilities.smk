@@ -6,7 +6,8 @@ import pandas as pd
 ##### Reference processing #####
 #
 def global_ref_path():
-  return "/mnt/references"
+  #"/mnt/references"
+  return "/home/BioRoots/raw_fastq_qc/"
 
 
 # setting reference
