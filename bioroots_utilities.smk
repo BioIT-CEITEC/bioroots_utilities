@@ -7,7 +7,7 @@ import pandas as pd
 #
 def global_ref_path():
   #"/mnt/references"
-  return "/home/katka/BioRoots/raw_fastq_qc/"
+  return "/mnt/references/"
 
 
 # setting reference
