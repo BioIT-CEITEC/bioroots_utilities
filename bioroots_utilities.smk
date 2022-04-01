@@ -5,10 +5,9 @@ from snakemake.remote.S3 import RemoteProvider as S3RemoteProvider
 
 ##### Reference processing #####
 #
-# def global_ref_path():
-#   #"/mnt/references"
-#   return "/mnt/references/"
 
+with open("config.json") as f:
+  config = json.load(f)
 
 
 # setting reference
@@ -59,7 +58,8 @@ S3_BUCKET = "acgt/"
 S3 = S3RemoteProvider(host="https://storage-elixir1.cerit-sc.cz",access_key_id=AWS_ID,secret_access_key=AWS_KEY)
 
 
-def remote(file_path):
+
+def remote(file_path,config):
   if config["computing_type"] == "kubernetes":
     path = "sequia/" + config["task_name"] + "/"
 
