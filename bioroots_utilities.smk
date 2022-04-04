@@ -6,7 +6,6 @@ from snakemake.remote.S3 import RemoteProvider as S3RemoteProvider
 ##### Reference processing #####
 #
 
-config = config[0]
 
 # setting reference
 def load_ref(config):
