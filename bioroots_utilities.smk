@@ -50,9 +50,10 @@ def set_read_pair_tags(config):
 ##### kubernetes #####
 #
 #if config["computing_type"] == "kubernetes":
-credentials = config["globalResources"] + "/reference_info/credentials.json"
-AWS_ID = credentials["AWS_ID"]
-print(AWS_ID)
+# credentials = config["globalResources"] + "/reference_info/credentials.json"
+# AWS_ID = credentials["AWS_ID"]
+# print(AWS_ID)
+AWS_ID = "acgt"
 AWS_KEY = "P84RsiL5TmHu0Ijd"
 S3_BUCKET = "acgt/"
 
