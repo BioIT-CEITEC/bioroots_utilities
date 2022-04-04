@@ -67,7 +67,7 @@ def resources(file_path):
   if config["computing_type"] == "kubernetes":
     path = os.path.join("resources","resources_info","/")
     #return S3.remote(os.path.join(S3_BUCKET,"resources","resources","S3_credentials.json"))
-    return S3.remote(S3_BUCKET + path + file_path[0])
+    return S3.remote(S3_BUCKET + path + file_path)
 
 def remote(file_path):
   if config["computing_type"] == "kubernetes":
