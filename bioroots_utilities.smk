@@ -66,6 +66,7 @@ def set_read_pair_tags(config):
 # S3 = S3RemoteProvider(host="https://storage-elixir1.cerit-sc.cz",access_key_id=S3_credentials["AWS_ID"],secret_access_key=S3_credentials["AWS_KEY"])
 
 S3 = cfgfile["S3"]
+S3_BUCKET = cfgfile["S3_BUCKET"]
 
 def remote(file_path):
   if cfgfile["computing_type"] == "kubernetes":
