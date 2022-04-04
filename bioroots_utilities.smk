@@ -49,12 +49,12 @@ def set_read_pair_tags(config):
 
 ##### kubernetes #####
 #
-if config["computing_type"] == "kubernetes":
-  credentials = config["globalResources"] + "/reference_info/credentials.json"
-  AWS_ID = credentials["AWS_ID"]
-  print(AWS_ID)
-  AWS_KEY = "P84RsiL5TmHu0Ijd"
-  S3_BUCKET = "acgt/"
+#if config["computing_type"] == "kubernetes":
+credentials = config["globalResources"] + "/reference_info/credentials.json"
+AWS_ID = credentials["AWS_ID"]
+print(AWS_ID)
+AWS_KEY = "P84RsiL5TmHu0Ijd"
+S3_BUCKET = "acgt/"
 
 S3 = S3RemoteProvider(host="https://storage-elixir1.cerit-sc.cz",access_key_id=AWS_ID,secret_access_key=AWS_KEY)
 
