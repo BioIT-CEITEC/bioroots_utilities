@@ -6,7 +6,7 @@ from snakemake.remote.S3 import RemoteProvider as S3RemoteProvider
 ##### Reference processing #####
 #
 
-
+config = config[0]
 
 # setting reference
 def load_ref(config):
@@ -50,8 +50,9 @@ def set_read_pair_tags(config):
 ##### kubernetes #####
 #
 
-#print(config[0])
-#print(config[1])
+
+print(config[1]["AWS_ID"])
+print(config[1]["AWS_KEY"])
 
 AWS_ID = "acgt"
 AWS_KEY = "P84RsiL5TmHu0Ijd"
