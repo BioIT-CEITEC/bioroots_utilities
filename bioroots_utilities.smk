@@ -49,19 +49,27 @@ def set_read_pair_tags(config):
 
 ##### kubernetes #####
 #
-#if config["computing_type"] == "kubernetes":
-# credentials = config["globalResources"] + "/reference_info/credentials.json"
-# AWS_ID = credentials["AWS_ID"]
-# print(AWS_ID)
-AWS_ID = "acgt"
-AWS_KEY = "P84RsiL5TmHu0Ijd"
-S3_BUCKET = "acgt/"
+if config["computing_type"] == "kubernetes":
+  f = open(os.path.join(config["globalResources"],"reference_info","S3_credentials.json"))
+  S3_credentials = json.load(f)
+  f.close()
 
-S3 = S3RemoteProvider(host="https://storage-elixir1.cerit-sc.cz",access_key_id=AWS_ID,secret_access_key=AWS_KEY)
+  AWS_ID = S3_credentials["AWS_ID"]
+  AWS_KEY = S3_credentials["AWS_KEY"]
+  S3_BUCKET = S3_credentials["S3_BUCKET"]
+
+  S3 = S3RemoteProvider(host="https://storage-elixir1.cerit-sc.cz",access_key_id=AWS_ID,secret_access_key=AWS_KEY)
+
+#
+# AWS_ID = "acgt"
+# AWS_KEY = "P84RsiL5TmHu0Ijd"
+# S3_BUCKET = "acgt/"
+
+#S3 = S3RemoteProvider(host="https://storage-elixir1.cerit-sc.cz",access_key_id=AWS_ID,secret_access_key=AWS_KEY)
 
 def remote(file_path):
   if config["computing_type"] == "kubernetes":
-    path = "sequia/" + config["task_name"] + "/"
+    path = os.path.join("sequia",config["task_name"],"/")
 
     if isinstance(file_path,list) and len(file_path) == 1:
       return S3.remote(S3_BUCKET + path + file_path[0])
