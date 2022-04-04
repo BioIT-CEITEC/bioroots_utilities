@@ -63,14 +63,17 @@ S3_BUCKET = "acgt/"
 
 S3 = S3RemoteProvider(host="https://storage-elixir1.cerit-sc.cz",access_key_id=AWS_ID,secret_access_key=AWS_KEY)
 
-def resources():
+def resources(file_path):
   if config["computing_type"] == "kubernetes":
-    return S3.remote(os.path.join(S3_BUCKET,"resources","resources_info","S3_credentials.json"))
-
+    path = os.path.join("resources","resources_info","/")
+    #return S3.remote(os.path.join(S3_BUCKET,"resources","resources","S3_credentials.json"))
+    return S3.remote(S3_BUCKET + path + file_path[0])
 
 def remote(file_path):
   if config["computing_type"] == "kubernetes":
     path = os.path.join("sequia",config["task_name"],"/")
+
+
 
     if isinstance(file_path,list) and len(file_path) == 1:
       return S3.remote(S3_BUCKET + path + file_path[0])
