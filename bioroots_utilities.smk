@@ -5,8 +5,15 @@ from snakemake.remote.S3 import RemoteProvider as S3RemoteProvider
 
 ##### Reference processing #####
 #
-cfgfile = config[0]
-S3_credentials = config[1]
+#
+# if config["computing_type"] == "kubernetes":
+#   cfgfile = config[0]
+#   S3_credentials = config[1]
+# else:
+#   cfgfile = config
+
+cfgfile = config
+
 
 # setting reference
 def load_ref(config):
@@ -50,11 +57,13 @@ def set_read_pair_tags(config):
 ##### kubernetes #####
 #
 
+
+
 # AWS_ID = "acgt"
 # AWS_KEY = "P84RsiL5TmHu0Ijd"
-S3_BUCKET = S3_credentials["S3_BUCKET"]
-
-S3 = S3RemoteProvider(host="https://storage-elixir1.cerit-sc.cz",access_key_id=S3_credentials["AWS_ID"],secret_access_key=S3_credentials["AWS_KEY"])
+# S3_BUCKET = S3_credentials["S3_BUCKET"]
+#
+# S3 = S3RemoteProvider(host="https://storage-elixir1.cerit-sc.cz",access_key_id=S3_credentials["AWS_ID"],secret_access_key=S3_credentials["AWS_KEY"])
 
 
 def remote(file_path):
