@@ -4,16 +4,8 @@ import pandas as pd
 from snakemake.remote.S3 import RemoteProvider as S3RemoteProvider
 
 ##### Reference processing #####
+##
 #
-#
-# if config["computing_type"] == "kubernetes":
-#   cfgfile = config[0]
-#   S3_credentials = config[1]
-# else:
-#   cfgfile = config
-
-cfgfile = config
-
 
 # setting reference
 def load_ref(config):
@@ -55,26 +47,20 @@ def set_read_pair_tags(config):
   return [read_pair_tags, paired]
 
 ##### kubernetes #####
+##
 #
+if config["computing_type"] == "kubernetes":
+  f = open(config["globalResources"] + "/resources_info/S3_credentials.json")
+  S3_credentials = json.load(f)
+  f.close()
 
-f = open(config["globalResources"] + "/resources_info/S3_credentials.json")
-S3_credentials = json.load(f)
-f.close()
+  S3 = S3RemoteProvider(host="https://storage-elixir1.cerit-sc.cz",access_key_id=S3_credentials["AWS_ID"],secret_access_key=S3_credentials["AWS_KEY"])
+  S3_BUCKET = S3_credentials["S3_BUCKET"]
 
-print(S3_credentials)
-
-# AWS_ID = "acgt"
-# AWS_KEY = "P84RsiL5TmHu0Ijd"
-# S3_BUCKET = S3_credentials["S3_BUCKET"]
-#
-# S3 = S3RemoteProvider(host="https://storage-elixir1.cerit-sc.cz",access_key_id=S3_credentials["AWS_ID"],secret_access_key=S3_credentials["AWS_KEY"])
-
-S3 = cfgfile["S3"]
-S3_BUCKET = cfgfile["S3_BUCKET"]
 
 def remote(file_path):
-  if cfgfile["computing_type"] == "kubernetes":
-    path = "/sequia/" + cfgfile["task_name"] + "/"
+  if config["computing_type"] == "kubernetes":
+    path = "/sequia/" + config["task_name"] + "/"
 
     if isinstance(file_path,list) and len(file_path) == 1:
       return S3.remote(S3_BUCKET + path + file_path[0])
