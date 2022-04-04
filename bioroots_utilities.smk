@@ -33,11 +33,11 @@ def reference_directory(config):
 
 ##### Config processing #####
 #
-def load_sample(config):
+def load_sample():
   return pd.DataFrame.from_dict(config["samples"],orient="index")
 
 
-def set_read_pair_tags(config):
+def set_read_pair_tags():
   if not config["is_paired"]:
     read_pair_tags = [""]
     paired = "SE"
