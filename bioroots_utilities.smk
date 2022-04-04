@@ -50,14 +50,8 @@ def set_read_pair_tags(config):
 ##### kubernetes #####
 #
 
-  # AWS_ID = config["AWS_ID"]
-  # AWS_KEY = config["AWS_KEY"]
-  # S3_BUCKET = config["S3_BUCKET"]
-  #
-  # S3 = S3RemoteProvider(host="https://storage-elixir1.cerit-sc.cz",access_key_id=AWS_ID,secret_access_key=AWS_KEY)
-
-print(config[0])
-print(config[1])
+#print(config[0])
+#print(config[1])
 
 AWS_ID = "acgt"
 AWS_KEY = "P84RsiL5TmHu0Ijd"
