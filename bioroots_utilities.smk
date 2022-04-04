@@ -54,9 +54,9 @@ if config["computing_type"] == "kubernetes":
   S3_credentials = json.load(f)
   f.close()
 
-  AWS_ID = S3_credentials["AWS_ID"]
-  AWS_KEY = S3_credentials["AWS_KEY"]
-  S3_BUCKET = S3_credentials["S3_BUCKET"]
+  AWS_ID = config["AWS_ID"]
+  AWS_KEY = config["AWS_KEY"]
+  S3_BUCKET = config["S3_BUCKET"]
 
   S3 = S3RemoteProvider(host="https://storage-elixir1.cerit-sc.cz",access_key_id=AWS_ID,secret_access_key=AWS_KEY)
 
