@@ -57,7 +57,11 @@ def set_read_pair_tags(config):
 ##### kubernetes #####
 #
 
+f = open(config["globalResources"] + "/resources_info/S3_credentials.json")
+S3_credentials = json.load(f)
+f.close()
 
+print(S3_credentials)
 
 # AWS_ID = "acgt"
 # AWS_KEY = "P84RsiL5TmHu0Ijd"
