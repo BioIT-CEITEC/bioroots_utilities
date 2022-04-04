@@ -5,7 +5,8 @@ from snakemake.remote.S3 import RemoteProvider as S3RemoteProvider
 
 ##### Reference processing #####
 #
-
+cfgfile = config[0]
+S3_credentials = config[1]
 
 # setting reference
 def load_ref(config):
@@ -49,20 +50,15 @@ def set_read_pair_tags(config):
 ##### kubernetes #####
 #
 
+# AWS_ID = "acgt"
+# AWS_KEY = "P84RsiL5TmHu0Ijd"
+S3_BUCKET = S3_credentials["acgt"]
 
-print(config[1]["AWS_ID"])
-print(config[1]["AWS_KEY"])
-
-AWS_ID = "acgt"
-AWS_KEY = "P84RsiL5TmHu0Ijd"
-S3_BUCKET = "acgt"
-
-
-S3 = S3RemoteProvider(host="https://storage-elixir1.cerit-sc.cz",access_key_id=AWS_ID,secret_access_key=AWS_KEY)
+S3 = S3RemoteProvider(host="https://storage-elixir1.cerit-sc.cz",access_key_id=S3_credentials["AWS_ID"],secret_access_key=S3_credentials["AWS_KEY"])
 
 
 def remote(file_path):
-  if config[0]["computing_type"] == "kubernetes":
+  if cfgfile["computing_type"] == "kubernetes":
     path = "/sequia/" + config["task_name"] + "/"
 
     if isinstance(file_path,list) and len(file_path) == 1:
