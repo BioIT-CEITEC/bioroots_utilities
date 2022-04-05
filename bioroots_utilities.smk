@@ -62,7 +62,6 @@ if config["computing_type"] == "kubernetes":
 def remote(file_path):
   if config["computing_type"] == "kubernetes":
     path = "/sequia/" + config["task_name"] + "/"
-    print(S3.remote(S3_BUCKET + path))
 
     if isinstance(file_path,list) and len(file_path) == 1:
       return S3.remote(S3_BUCKET + path + file_path[0])
