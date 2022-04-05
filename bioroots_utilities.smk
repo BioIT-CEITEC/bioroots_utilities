@@ -8,7 +8,7 @@ from snakemake.remote.S3 import RemoteProvider as S3RemoteProvider
 #
 
 # setting reference
-def load_ref(config):
+def load_ref():
   if config["lib_ROI"] != "wgs":
     # setting reference from lib_ROI
     f = open(os.path.join(config["globalResources"],"reference_info","lib_ROI.json"))
@@ -19,15 +19,15 @@ def load_ref(config):
 
 
 # setting organism from reference
-def load_organism(config):
-  f = open(os.path.join(config["globalResources"],"reference_info","reference.json"),)
+def load_organism():
+  f = open(os.path.join(config["globalResources"],"reference_info","reference.json"))
   reference_dict = json.load(f)
   f.close()
   config["organism"] = [organism_name.lower().replace(" ","_") for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["reference"] in reference_dict[organism_name].keys()][0]
   return config
 
 
-def reference_directory(config):
+def reference_directory():
   return os.path.join(config["globalResources"],config["organism"],config["reference"])
 
 
@@ -50,7 +50,7 @@ def set_read_pair_tags():
 ##
 #
 if config["computing_type"] == "kubernetes":
-  f = open(config["globalResources"] + "/resources_info/S3_credentials.json")
+  f = open(os.path.join(config["globalResources"],"resources_info","S3_credentials.json"))
   S3_credentials = json.load(f)
   f.close()
 
