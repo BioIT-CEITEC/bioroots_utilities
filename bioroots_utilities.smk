@@ -28,8 +28,7 @@ def load_organism():
 
 
 def reference_directory():
-  return os.path.join(config["globalResources"],config["organism"],config["reference"])
-
+  return os.path.join(config["globalResources"],"organisms",config["organism"],config["reference"])
 
 ##### Config processing #####
 #
@@ -54,10 +53,9 @@ if config["computing_type"] == "kubernetes":
   S3_credentials = json.load(f)
   f.close()
 
-  # S3 = S3RemoteProvider(host="https://storage-elixir1.cerit-sc.cz",access_key_id=S3_credentials["AWS_ID"],secret_access_key=S3_credentials["AWS_KEY"])
-  # S3_BUCKET = S3_credentials["S3_BUCKET"]
-  S3 = S3RemoteProvider(host="https://storage-elixir1.cerit-sc.cz",access_key_id="acgt",secret_access_key="P84RsiL5TmHu0Ijd")
-  S3_BUCKET = "acgt"
+  S3 = S3RemoteProvider(host="https://storage-elixir1.cerit-sc.cz",access_key_id=S3_credentials["AWS_ID"],secret_access_key=S3_credentials["AWS_KEY"])
+  S3_BUCKET = S3_credentials["S3_BUCKET"]
+
 
 def remote(file_path):
   if config["computing_type"] == "kubernetes":
