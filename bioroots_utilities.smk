@@ -56,8 +56,6 @@ if config["computing_type"] == "kubernetes":
 
   S3 = S3RemoteProvider(host="https://storage-elixir1.cerit-sc.cz",access_key_id=S3_credentials["AWS_ID"],secret_access_key=S3_credentials["AWS_KEY"])
   S3_BUCKET = S3_credentials["S3_BUCKET"]
-  print(S3_credentials)
-  print(S3)
 
 
 def remote(file_path):
