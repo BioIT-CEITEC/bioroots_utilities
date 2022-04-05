@@ -20,7 +20,7 @@ def load_ref():
 
 # setting organism from reference
 def load_organism():
-  f = open(os.path.join(config["globalResources"],"reference_info","reference.json"),)
+  f = open(os.path.join(config["globalResources"],"reference_info","reference.json"))
   reference_dict = json.load(f)
   f.close()
   config["organism"] = [organism_name.lower().replace(" ","_") for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["reference"] in reference_dict[organism_name].keys()][0]
