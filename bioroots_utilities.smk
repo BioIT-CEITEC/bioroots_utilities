@@ -50,7 +50,8 @@ def set_read_pair_tags():
 ##
 #
 if config["computing_type"] == "kubernetes":
-  f = open(config["globalResources"] + "/resources_info/S3_credentials.json")
+  # f = open(config["globalResources"] + "/resources_info/S3_credentials.json")
+  f = open(config["globalResources"] + "/reference_info/S3_credentials.json")
   S3_credentials = json.load(f)
   f.close()
 
