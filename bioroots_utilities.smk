@@ -41,33 +41,6 @@ if config["computing_type"] == "kubernetes":
   S3_BUCKET = S3_credentials["S3_BUCKET"]
 
 
-  def load_dict(file_path):
-    if config["computing_type"] == "kubernetes":
-      if isinstance(file_path,list) and len(file_path) == 1:
-        obj = client.get_object(Bucket=S3_BUCKET,Key=file_path[0])
-        dictionary = json.loads(obj["Body"].read())
-        return dictionary[0]
-      else:
-        if isinstance(file_path,str):
-          obj = client.get_object(Bucket=S3_BUCKET,Key=file_path)
-          dictionary = json.loads(obj["Body"].read())
-          return dictionary
-        else:
-          obj = client.get_object(Bucket=S3_BUCKET,Key=file_path)
-          dictionary = json.loads(obj["Body"].read())
-          return (x for x in dictionary)
-    else:
-      if isinstance(file_path,list) and len(file_path) == 1:
-        obj = open(file_path[0])
-        dictionary = json.load(obj)
-        obj.close()
-        return dictionary[0]
-      else:
-        obj = open(file_path)
-        dictionary = json.load(obj)
-        obj.close()
-        return dictionary
-
 ####################
 ## setting reference
 #
