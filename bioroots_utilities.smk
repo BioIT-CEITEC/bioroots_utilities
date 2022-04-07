@@ -66,6 +66,7 @@ def load_ref():
     lib_ROI_dict = json.load(f)
     f.close()
     config["reference"] = [ref_name for ref_name in lib_ROI_dict.keys() if isinstance(lib_ROI_dict[ref_name],dict) and config["lib_ROI"] in lib_ROI_dict[ref_name].keys()][0]
+    print(config["reference"])
   return config
 
 
