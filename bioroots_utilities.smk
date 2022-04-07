@@ -1,34 +1,17 @@
 import os
 import json
 import pandas as pd
+import boto3
 from snakemake.remote.S3 import RemoteProvider as S3RemoteProvider
 
 ##### Reference processing #####
 ##
 #
 
-# setting reference
-def load_ref():
-  if config["lib_ROI"] != "wgs":
-    # setting reference from lib_ROI
-    f = open(os.path.join(config["globalResources"],"reference_info","lib_ROI.json"))
-    lib_ROI_dict = json.load(f)
-    f.close()
-    config["reference"] = [ref_name for ref_name in lib_ROI_dict.keys() if isinstance(lib_ROI_dict[ref_name],dict) and config["lib_ROI"] in lib_ROI_dict[ref_name].keys()][0]
-  return config
 
 
-# setting organism from reference
-def load_organism():
-  f = open(os.path.join(config["globalResources"],"reference_info","reference.json"))
-  reference_dict = json.load(f)
-  f.close()
-  config["organism"] = [organism_name.lower().replace(" ","_") for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["reference"] in reference_dict[organism_name].keys()][0]
-  return config
 
 
-def reference_directory():
-  return os.path.join(config["globalResources"],"organisms",config["organism"],config["reference"])
 
 ##### Config processing #####
 #
@@ -54,8 +37,78 @@ if config["computing_type"] == "kubernetes":
   f.close()
 
   S3 = S3RemoteProvider(host="https://storage-elixir1.cerit-sc.cz",access_key_id=S3_credentials["AWS_ID"],secret_access_key=S3_credentials["AWS_KEY"])
+  client = boto3.client('s3',aws_access_key_id=S3_credentials["AWS_ID"],aws_secret_access_key=S3_credentials["AWS_KEY"],region_name="",endpoint_url="https://storage-elixir1.cerit-sc.cz")
   S3_BUCKET = S3_credentials["S3_BUCKET"]
 
+
+  def load_dict(file_path):
+    if config["computing_type"] == "kubernetes":
+      if isinstance(file_path,list) and len(file_path) == 1:
+        obj = client.get_object(Bucket=S3_BUCKET,Key=file_path[0])
+        dictionary = json.loads(obj["Body"].read())
+        return dictionary[0]
+      else:
+        if isinstance(file_path,str):
+          obj = client.get_object(Bucket=S3_BUCKET,Key=file_path)
+          dictionary = json.loads(obj["Body"].read())
+          return dictionary
+        else:
+          obj = client.get_object(Bucket=S3_BUCKET,Key=file_path)
+          dictionary = json.loads(obj["Body"].read())
+          return (x for x in dictionary)
+    else:
+      if isinstance(file_path,list) and len(file_path) == 1:
+        obj = open(file_path[0])
+        dictionary = json.load(obj)
+        obj.close()
+        return dictionary[0]
+      else:
+        obj = open(file_path)
+        dictionary = json.load(obj)
+        obj.close()
+        return dictionary
+
+####################
+## setting reference
+#
+def load_ref():
+  file_path = os.path.join(config["globalResources"],"reference_info","lib_ROI.json")
+
+  if config["computing_type"] == "kubernetes":
+    f = client.get_object(Bucket=S3_BUCKET,Key=file_path[0])
+    lib_ROI_dict = json.loads(f["Body"].read())
+    config["reference"] = [ref_name for ref_name in lib_ROI_dict.keys() ifisinstance(lib_ROI_dict[ref_name],dict) and config["lib_ROI"] in lib_ROI_dict[ref_name].keys()][0]
+  else:
+    if config["lib_ROI"] != "wgs":
+      # setting reference from lib_ROI
+      f = open(file_path)
+      lib_ROI_dict = json.load(f)
+      f.close()
+      config["reference"] = [ref_name for ref_name in lib_ROI_dict.keys() if isinstance(lib_ROI_dict[ref_name],dict) and config["lib_ROI"] in lib_ROI_dict[ref_name].keys()][0]
+  return config
+# def load_ref():
+#   if config["lib_ROI"] != "wgs":
+#     # setting reference from lib_ROI
+#     f = open(os.path.join(config["globalResources"],"reference_info","lib_ROI.json"))
+#     lib_ROI_dict = json.load(f)
+#     f.close()
+#     config["reference"] = [ref_name for ref_name in lib_ROI_dict.keys() if isinstance(lib_ROI_dict[ref_name],dict) and config["lib_ROI"] in lib_ROI_dict[ref_name].keys()][0]
+#   return config
+
+
+# setting organism from reference
+def load_organism():
+  f = open(os.path.join(config["globalResources"],"reference_info","reference.json"))
+  reference_dict = json.load(f)
+  f.close()
+  config["organism"] = [organism_name.lower().replace(" ","_") for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["reference"] in reference_dict[organism_name].keys()][0]
+  return config
+
+
+def reference_directory():
+  return os.path.join(config["globalResources"],"organisms",config["organism"],config["reference"])
+
+####################
 
 def remote(file_path):
   if config["computing_type"] == "kubernetes":
