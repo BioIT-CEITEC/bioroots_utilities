@@ -37,7 +37,7 @@ if config["computing_type"] == "kubernetes":
   f.close()
 
   S3 = S3RemoteProvider(host="https://storage-elixir1.cerit-sc.cz",access_key_id=S3_credentials["AWS_ID"],secret_access_key=S3_credentials["AWS_KEY"])
-  client = boto3.client('s3',aws_access_key_id=S3_credentials["AWS_ID"],aws_secret_access_key=S3_credentials["AWS_KEY"],region_name="",endpoint_url="https://storage-elixir1.cerit-sc.cz")
+  client = boto3.client('s3',aws_access_key_id="acgt",aws_secret_access_key="P84RsiL5TmHu0Ijd",region_name="",endpoint_url="https://storage-elixir1.cerit-sc.cz")
   S3_BUCKET = S3_credentials["S3_BUCKET"]
 
 
