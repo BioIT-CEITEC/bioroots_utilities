@@ -127,3 +127,37 @@ def remote(file_path):
     else:
       return file_path
 
+##### Helper functions #####
+##
+# debugging function for listing all atributes and theur classes in given snakemake object
+def check_snakemake_object(snakemake, output_filename=None):
+  common_atributes = ["append", "clear", "copy", "count", "extend", "get", "index", "insert", "items", "keys", "pop",
+                      "remove", "reverse", "size", "size_mb", "sort"]
+
+  if output_filename:
+    original_stdout = sys.stdout  # Save a reference to the original standard output
+    f = open(output_filename,'w')
+    sys.stdout = f  # Change the standard output to the file we created.
+
+  print("snakemake.inputs\n")
+  for attr_name in [a for a in dir(snakemake.input) if not a.startswith('_') and not a in common_atributes]:
+    print(attr_name)
+    print(type(getattr(snakemake.input,attr_name)))
+    print(getattr(snakemake.input,attr_name))
+    print()
+  print("-------------------------\n\nsnakemake.outputs\n")
+  for attr_name in [a for a in dir(snakemake.output) if not a.startswith('_') and not a in common_atributes]:
+    print(attr_name)
+    print(type(getattr(snakemake.output,attr_name)))
+    print(getattr(snakemake.output,attr_name))
+    print()
+  print("-------------------------\n\nsnakemake.params\n")
+  for attr_name in [a for a in dir(snakemake.params) if not a.startswith('_') and not a in common_atributes]:
+    print(attr_name)
+    print(type(getattr(snakemake.params,attr_name)))
+    print(getattr(snakemake.params,attr_name))
+    print()
+
+  if output_filename:
+    sys.stdout = original_stdout  # Reset the standard output to its original value
+    f.close()
