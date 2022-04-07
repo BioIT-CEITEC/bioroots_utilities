@@ -62,17 +62,16 @@ if config["computing_type"] == "kubernetes":
 def load_ref():
   if config["lib_ROI"] != "wgs":
     # setting reference from lib_ROI
-    f = open(os.path.join(config["globalResources"],"reference_info","lib_ROI.json"))
+    f = open(os.path.join(config["globalResources"],"resources_info","lib_ROI.json"))
     lib_ROI_dict = json.load(f)
     f.close()
     config["reference"] = [ref_name for ref_name in lib_ROI_dict.keys() if isinstance(lib_ROI_dict[ref_name],dict) and config["lib_ROI"] in lib_ROI_dict[ref_name].keys()][0]
-    print(config["reference"])
   return config
 
 
 # setting organism from reference
 def load_organism():
-  f = open(os.path.join(config["globalResources"],"reference_info","reference.json"))
+  f = open(os.path.join(config["globalResources"],"resources_info","reference.json"))
   reference_dict = json.load(f)
   f.close()
   config["organism"] = [organism_name.lower().replace(" ","_") for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["reference"] in reference_dict[organism_name].keys()][0]
