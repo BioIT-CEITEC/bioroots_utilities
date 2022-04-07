@@ -90,7 +90,6 @@ def load_dict(file_path):
       obj.close()
       return dictionary
 
-
 # def load_ref():
 #   if config["lib_ROI"] != "wgs":
 #     # setting reference from lib_ROI
