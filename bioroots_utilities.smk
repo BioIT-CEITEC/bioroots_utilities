@@ -44,24 +44,52 @@ if config["computing_type"] == "kubernetes":
 ####################
 ## setting reference
 #
-def load_ref():
-  file_path = os.path.join(config["globalResources"],"resources_info","lib_ROI.json")
+# def load_ref():
+#   file_path = os.path.join(config["globalResources"],"resources_info","lib_ROI.json")
+#
+#   if config["computing_type"] == "kubernetes":
+#     f = client.get_object(Bucket=S3_BUCKET,Key=file_path)
+#     print(f)
+#     lib_ROI_dict = json.loads(f["Body"].read())
+#     print(lib_ROI_dict)
+#     config["reference"] = [ref_name for ref_name in lib_ROI_dict.keys() if isinstance(lib_ROI_dict[ref_name],dict) and config["lib_ROI"] in lib_ROI_dict[ref_name].keys()][0]
+#     print(config["reference"])
+#   else:
+#     if config["lib_ROI"] != "wgs":
+#       # setting reference from lib_ROI
+#       f = open(file_path)
+#       lib_ROI_dict = json.load(f)
+#       f.close()
+#       config["reference"] = [ref_name for ref_name in lib_ROI_dict.keys() if isinstance(lib_ROI_dict[ref_name],dict) and config["lib_ROI"] in lib_ROI_dict[ref_name].keys()][0]
+#   return config
 
+def load_dict(file_path):
   if config["computing_type"] == "kubernetes":
-    f = client.get_object(Bucket=S3_BUCKET,Key=file_path)
-    print(f)
-    lib_ROI_dict = json.loads(f["Body"].read())
-    print(lib_ROI_dict)
-    config["reference"] = [ref_name for ref_name in lib_ROI_dict.keys() if isinstance(lib_ROI_dict[ref_name],dict) and config["lib_ROI"] in lib_ROI_dict[ref_name].keys()][0]
-    print(config["reference"])
+    if isinstance(file_path,list) and len(file_path) == 1:
+      obj = client.get_object(Bucket=S3_BUCKET,Key=file_path[0])
+      dictionary = json.loads(obj["Body"].read())
+      return dictionary[0]
+    else:
+      if isinstance(file_path,str):
+        obj = client.get_object(Bucket=S3_BUCKET,Key=file_path)
+        dictionary = json.loads(obj["Body"].read())
+        return dictionary
+      else:
+        obj = client.get_object(Bucket=S3_BUCKET,Key=file_path)
+        dictionary = json.loads(obj["Body"].read())
+        return (x for x in dictionary)
   else:
-    if config["lib_ROI"] != "wgs":
-      # setting reference from lib_ROI
-      f = open(file_path)
-      lib_ROI_dict = json.load(f)
-      f.close()
-      config["reference"] = [ref_name for ref_name in lib_ROI_dict.keys() if isinstance(lib_ROI_dict[ref_name],dict) and config["lib_ROI"] in lib_ROI_dict[ref_name].keys()][0]
-  return config
+    if isinstance(file_path,list) and len(file_path) == 1:
+      obj = open(file_path[0])
+      dictionary = json.load(obj)
+      obj.close()
+      return dictionary[0]
+    else:
+      obj = open(file_path)
+      dictionary = json.load(obj)
+      obj.close()
+      return dictionary
+
 
 # def load_ref():
 #   if config["lib_ROI"] != "wgs":
