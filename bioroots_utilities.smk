@@ -129,7 +129,7 @@ def remote(file_path):
 
 ##### Helper functions #####
 ##
-# debugging function for listing all atributes and theur classes in given snakemake object
+# debugging function for listing all attributes and their classes in given snakemake object
 def check_snakemake_object(snakemake, output_filename=None):
   common_atributes = ["append", "clear", "copy", "count", "extend", "get", "index", "insert", "items", "keys", "pop",
                       "remove", "reverse", "size", "size_mb", "sort"]
