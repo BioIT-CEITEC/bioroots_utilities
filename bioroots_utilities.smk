@@ -77,7 +77,7 @@ def load_ref():
   if config["computing_type"] == "kubernetes":
     f = client.get_object(Bucket=S3_BUCKET,Key=file_path[0])
     lib_ROI_dict = json.loads(f["Body"].read())
-    config["reference"] = [ref_name for ref_name in lib_ROI_dict.keys() ifisinstance(lib_ROI_dict[ref_name],dict) and config["lib_ROI"] in lib_ROI_dict[ref_name].keys()][0]
+    config["reference"] = [ref_name for ref_name in lib_ROI_dict.keys() if isinstance(lib_ROI_dict[ref_name],dict) and config["lib_ROI"] in lib_ROI_dict[ref_name].keys()][0]
   else:
     if config["lib_ROI"] != "wgs":
       # setting reference from lib_ROI
