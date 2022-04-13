@@ -105,7 +105,8 @@ def reference_directory():
 def remote(file_path):
   print(config)
   if config["computing_type"] == "kubernetes":
-    path = "/sequia/" + config["task_name"] + "/"
+    #path = "/sequia/" + config["task_name"] + "/"
+    path = "/sequia/220404__raw_fastq_qc__MOII_e101_krve__3355/"
 
     if isinstance(file_path,list) and len(file_path) == 1:
       return S3.remote(S3_BUCKET + path + file_path[0])
