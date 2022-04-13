@@ -103,7 +103,6 @@ def reference_directory():
 ####################
 
 def remote(file_path):
-  print(config)
   if config["computing_type"] == "kubernetes":
     path = "/sequia/" + config["task_name"] + "/"
 
