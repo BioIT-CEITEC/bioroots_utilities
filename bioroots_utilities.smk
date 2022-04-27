@@ -27,7 +27,7 @@ def set_read_pair_tags():
 ##
 #
 if not "computing_type" in config:
-  config["computing_type"] = "local"
+  config["computing_type"] = "kubernetes"
 
 if config["computing_type"] == "kubernetes":
 
