@@ -30,12 +30,14 @@ if config["computing_type"] == "kubernetes":
   print("####CREDENTIALS####")
   f = open(config["globalResources"] + "resources_info/.secret/S3_credentials.json")
   S3_credentials = json.load(f)
-  print(S3_credentials)
   f.close()
+
+  print(S3_credentials)
+  print(S3_credentials["AWS_KEY"])
 
   S3 = S3RemoteProvider(host="https://storage-elixir1.cerit-sc.cz",access_key_id=S3_credentials["AWS_ID"],secret_access_key=S3_credentials["AWS_KEY"])
   S3_BUCKET = S3_credentials["S3_BUCKET"]
-
+  print(S3_credentials["S3_BUCKET"])
 
 ####################
 
