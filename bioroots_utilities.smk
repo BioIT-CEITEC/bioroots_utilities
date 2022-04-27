@@ -30,19 +30,13 @@ if not "computing_type" in config:
   config["computing_type"] = "local"
 
 if config["computing_type"] == "kubernetes":
-  print("####CREDENTIALS####")
-  with open("/mnt/data/ceitec_cfg/shared/S3acgt/resources/resources_info/.secret/S3_credentials.json") as f:
-    S3_credentials = json.load(f)
-  # f = open(config["globalResources"] + "resources_info/.secret/S3_credentials.json")
-  # S3_credentials = json.load(f)
-  # f.close()
 
-  print(S3_credentials)
-
+  # with open(config["globalResources"] + "resources_info/.secret/S3_credentials.json") as f:
+  #   S3_credentials = json.load(f)
   #S3 = S3RemoteProvider(host="https://storage-elixir1.cerit-sc.cz",access_key_id=S3_credentials["AWS_ID"],secret_access_key=S3_credentials["AWS_KEY"])
   S3 = S3RemoteProvider(host="https://storage-elixir1.cerit-sc.cz",access_key_id="acgt",secret_access_key="P84RsiL5TmHu0Ijd")
-  S3_BUCKET = S3_credentials["S3_BUCKET"]
-  print(S3_BUCKET)
+  # S3_BUCKET = S3_credentials["S3_BUCKET"]
+  S3_BUCKET = "acgt"
 
 
 ####################
