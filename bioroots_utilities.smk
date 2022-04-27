@@ -38,7 +38,6 @@ if config["computing_type"] == "kubernetes":
   # S3_BUCKET = S3_credentials["S3_BUCKET"]
   S3_BUCKET = "acgt"
 
-
 ####################
 
 def load_ref():
