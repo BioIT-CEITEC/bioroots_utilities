@@ -29,10 +29,11 @@ def set_read_pair_tags():
 
 if config["computing_type"] == "kubernetes":
   print("####CREDENTIALS####")
-  #f = open(config["globalResources"] + "resources_info/.secret/S3_credentials.json")
-  f=open("/mnt/data/ceitec_cfg/shared/S3acgt/resources/resources_info/.secret/S3_credentials.json")
-  S3_credentials = json.load(f)
-  f.close()
+  with open("/mnt/data/ceitec_cfg/shared/S3acgt/resources/resources_info/.secret/S3_credentials.json") as f:
+    S3_credentials = json.load(f)
+  # f = open(config["globalResources"] + "resources_info/.secret/S3_credentials.json")
+  # S3_credentials = json.load(f)
+  # f.close()
 
   print(S3_credentials)
 
