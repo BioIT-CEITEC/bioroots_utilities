@@ -62,35 +62,19 @@ def reference_directory():
   return os.path.join(config["globalResources"],"organisms",config["organism"],config["reference"])
 
 ####################
-def remote_ref(file_path):
-  if config["computing_type"] == "kubernetes":
-    path = "/resources"
-
-    if isinstance(file_path,list) and len(file_path) == 1:
-      return S3.remote(S3_BUCKET + "/" + file_path[0])
-    else:
-      if isinstance(file_path,str):
-        return S3.remote(S3_BUCKET +"/"+ file_path)
-      else:
-        return S3.remote(S3_BUCKET +"/"+ x for x in file_path)
-  else:
-    if isinstance(file_path,list) and len(file_path) == 1:
-      return file_path[0]
-    else:
-      return file_path
 
 
 def remote(file_path):
   if config["computing_type"] == "kubernetes":
-    path = "/sequia/" + config["task_name"] + "/"
+    #path = "/sequia/" + config["task_name"] + "/"
 
     if isinstance(file_path,list) and len(file_path) == 1:
-      return S3.remote(S3_BUCKET + path + file_path[0])
+      return S3.remote(S3_BUCKET + file_path[0])
     else:
       if isinstance(file_path,str):
-        return S3.remote(S3_BUCKET + path + file_path)
+        return S3.remote(S3_BUCKET + file_path)
       else:
-        return S3.remote(S3_BUCKET + path + x for x in file_path)
+        return S3.remote(S3_BUCKET + x for x in file_path)
   else:
     if isinstance(file_path,list) and len(file_path) == 1:
       return file_path[0]
