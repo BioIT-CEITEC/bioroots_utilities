@@ -118,6 +118,3 @@ def check_snakemake_object(snakemake, output_filename=None):
     sys.stdout = original_stdout  # Reset the standard output to its original value
     f.close()
 
-
-rule all:
-  input: load_ref()
