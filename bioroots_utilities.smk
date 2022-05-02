@@ -39,16 +39,7 @@ if config["computing_type"] == "kubernetes":
   S3_BUCKET = "acgt"
 
 ####################
-def load_ref():
-  if config["lib_ROI"] != "wgs":
-    # setting reference from lib_ROI
 
-    #f = open(os.path.join(config["biorootsResPath"],"resources_info","lib_ROI.json"))
-    f = open(remote(os.path.join(config["globalResources"],"resources_info","lib_ROI.json")))
-    lib_ROI_dict = json.load(f)
-    f.close()
-    config["reference"] = [ref_name for ref_name in lib_ROI_dict.keys() if isinstance(lib_ROI_dict[ref_name],dict) and config["lib_ROI"] in lib_ROI_dict[ref_name].keys()][0]
-  return config
 
 
 #setting organism from reference
@@ -83,7 +74,16 @@ def remote(file_path):
     else:
       return file_path
 
+def load_ref():
+  if config["lib_ROI"] != "wgs":
+    # setting reference from lib_ROI
 
+    #f = open(os.path.join(config["biorootsResPath"],"resources_info","lib_ROI.json"))
+    f = open(remote(os.path.join(config["globalResources"],"resources_info","lib_ROI.json")))
+    lib_ROI_dict = json.load(f)
+    f.close()
+    config["reference"] = [ref_name for ref_name in lib_ROI_dict.keys() if isinstance(lib_ROI_dict[ref_name],dict) and config["lib_ROI"] in lib_ROI_dict[ref_name].keys()][0]
+  return config
 ##### Helper functions #####
 ##
 # debugging function for listing all attributes and their classes in given snakemake object
