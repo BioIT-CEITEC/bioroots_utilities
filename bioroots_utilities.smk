@@ -60,7 +60,7 @@ def load_organism():
 
 
 def reference_directory():
-  return os.path.join(config["biorootsResPath"],"organisms",config["organism"],config["reference"])
+  return os.path.join(config["globalResources"],"organisms",config["organism"],config["reference"])
 
 ####################
 
