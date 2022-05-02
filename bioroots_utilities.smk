@@ -1,6 +1,7 @@
 import os
 import json
 import pandas as pd
+import boto3
 from snakemake.remote.S3 import RemoteProvider as S3RemoteProvider
 
 ##### Reference processing #####
