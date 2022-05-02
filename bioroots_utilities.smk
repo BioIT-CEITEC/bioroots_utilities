@@ -41,7 +41,7 @@ if config["computing_type"] == "kubernetes":
 
 ####################
 
-def load_ref(path):
+def load_ref():
   if config["lib_ROI"] != "wgs":
     # setting reference from lib_ROI
 
