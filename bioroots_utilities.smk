@@ -37,6 +37,7 @@ if config["computing_type"] == "kubernetes":
   S3 = S3RemoteProvider(host="https://storage-elixir1.cerit-sc.cz",access_key_id="acgt",secret_access_key="P84RsiL5TmHu0Ijd")
   # S3_BUCKET = S3_credentials["S3_BUCKET"]
   S3_BUCKET = "acgt"
+  task_directory = os.path.join(config["globalTaskPath"],config["task_name"])
 
 ####################
 
@@ -44,7 +45,8 @@ def load_ref(path):
   if config["lib_ROI"] != "wgs":
     # setting reference from lib_ROI
 
-    f = open(os.path.join(config["biorootsResPath"],"resources_info","lib_ROI.json"))
+    #f = open(os.path.join(config["biorootsResPath"],"resources_info","lib_ROI.json"))
+    f = open(remote(os.path.join(config["globalResources"],"resources_info","lib_ROI.json")))
     lib_ROI_dict = json.load(f)
     f.close()
     config["reference"] = [ref_name for ref_name in lib_ROI_dict.keys() if isinstance(lib_ROI_dict[ref_name],dict) and config["lib_ROI"] in lib_ROI_dict[ref_name].keys()][0]
@@ -65,23 +67,62 @@ def reference_directory():
 
 ####################
 
-
 def remote(file_path):
   if config["computing_type"] == "kubernetes":
     #path = "/sequia/" + config["task_name"] + "/"
 
-    if isinstance(file_path,list) and len(file_path) == 1:
-      return S3.remote(S3_BUCKET + file_path[0])
-    else:
-      if isinstance(file_path,str):
-        return S3.remote(S3_BUCKET + file_path)
+    if os.path.isabs(file_path[0]):
+      print("#### ABSOLUTE ####")
+
+      if isinstance(file_path,list) and len(file_path) == 1:
+        print(S3.remote(S3_BUCKET + file_path[0]))
+        return S3.remote(S3_BUCKET + file_path[0])
       else:
-        return S3.remote(S3_BUCKET + x for x in file_path)
+        if isinstance(file_path,str):
+          print(S3.remote(S3_BUCKET + file_path))
+          return S3.remote(S3_BUCKET + file_path)
+        else:
+          print(S3.remote(S3_BUCKET + x for x in file_path))
+          return S3.remote(S3_BUCKET + x for x in file_path)
+
+    else:
+      print("#### RELATIVE ####")
+
+      if isinstance(file_path,list) and len(file_path) == 1:
+        print(S3.remote(S3_BUCKET + task_directory + file_path[0]))
+        return S3.remote(S3_BUCKET + task_directory + file_path[0])
+      else:
+        if isinstance(file_path,str):
+          print(S3.remote(S3_BUCKET + task_directory + file_path))
+          return S3.remote(S3_BUCKET + task_directory + file_path)
+        else:
+          print(S3.remote(S3_BUCKET + task_directory + x for x in file_path))
+          return S3.remote(S3_BUCKET + task_directory + x for x in file_path)
   else:
     if isinstance(file_path,list) and len(file_path) == 1:
       return file_path[0]
     else:
       return file_path
+
+
+
+
+# def remote(file_path):
+#   if config["computing_type"] == "kubernetes":
+#     #path = "/sequia/" + config["task_name"] + "/"
+#
+#     if isinstance(file_path,list) and len(file_path) == 1:
+#       return S3.remote(S3_BUCKET + file_path[0])
+#     else:
+#       if isinstance(file_path,str):
+#         return S3.remote(S3_BUCKET + file_path)
+#       else:
+#         return S3.remote(S3_BUCKET + x for x in file_path)
+#   else:
+#     if isinstance(file_path,list) and len(file_path) == 1:
+#       return file_path[0]
+#     else:
+#       return file_path
 
 
 ##### Helper functions #####
