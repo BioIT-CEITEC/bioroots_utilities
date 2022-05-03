@@ -39,7 +39,7 @@ if config["computing_type"] == "kubernetes":
   client = boto3.client('s3',aws_access_key_id="acgt",aws_secret_access_key="P84RsiL5TmHu0Ijd",region_name="",endpoint_url="https://storage-elixir1.cerit-sc.cz")
   # S3_BUCKET = S3_credentials["S3_BUCKET"]
   S3_BUCKET = "acgt"
-  task_directory = os.path.join(config["globalTaskPath"],config["task_name"])
+  task_directory = os.path.join(config["globalTaskPath"],config["task_name"],)
 
 ####################
 
@@ -48,7 +48,6 @@ def load_ref():
     # setting reference from lib_ROI
     lib_ROI_dict = load_dict(config["globalResources"] + "/resources_info/lib_ROI.json")
     config["reference"] = [ref_name for ref_name in lib_ROI_dict.keys() if isinstance(lib_ROI_dict[ref_name],dict) and config["lib_ROI"] in lib_ROI_dict[ref_name].keys()][0]
-    print(config["reference"])
   return config
 
 
