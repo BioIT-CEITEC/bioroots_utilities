@@ -68,6 +68,7 @@ def load_ref():
     # setting reference from lib_ROI
     lib_ROI_dict = load_dict(config["globalResources"] + "resources_info/lib_ROI.json")
     config["reference"] = [ref_name for ref_name in lib_ROI_dict.keys() if isinstance(lib_ROI_dict[ref_name],dict) and config["lib_ROI"] in lib_ROI_dict[ref_name].keys()][0]
+    print(config["reference"])
   return config
 
 def load_organism():
