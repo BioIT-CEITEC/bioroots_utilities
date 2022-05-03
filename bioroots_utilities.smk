@@ -77,7 +77,6 @@ def load_organism():
   return config
 
 
-
 def reference_directory():
   return os.path.join(config["globalResources"],"organisms",config["organism"],config["reference"])
 
