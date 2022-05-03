@@ -94,33 +94,26 @@ def load_dict(file_path):
 
 def remote(file_path):
   if config["computing_type"] == "kubernetes":
-    #path = "/sequia/" + config["task_name"] + "/"
-
     if os.path.isabs(file_path[0]):
-      print("#### ABSOLUTE ####")
 
       if isinstance(file_path,list) and len(file_path) == 1:
-        print(S3.remote(S3_BUCKET + file_path[0]))
         return S3.remote(S3_BUCKET + file_path[0])
       else:
         if isinstance(file_path,str):
-          print(S3.remote(S3_BUCKET + file_path))
           return S3.remote(S3_BUCKET + file_path)
         else:
+          print("########")
           print(S3.remote(S3_BUCKET + x for x in file_path))
           return S3.remote(S3_BUCKET + x for x in file_path)
 
     else:
-      print("#### RELATIVE ####")
-
       if isinstance(file_path,list) and len(file_path) == 1:
-        print(S3.remote(S3_BUCKET + task_directory + file_path[0]))
         return S3.remote(S3_BUCKET + task_directory + file_path[0])
       else:
         if isinstance(file_path,str):
-          print(S3.remote(S3_BUCKET + task_directory + file_path))
           return S3.remote(S3_BUCKET + task_directory + file_path)
         else:
+          print("########")
           print(S3.remote(S3_BUCKET + task_directory + x for x in file_path))
           return S3.remote(S3_BUCKET + task_directory + x for x in file_path)
   else:
