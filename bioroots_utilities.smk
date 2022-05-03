@@ -39,7 +39,7 @@ if config["computing_type"] == "kubernetes":
   client = boto3.client('s3',aws_access_key_id="acgt",aws_secret_access_key="P84RsiL5TmHu0Ijd",region_name="",endpoint_url="https://storage-elixir1.cerit-sc.cz")
   # S3_BUCKET = S3_credentials["S3_BUCKET"]
   S3_BUCKET = "acgt"
-  task_directory = os.path.join(config["globalTaskPath"],config["task_name"],"/")
+  task_directory = config["globalTaskPath"] + "/" + config["task_name"] + "/"
 
 ####################
 
