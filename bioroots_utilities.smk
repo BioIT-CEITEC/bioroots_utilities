@@ -43,26 +43,6 @@ if config["computing_type"] == "kubernetes":
 
 ####################
 
-# def load_ref():
-#   if config["lib_ROI"] != "wgs":
-#     # setting reference from lib_ROI
-#
-#     #f = open(os.path.join(config["biorootsResPath"],"resources_info","lib_ROI.json"))
-#     f = open(remote(os.path.join(config["globalResources"],"resources_info","lib_ROI.json")))
-#     lib_ROI_dict = json.load(f)
-#     f.close()
-#     config["reference"] = [ref_name for ref_name in lib_ROI_dict.keys() if isinstance(lib_ROI_dict[ref_name],dict) and config["lib_ROI"] in lib_ROI_dict[ref_name].keys()][0]
-#   return config
-#
-#
-# #setting organism from reference
-# def load_organism():
-#   f = open(os.path.join(config["biorootsResPath"],"resources_info","reference.json"))
-#   reference_dict = json.load(f)
-#   f.close()
-#   config["organism"] = [organism_name.lower().replace(" ","_") for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["reference"] in reference_dict[organism_name].keys()][0]
-#   return config
-
 def load_ref():
   if config["lib_ROI"] != "wgs":
     # setting reference from lib_ROI
@@ -70,6 +50,7 @@ def load_ref():
     config["reference"] = [ref_name for ref_name in lib_ROI_dict.keys() if isinstance(lib_ROI_dict[ref_name],dict) and config["lib_ROI"] in lib_ROI_dict[ref_name].keys()][0]
     print(config["reference"])
   return config
+
 
 def load_organism():
   # setting organism from reference
@@ -82,7 +63,6 @@ def reference_directory():
   return os.path.join(config["globalResources"],"organisms",config["organism"],config["reference"])
 
 
-
 ####################
 def load_dict(file_path):
   if config["computing_type"] == "kubernetes":
@@ -90,18 +70,15 @@ def load_dict(file_path):
     if isinstance(file_path,list) and len(file_path) == 1:
       obj = client.get_object(Bucket=S3_BUCKET,Key=file_path[0])
       dictionary = json.loads(obj["Body"].read())
-      print(dictionary)
       return dictionary[0]
     else:
       if isinstance(file_path,str):
         obj = client.get_object(Bucket=S3_BUCKET,Key=file_path)
         dictionary = json.loads(obj["Body"].read())
-        print(dictionary)
         return dictionary
       else:
         obj = client.get_object(Bucket=S3_BUCKET,Key=file_path)
         dictionary = json.loads(obj["Body"].read())
-        print(dictionary)
         return (x for x in dictionary)
   else:
     if isinstance(file_path,list) and len(file_path) == 1:
