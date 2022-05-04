@@ -151,4 +151,3 @@ def check_snakemake_object(snakemake, output_filename=None):
   if output_filename:
     sys.stdout = original_stdout  # Reset the standard output to its original value
     f.close()
-
