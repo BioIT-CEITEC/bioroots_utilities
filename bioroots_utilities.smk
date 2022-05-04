@@ -18,11 +18,9 @@ def load_sample():
 def set_read_pair_tags():
   if not config["is_paired"]:
     read_pair_tags = [""]
-    paired = "SE"
   else:
     read_pair_tags = ["_R1", "_R2"]
-    paired = "PE"
-  return [read_pair_tags, paired]
+  return read_pair_tags
 
 ##### kubernetes #####
 ##
@@ -102,8 +100,6 @@ def remote(file_path):
         if isinstance(file_path,str):
           return S3.remote(S3_BUCKET + file_path)
         else:
-          print("########")
-          print(S3.remote(S3_BUCKET + x for x in file_path))
           return S3.remote(S3_BUCKET + x for x in file_path)
 
     else:
@@ -113,34 +109,12 @@ def remote(file_path):
         if isinstance(file_path,str):
           return S3.remote(S3_BUCKET + task_directory + file_path)
         else:
-          print("########")
-          print(S3.remote(S3_BUCKET + task_directory + x for x in file_path))
           return S3.remote(S3_BUCKET + task_directory + x for x in file_path)
   else:
     if isinstance(file_path,list) and len(file_path) == 1:
       return file_path[0]
     else:
       return file_path
-
-
-
-
-# def remote(file_path):
-#   if config["computing_type"] == "kubernetes":
-#     #path = "/sequia/" + config["task_name"] + "/"
-#
-#     if isinstance(file_path,list) and len(file_path) == 1:
-#       return S3.remote(S3_BUCKET + file_path[0])
-#     else:
-#       if isinstance(file_path,str):
-#         return S3.remote(S3_BUCKET + file_path)
-#       else:
-#         return S3.remote(S3_BUCKET + x for x in file_path)
-#   else:
-#     if isinstance(file_path,list) and len(file_path) == 1:
-#       return file_path[0]
-#     else:
-#       return file_path
 
 
 ##### Helper functions #####
