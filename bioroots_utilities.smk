@@ -65,7 +65,6 @@ def load_organism():
 def reference_directory():
   return os.path.join(config["globalResources"],"organisms",config["organism"],config["reference"])
 
-
 ####################
 def load_dict(file_path):
   if config["computing_type"] == "kubernetes":
