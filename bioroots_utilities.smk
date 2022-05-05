@@ -95,6 +95,8 @@ def remote(file_path):
     if os.path.isabs(file_path[0]):
 
       if isinstance(file_path,list) and len(file_path) == 1:
+        print("### ABSOLUTE LIST1111 ###")
+        print(S3_BUCKET + file_path[0])
         return S3.remote(S3_BUCKET + file_path[0])
       else:
         if isinstance(file_path,str):
@@ -108,6 +110,8 @@ def remote(file_path):
 
     else:
       if isinstance(file_path,list) and len(file_path) == 1:
+        print("### RELATIVE LIST1111 ###")
+        print(S3_BUCKET + task_directory + file_path[0])
         return S3.remote(S3_BUCKET + task_directory + file_path[0])
       else:
         if isinstance(file_path,str):
