@@ -105,8 +105,8 @@ def remote(file_path):
           return S3.remote(S3_BUCKET + file_path)
         else:
           print("### ABSOLUTE LIST ###")
-          print([S3_BUCKET + x for x in file_path])
-          return S3.remote([S3_BUCKET + x for x in file_path])
+          print([S3.remote(S3_BUCKET + x) for x in file_path])
+          return [S3.remote(S3_BUCKET + x) for x in file_path]
 
     else:
       if isinstance(file_path,list) and len(file_path) == 1:
@@ -120,8 +120,8 @@ def remote(file_path):
           return S3.remote(S3_BUCKET + task_directory + file_path)
         else:
           print("### RELATIVE LIST ###")
-          print(S3.remote([S3_BUCKET + task_directory + x for x in file_path]))
-          return S3.remote([S3_BUCKET + task_directory + x for x in file_path])
+          print([S3.remote(S3_BUCKET + task_directory + x) for x in file_path])
+          return [S3.remote(S3_BUCKET + task_directory + x) for x in file_path]
   else:
     if isinstance(file_path,list) and len(file_path) == 1:
       return file_path[0]
