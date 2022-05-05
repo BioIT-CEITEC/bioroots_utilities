@@ -100,6 +100,7 @@ def remote(file_path):
         if isinstance(file_path,str):
           return S3.remote(S3_BUCKET + file_path)
         else:
+          print(S3.remote(S3_BUCKET + x for x in file_path))
           return S3.remote(S3_BUCKET + x for x in file_path)
 
     else:
