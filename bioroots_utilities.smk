@@ -126,7 +126,9 @@ def kubernetes_remote(file_path):
         if isinstance(file_path,str):
           if os.path.isdir(file_path):
             print("KUBE_DIR")
-            return [S3.remote(S3_BUCKET + task_directory + x) for x in parse_dir(file_path)]
+            dir_contents = parse_dir(file_path)
+            print(dir_contents[:10])
+            return [S3.remote(S3_BUCKET + task_directory + x) for x in dir_contents]
           return S3.remote(S3_BUCKET + task_directory + file_path)
         else:
           return [S3.remote(S3_BUCKET + task_directory + x) for x in file_path]
