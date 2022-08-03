@@ -2,6 +2,7 @@ import os
 import json
 import pandas as pd
 import boto3
+from typing import List
 from snakemake.remote.S3 import RemoteProvider as S3RemoteProvider
 
 ##### Reference processing #####
@@ -95,7 +96,16 @@ def load_dict(file_path):
       return dictionary
 
 
-def remote(file_path):
+def parse_dir(dir_path: str) -> List[str]:
+  dir_contents = []
+  for root, dirs, files in os.walk(dir_path, followlinks=True):
+    for file in files:
+      dir_contents.append(S3.remote(S3_BUCKET + str(os.path.join(root, file))))
+
+  return dir_contents
+
+
+def kubernetes_remote(file_path):
   if config["computing_type"] == "kubernetes":
     if os.path.isabs(file_path[0]):
 
@@ -115,6 +125,11 @@ def remote(file_path):
           return S3.remote(S3_BUCKET + task_directory + file_path)
         else:
           return [S3.remote(S3_BUCKET + task_directory + x) for x in file_path]
+
+
+def remote(file_path):
+  if config["computing_type"] == "kubernetes":
+    return kubernetes_remote(file_path)
   else:
     if isinstance(file_path,list) and len(file_path) == 1:
       return file_path[0]
