@@ -100,7 +100,7 @@ def parse_dir(dir_path: str) -> List[str]:
   dir_contents = []
   for root, dirs, files in os.walk(dir_path, followlinks=True):
     for file in files:
-      dir_contents.append(S3.remote(S3_BUCKET + str(os.path.join(root, file))))
+      dir_contents.append(os.path.join(root, file))
 
   return dir_contents
 
@@ -113,6 +113,8 @@ def kubernetes_remote(file_path):
         return S3.remote(S3_BUCKET + file_path[0])
       else:
         if isinstance(file_path,str):
+          if os.path.isdir(file_path):
+            return [S3.remote(S3_BUCKET + x) for x in parse_dir(file_path)]
           return S3.remote(S3_BUCKET + file_path)
         else:
           return [S3.remote(S3_BUCKET + x) for x in file_path]
@@ -122,6 +124,8 @@ def kubernetes_remote(file_path):
         return S3.remote(S3_BUCKET + task_directory + file_path[0])
       else:
         if isinstance(file_path,str):
+          if os.path.isdir(file_path):
+            return [S3.remote(S3_BUCKET + task_directory + x) for x in parse_dir(file_path)]
           return S3.remote(S3_BUCKET + task_directory + file_path)
         else:
           return [S3.remote(S3_BUCKET + task_directory + x) for x in file_path]
