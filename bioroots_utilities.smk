@@ -130,14 +130,13 @@ def kubernetes_remote(file_path):
           print([S3.remote(S3_BUCKET + task_directory + x) for x in dir_contents]) 
           print(S3.remote(S3_BUCKET + task_directory + file_path))
           return [S3.remote(S3_BUCKET + task_directory + x) for x in dir_contents]
-        
-        return S3.remote(S3_BUCKET + task_directory + file_path)
+        else:
+          return S3.remote(S3_BUCKET + task_directory + file_path)
       else:
         return [S3.remote(S3_BUCKET + task_directory + x) for x in file_path]
 
 
 def remote(file_path):
-  print(f"path: {file_path}")
   if config["computing_type"] == "kubernetes":
     return kubernetes_remote(file_path)
   else:
