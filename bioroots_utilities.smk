@@ -127,7 +127,6 @@ def kubernetes_remote(file_path):
           dir_contents = parse_dir(file_path)
           print(file_path)
           print(dir_contents)
-          print([S3.remote(S3_BUCKET + task_directory + x) for x in dir_contents]) 
           print(S3.remote(S3_BUCKET + task_directory + file_path))
           return [S3.remote(S3_BUCKET + task_directory + x) for x in dir_contents]
         else:
