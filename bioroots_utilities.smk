@@ -97,11 +97,18 @@ def load_dict(file_path):
 
 
 def parse_dir(dir_path: str) -> List[str]:
-    dir_contents = []
-    for root, dirs, files in os.walk(dir_path, followlinks=True):
-        for file in files:
-            dir_contents.append(os.path.join(root, file))
-    return dir_contents
+    contents = []
+    items = []
+    if isinstance(dir_path, str):
+        items.append(dir_path)
+    else:
+        items = dir_path
+    for item in items:
+        for root, dirs, files in os.walk(item, followlinks=True):
+            for file in files:
+                contents.append(os.path.join(root, file))
+    print(contents)
+    return contents
 
 
 def kubernetes_remote(file_path):
