@@ -107,6 +107,7 @@ def parse_dir(dir_path: str) -> List[str]:
 
 def kubernetes_remote(file_path):
   if len(file_path) == 0:
+    print("EMPTY")
     return file_path
   if os.path.isabs(file_path[0]):
     if isinstance(file_path,list) and len(file_path) == 1:
