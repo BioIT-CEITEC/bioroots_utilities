@@ -108,12 +108,15 @@ def kubernetes_remote(file_path):
   if len(file_path) == 0:
     print("EMPTY")
     return file_path
-  if os.path.isabs(file_path[0]):
+
     if isinstance(file_path,list) and len(file_path) == 1:
       return S3.remote(S3_BUCKET + file_path[0])
     else:
       if isinstance(file_path,str):
+        return S3.remote(S3_BUCKET + file_path)
+      else:
         return [S3.remote(S3_BUCKET + x) for x in file_path]
+
 
   else:
     if isinstance(file_path,list) and len(file_path) == 1:
