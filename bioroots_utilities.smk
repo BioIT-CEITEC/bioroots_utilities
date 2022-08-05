@@ -96,18 +96,23 @@ def load_dict(file_path):
             return dictionary
 
 
-def parse_dir(dir_path: str) -> List[str]:
-    contents = []
-    items = []
+def parse_dir(dir_path: str, contents = None):
+    if contents is None:
+        contents = []
+    for root, dirs, files in os.walk(dir_path, followlinks=True):
+        for file in files:
+            contents.append(os.path.join(root,file))
+    return contents
+
+
+def parse_dirs(dir_path: str) -> List[str]:
     if isinstance(dir_path, str):
-        items.append(dir_path)
-    else:
-        items = dir_path
-    for item in items:
-        for root, dirs, files in os.walk(item, followlinks=True):
-            for file in files:
-                contents.append(os.path.join(root, file))
-    print(contents)
+        print(f"SINGLE CONTENTS: {parse_dir(dir_path)}")
+        return parse_dir(dir_path)
+    contents = []
+    for subdir in dir_path:
+        contents = parse_dir(subdir, contents)
+    print(f"MULTI CONTENTS: {contents}")
     return contents
 
 
