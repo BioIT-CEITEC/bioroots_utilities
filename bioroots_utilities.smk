@@ -107,12 +107,10 @@ def parse_dir(dir_path: str, contents = None):
 
 def parse_dirs(dir_path: str) -> List[str]:
     if isinstance(dir_path, str):
-        print(f"SINGLE CONTENTS: {parse_dir(dir_path)}")
         return parse_dir(dir_path)
     contents = []
     for subdir in dir_path:
         contents = parse_dir(subdir, contents)
-    print(f"MULTI CONTENTS: {contents}")
     return contents
 
 
@@ -139,6 +137,7 @@ def kubernetes_remote(file_path):
 
 def remote(file_path):
     if config["computing_type"] == "kubernetes":
+        print(kubernetes_remote(file_path))
         return kubernetes_remote(file_path)
     else:
         if isinstance(file_path,list) and len(file_path) == 1:
