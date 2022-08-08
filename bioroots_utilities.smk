@@ -102,6 +102,7 @@ def parse_dir(dir_path: str, contents = None):
     if not os.path.isdir(dir_path):
         dir_path = S3_BUCKET + task_directory + dir_path
         print(f"dir: {dir_path}")
+        print(os.path.isdir(dir_path))
     for root, dirs, files in os.walk(dir_path, followlinks=True):
         for file in files:
             contents.append(os.path.join(root,file))
