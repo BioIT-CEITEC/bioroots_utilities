@@ -141,6 +141,9 @@ def kubernetes_remote(file_path):
 def remote(file_path):
     if config["computing_type"] == "kubernetes":
         print(file_path)
+        if isinstance(file_path, list) and all(map(lambda x: len(x) > 4 and x[:5] == "acgt/", file_path)):
+            return file_path
+
         return kubernetes_remote(file_path)
     else:
         if isinstance(file_path,list) and len(file_path) == 1:
