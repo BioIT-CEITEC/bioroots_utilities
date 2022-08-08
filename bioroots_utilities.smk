@@ -99,9 +99,12 @@ def load_dict(file_path):
 def parse_dir(dir_path: str, contents = None):
     if contents is None:
         contents = []
+    if not os.path.isdir(dir_path):
+        dir_path = S3_BUCKET + task_directory + dir_path
     for root, dirs, files in os.walk(dir_path, followlinks=True):
         for file in files:
-            contents.append(os.path.join(root,file))
+            contents.append(os.path.join(os.path.basename(root),file))
+            print(f"dir file: {os.path.join(os.path.basename(root),file)}")
     return contents
 
 
