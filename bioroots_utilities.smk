@@ -101,7 +101,7 @@ def parse_dir(dir_path: str, contents = None):
         contents = []
     if not os.path.isdir(dir_path):
         dir_path = S3.remote(S3_BUCKET + task_directory + dir_path)
-        print(f"dir: {dir_path}")
+        print(f"dir: {dir_path}\n pwd: {os.listdir('.')}")
         print(os.path.isdir(dir_path))
     for root, dirs, files in os.walk(dir_path, followlinks=True):
         for file in files:
@@ -119,9 +119,6 @@ def parse_dirs(dir_path: str) -> List[str]:
 
 
 def kubernetes_remote(file_path):
-    if len(file_path) == 0:
-        return file_path
-
     if os.path.isabs(file_path[0]):
         if isinstance(file_path,list) and len(file_path) == 1:
             return S3.remote(S3_BUCKET + file_path[0])
