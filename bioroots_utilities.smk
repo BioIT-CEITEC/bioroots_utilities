@@ -103,8 +103,8 @@ def parse_dir(dir_path: str, contents = None):
         dir_path = S3_BUCKET + task_directory + dir_path
     for root, dirs, files in os.walk(dir_path, followlinks=True):
         for file in files:
-            contents.append(os.path.join(os.path.basename(root),file))
-            print(f"dir file: {os.path.join(os.path.basename(root),file)}")
+            contents.append(os.path.join(root,file))
+            print(f"dir file: {os.path.join(root, file)}")
     return contents
 
 
