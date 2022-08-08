@@ -100,8 +100,8 @@ def parse_dir(dir_path: str, contents = None):
     if contents is None:
         contents = []
     if not os.path.isdir(dir_path):
-        dir_path = S3.remote("/tmp/" + S3_BUCKET + task_directory + dir_path)
-        print(f"dir: {dir_path}\n pwd: {os.listdir('.')}")
+        dir_path = S3.remote(S3_BUCKET + task_directory + dir_path)
+        print(f"dir: {dir_path}\n {os.listdir('../../')}")
         print(os.path.isdir(dir_path))
     for root, dirs, files in os.walk(dir_path, followlinks=True):
         for file in files:
