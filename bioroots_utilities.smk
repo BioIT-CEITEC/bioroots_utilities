@@ -117,6 +117,8 @@ def parse_dirs(dir_path: str) -> List[str]:
 
 
 def kubernetes_remote(file_path):
+    if len(file_path) == 0:
+        return file_path
     if os.path.isabs(file_path[0]):
         if isinstance(file_path,list) and len(file_path) == 1:
             return S3.remote(S3_BUCKET + file_path[0])
