@@ -108,7 +108,7 @@ def load_dict(file_path):
 
 def parse_dir(dir_path: str):
     if config["computing_type"] == "kubernetes":
-        obj = client.get_object(S3_BUCKET, key=dir_path)
+        obj = client.get_object(Bucket=S3_BUCKET, key=dir_path)
         print(obj)
         return obj
     else:
