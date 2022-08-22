@@ -96,24 +96,38 @@ def load_dict(file_path):
             return dictionary
 
 
-def parse_dir(dir_path: str, contents = None):
-    if contents is None:
+# def parse_dir(dir_path: str, contents = None):
+#     if contents is None:
+#         contents = []
+#     if not os.path.isdir(dir_path):
+#         dir_path = S3.remote(S3_BUCKET + task_directory + dir_path)
+#     for root, dirs, files in os.walk(dir_path, followlinks=True):
+#         for file in files:
+#             contents.append(os.path.join(root,file))
+#     return contents
+
+def parse_dir(dir_path: str):
+    if config["computing_type"] == "kubernetes":
+        obj = client.get_object(S3_BUCKET, key=dir_path)
+        print(obj)
+        return obj
+    else:
         contents = []
-    if not os.path.isdir(dir_path):
-        dir_path = S3.remote(S3_BUCKET + task_directory + dir_path)
-    for root, dirs, files in os.walk(dir_path, followlinks=True):
-        for file in files:
-            contents.append(os.path.join(root,file))
-    return contents
+        for root, dirs, files in os.walk(dir_path,followlinks=True):
+            for file in files:
+                contents.append(os.path.join(root,file))
+        return contents
+#
 
 
-def parse_dirs(dir_path: str) -> List[str]:
-    if isinstance(dir_path, str):
-        return parse_dir(dir_path)
-    contents = []
-    for subdir in dir_path:
-        contents = parse_dir(subdir, contents)
-    return contents
+#
+# def parse_dirs(dir_path: str) -> List[str]:
+#     if isinstance(dir_path, str):
+#         return parse_dir(dir_path)
+#     contents = []
+#     for subdir in dir_path:
+#         contents = parse_dir(subdir, contents)
+#     return contents
 
 
 def kubernetes_remote(file_path):
