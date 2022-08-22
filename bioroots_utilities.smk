@@ -113,7 +113,7 @@ def remote_dir(dir_path: str):
     if config["computing_type"] == "kubernetes":
         if not os.path.isabs(dir_path):
             dir_path = os.path.abspath(dir_path)
-            index = dir_path.find(S3_BUCKET.upper())
+            index = dir_path.find(S3_BUCKET) + len(S3_BUCKET)
             dir_path = dir_path[index:]
         response = client.list_objects_v2(Bucket=S3_BUCKET, Prefix=dir_path)
         print(response)
