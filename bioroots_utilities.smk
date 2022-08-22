@@ -109,16 +109,22 @@ def load_dict(file_path):
 
 
 def remote_dir(dir_path: str):
+    if isinstance(dir_path, list):
+        directories = dir_path
+    elif isinstance(dir_path, str):
+        directories = [dir_path]
+    contents = []
     if config["computing_type"] == "kubernetes":
-        response = client.list_objects_v2(Bucket=S3_BUCKET, Prefix=dir_path)
-        return [S3.remote(os.path.join(S3_BUCKET, file_path["Key"])) for file_path in response["Contents"]]
+        for path in directories:
+            response = client.list_objects_v2(Bucket=S3_BUCKET, Prefix=path)
+            contents + [S3.remote(os.path.join(S3_BUCKET, file_path["Key"])) for file_path in response["Contents"]]
     else:
         contents = []
-        for root, dirs, files in os.walk(dir_path,followlinks=True):
-            for file in files:
-                contents.append(os.path.join(root,file))
-        return contents
-#
+        for path in directories:
+            for root, dirs, files in os.walk(path,followlinks=True):
+                for file in files:
+                    contents.append(os.path.join(root,file))
+    return contents
 
 
 #
