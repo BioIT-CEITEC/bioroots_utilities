@@ -109,9 +109,9 @@ def load_dict(file_path):
 def parse_dir(dir_path: str):
     print(dir_path)
     if config["computing_type"] == "kubernetes":
-        obj = client.get_object(Bucket=S3_BUCKET, Key=dir_path)
-        print(obj)
-        return obj
+        response = client.list_objects_v2(Bucket=S3_BUCKET, prefix=dir_path + "/")
+        print(response)
+        return response
     else:
         contents = []
         for root, dirs, files in os.walk(dir_path,followlinks=True):
