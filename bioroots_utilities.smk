@@ -110,7 +110,7 @@ def parse_dir(dir_path: str):
     print(dir_path)
     if config["computing_type"] == "kubernetes":
         obj = client.get_object(Bucket=S3_BUCKET, Key=dir_path)
-        print(obj["body"])
+        print(obj)
         return obj
     else:
         contents = []
