@@ -111,7 +111,8 @@ def parse_dir(dir_path: str):
     if config["computing_type"] == "kubernetes":
         response = client.list_objects_v2(Bucket=S3_BUCKET, Prefix=dir_path)
         print(response)
-        return response
+        print([file_path["Key"] for file_path in response["Contents"]])
+        return [file_path["Key"] for file_path in response["Contents"]]
     else:
         contents = []
         for root, dirs, files in os.walk(dir_path,followlinks=True):
