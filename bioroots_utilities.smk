@@ -69,7 +69,6 @@ def reference_directory():
 ####################
 def load_dict(file_path):
     if config["computing_type"] == "kubernetes":
-
         if isinstance(file_path,list) and len(file_path) == 1:
             obj = client.get_object(Bucket=S3_BUCKET,Key=file_path[0])
             dictionary = json.loads(obj["Body"].read())
@@ -96,18 +95,6 @@ def load_dict(file_path):
             return dictionary
 
 
-# def parse_dir(dir_path: str, contents = None):
-#     if contents is None:
-#         contents = []
-#     if not os.path.isdir(dir_path):
-#         dir_path = S3.remote(S3_BUCKET + task_directory + dir_path)
-#     for root, dirs, files in os.walk(dir_path, followlinks=True):
-#         for file in files:
-#             contents.append(os.path.join(root,file))
-#     return contents
-
-
-
 def remote_dir(dir_path: str):
     if isinstance(dir_path, list):
         directories = dir_path
@@ -119,22 +106,11 @@ def remote_dir(dir_path: str):
             response = client.list_objects_v2(Bucket=S3_BUCKET, Prefix=path)
             contents += [S3.remote(os.path.join(S3_BUCKET, file_path["Key"])) for file_path in response["Contents"]]
     else:
-        contents = []
         for path in directories:
             for root, dirs, files in os.walk(path,followlinks=True):
                 for file in files:
                     contents.append(os.path.join(root,file))
     return contents
-
-
-#
-# def parse_dirs(dir_path: str) -> List[str]:
-#     if isinstance(dir_path, str):
-#         return parse_dir(dir_path)
-#     contents = []
-#     for subdir in dir_path:
-#         contents = parse_dir(subdir, contents)
-#     return contents
 
 
 def kubernetes_remote(file_path):
@@ -159,8 +135,6 @@ def kubernetes_remote(file_path):
 
 def remote(file_path):
     if config["computing_type"] == "kubernetes":
-        # if isinstance(file_path, list) and all(map(lambda x: len(x) > 4 and x[:5] == "acgt/", file_path)):
-        #     return file_path
         return kubernetes_remote(file_path)
     else:
         if isinstance(file_path,list) and len(file_path) == 1:
