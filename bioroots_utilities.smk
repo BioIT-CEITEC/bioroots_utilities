@@ -77,7 +77,7 @@ def load_dict(file_path):
             if isinstance(file_path,str):
                 obj = client.get_object(Bucket=S3_BUCKET,Key=file_path)
                 dictionary = json.loads(obj["Body"].read())
-                return dictionarlibrary("devtools")y
+                return dictionary
             else:
                 obj = client.get_object(Bucket=S3_BUCKET,Key=file_path)
                 dictionary = json.loads(obj["Body"].read())
