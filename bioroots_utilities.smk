@@ -95,7 +95,7 @@ def load_dict(file_path):
             return dictionary
 
 
-def remote_dir(dir_path: str):
+def remote_input_dir(dir_path: str):
     if isinstance(dir_path, list):
         directories = dir_path
     elif isinstance(dir_path, str):
@@ -113,6 +113,8 @@ def remote_dir(dir_path: str):
             for root, dirs, files in os.walk(path,followlinks=True):
                 for file in files:
                     contents.append(os.path.join(root,file))
+    if len(contents) == 0:
+        return contents[0]
     return contents
 
 
