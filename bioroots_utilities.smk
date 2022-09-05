@@ -104,7 +104,10 @@ def remote_dir(dir_path: str):
     if config["computing_type"] == "kubernetes":
         for path in directories:
             response = client.list_objects_v2(Bucket=S3_BUCKET, Prefix=path)
-            contents += [S3.remote(os.path.join(S3_BUCKET, file_path["Key"])) for file_path in response["Contents"]]
+            try:
+                contents += [S3.remote(os.path.join(S3_BUCKET, file_path["Key"])) for file_path in response["Contents"]]
+            except KeyError:
+                contents += [S3.remote(os.path.join(S3_BUCKET, path))]
     else:
         for path in directories:
             for root, dirs, files in os.walk(path,followlinks=True):
