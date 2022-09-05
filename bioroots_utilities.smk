@@ -95,7 +95,7 @@ def load_dict(file_path):
             return dictionary
 
 
-def remote_input_dir(dir_path: str):
+def remote_dir(dir_path: str):
     if isinstance(dir_path, list):
         directories = dir_path
     elif isinstance(dir_path, str):
