@@ -95,7 +95,7 @@ def load_dict(file_path):
             return dictionary
 
 
-def remote_dir(dir_path: str):
+def remote_input_dir(dir_path: str):
     if isinstance(dir_path, list):
         directories = dir_path
     elif isinstance(dir_path, str):
@@ -104,17 +104,12 @@ def remote_dir(dir_path: str):
     if config["computing_type"] == "kubernetes":
         for path in directories:
             response = client.list_objects_v2(Bucket=S3_BUCKET, Prefix=path)
-            try:
-                contents += [S3.remote(os.path.join(S3_BUCKET, file_path["Key"])) for file_path in response["Contents"]]
-            except KeyError:
-                contents += [S3.remote(os.path.join(S3_BUCKET, path))]
+            contents += [S3.remote(os.path.join(S3_BUCKET, file_path["Key"])) for file_path in response["Contents"]]
     else:
         for path in directories:
             for root, dirs, files in os.walk(path,followlinks=True):
                 for file in files:
                     contents.append(os.path.join(root,file))
-    if len(contents) == 0:
-        return contents[0]
     return contents
 
 
