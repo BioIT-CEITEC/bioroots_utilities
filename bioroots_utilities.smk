@@ -113,33 +113,40 @@ def remote_input_dir(dir_path: str):
     return contents
 
 
-def kubernetes_remote(file_path):
-    if len(file_path) == 0:
-        return file_path
-    if os.path.isabs(file_path[0]):
-        if isinstance(file_path,list) and len(file_path) == 1:
-            return S3.remote(S3_BUCKET + file_path[0])
-        else:
-            if isinstance(file_path,str):
-                return S3.remote(S3_BUCKET + file_path)
-            return [S3.remote(S3_BUCKET + x) for x in file_path]
+def get_path(filename):
+    if config["computing_type"] == "kubernetes":
+        if os.path.isabs(filename[0]):
+            if isinstance(filename,list) and len(filename) == 1:
+                return S3_BUCKET + filename[0]
+            else:
+                if isinstance(filename,str):
+                    return S3_BUCKET + filename
+                return [S3_BUCKET + x for x in filename]
 
-    else:
-        if isinstance(file_path,list) and len(file_path) == 1:
-            return S3.remote(S3_BUCKET + task_directory + file_path[0])
         else:
-            if isinstance(file_path,str):
-                return S3.remote(S3_BUCKET + task_directory + file_path)
-            return [S3.remote(S3_BUCKET + task_directory + x) for x in file_path]
+            if isinstance(filename,list) and len(filename) == 1:
+                return S3_BUCKET + task_directory + filename[0]
+            else:
+                if isinstance(filename,str):
+                    return S3_BUCKET + task_directory + filename
+                return [S3_BUCKET + task_directory + x for x in filename]
+    else:
+        if isinstance(filename,list) and len(filename) == 1:
+            return filename[0]
+        return filename
+
+
+def kubernetes_remote(remote_path):
+     if isinstance(remote_path, list):
+         return [S3.remote(file_path) for file_path in remote_path]
+     return S3.remote(remote_path)
 
 
 def remote(file_path):
+    file_path = get_path(file_path)
     if config["computing_type"] == "kubernetes":
         return kubernetes_remote(file_path)
-    else:
-        if isinstance(file_path,list) and len(file_path) == 1:
-            return file_path[0]
-        return file_path
+    return file_path
 
 
 ##### Helper functions #####
