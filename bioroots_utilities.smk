@@ -2,7 +2,6 @@ import os
 import json
 import pandas as pd
 import boto3
-from typing import List
 from snakemake.remote.S3 import RemoteProvider as S3RemoteProvider
 
 ##### Reference processing #####
@@ -114,6 +113,8 @@ def remote_input_dir(dir_path: str):
 
 
 def get_path(filename):
+    if len(filename) == 0:
+        return filename
     if config["computing_type"] == "kubernetes":
         if os.path.isabs(filename[0]):
             if isinstance(filename,list) and len(filename) == 1:
