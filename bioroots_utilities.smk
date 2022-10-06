@@ -4,10 +4,6 @@ import pandas as pd
 import boto3
 from snakemake.remote.S3 import RemoteProvider as S3RemoteProvider
 
-##### Reference processing #####
-##
-#
-
 
 ##### Config processing #####
 #
@@ -39,8 +35,10 @@ if config["computing_type"] == "kubernetes":
     S3_BUCKET = "acgt"
     task_directory = os.path.join(config["globalTaskPath"], config["task_name"]) + "/"
 
-####################
 
+##### Reference processing #####
+##
+#
 def load_ref():
     if config["lib_ROI"] != "wgs":
         # setting reference from lib_ROI
@@ -57,8 +55,16 @@ def load_release():
 
 def load_organism():
     # setting organism from reference
-    reference_dict = load_dict(config["globalResources"] + "/resources_info/reference.json")
-    config["organism"] = [organism_name.lower().replace(" ","_") for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["reference"] in reference_dict[organism_name].values()][0]
+
+    # reference_dict = load_dict(config["globalResources"] + "/resources_info/reference.json")
+    # config["organism"] = [organism_name.lower().replace(" ","_") for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["reference"] in reference_dict[organism_name].values()][0]
+
+    reference_dict = load_dict(config["globalResources"] + "/resources_info/reference2.json")
+
+    config["species_name"] = [organism_name for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["reference"] in reference_dict[organism_name].keys()][0]
+    config["organism"] = config["species_name"].split(" (")[0].lower().replace(" ","_")
+    if len(config["species_name"].split(" (")) > 1:
+        config["species"] = config["species_name"].split(" (")[1].replace(")","")
     return config
 
 
