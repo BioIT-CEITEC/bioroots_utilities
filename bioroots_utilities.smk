@@ -4,6 +4,10 @@ import pandas as pd
 import boto3
 from snakemake.remote.S3 import RemoteProvider as S3RemoteProvider
 
+##### Reference processing #####
+##
+#
+
 
 ##### Config processing #####
 #
@@ -35,9 +39,8 @@ if config["computing_type"] == "kubernetes":
     S3_BUCKET = "acgt"
     task_directory = os.path.join(config["globalTaskPath"], config["task_name"]) + "/"
 
-##### Reference processing #####
-##
-#
+####################
+
 def load_ref():
     if config["lib_ROI"] != "wgs":
         # setting reference from lib_ROI
@@ -54,16 +57,8 @@ def load_release():
 
 def load_organism():
     # setting organism from reference
-
-    # reference_dict = load_dict(config["globalResources"] + "/resources_info/reference.json")
-    # config["organism"] = [organism_name.lower().replace(" ","_") for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["reference"] in reference_dict[organism_name].values()][0]
-
-    reference_dict = load_dict(config["globalResources"] + "/resources_info/reference2.json")
-
-    config["species_name"] = [organism_name for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["reference"] in reference_dict[organism_name].keys()][0]
-    config["organism"] = config["species_name"].split(" (")[0].lower().replace(" ","_")
-    if len(config["species_name"].split(" (")) > 1:
-        config["species"] = config["species_name"].split(" (")[1].replace(")","")
+    reference_dict = load_dict(config["globalResources"] + "/resources_info/reference.json")
+    config["organism"] = [organism_name.lower().replace(" ","_") for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["reference"] in reference_dict[organism_name].values()][0]
     return config
 
 
@@ -137,55 +132,40 @@ def get_path(filename):
                     return S3_BUCKET + task_directory + filename
                 return [S3_BUCKET + task_directory + x for x in filename]
     else:
-        if isinstance(filename,list) and len(filename) == 1:
-            return filename[0]
-        return filename
-
-
-def kubernetes_remote(remote_path):
-     if isinstance(remote_path, list):
-         return [S3.remote(file_path) for file_path in remote_path]
-     return S3.remote(remote_path)
-
-
-def remote(file_path):
-    file_path = get_path(file_path)
-    if config["computing_type"] == "kubernetes":
-        return kubernetes_remote(file_path)
-    return file_path
+      return file_path
 
 
 ##### Helper functions #####
 ##
 # debugging function for listing all attributes and their classes in given snakemake object
 def check_snakemake_object(snakemake, output_filename=None):
-    common_atributes = ["append", "clear", "copy", "count", "extend", "get", "index", "insert", "items", "keys", "pop",
-                        "remove", "reverse", "size", "size_mb", "sort"]
+  common_atributes = ["append", "clear", "copy", "count", "extend", "get", "index", "insert", "items", "keys", "pop",
+                      "remove", "reverse", "size", "size_mb", "sort"]
 
-    if output_filename:
-        original_stdout = sys.stdout  # Save a reference to the original standard output
-        f = open(output_filename,'w')
-        sys.stdout = f  # Change the standard output to the file we created.
+  if output_filename:
+    original_stdout = sys.stdout  # Save a reference to the original standard output
+    f = open(output_filename,'w')
+    sys.stdout = f  # Change the standard output to the file we created.
 
-    print("snakemake.inputs\n")
-    for attr_name in [a for a in dir(snakemake.input) if not a.startswith('_') and not a in common_atributes]:
-        print(attr_name)
-        print(type(getattr(snakemake.input,attr_name)))
-        print(getattr(snakemake.input,attr_name))
-        print()
-    print("-------------------------\n\nsnakemake.outputs\n")
-    for attr_name in [a for a in dir(snakemake.output) if not a.startswith('_') and not a in common_atributes]:
-        print(attr_name)
-        print(type(getattr(snakemake.output,attr_name)))
-        print(getattr(snakemake.output,attr_name))
-        print()
-    print("-------------------------\n\nsnakemake.params\n")
-    for attr_name in [a for a in dir(snakemake.params) if not a.startswith('_') and not a in common_atributes]:
-        print(attr_name)
-        print(type(getattr(snakemake.params,attr_name)))
-        print(getattr(snakemake.params,attr_name))
-        print()
+  print("snakemake.inputs\n")
+  for attr_name in [a for a in dir(snakemake.input) if not a.startswith('_') and not a in common_atributes]:
+    print(attr_name)
+    print(type(getattr(snakemake.input,attr_name)))
+    print(getattr(snakemake.input,attr_name))
+    print()
+  print("-------------------------\n\nsnakemake.outputs\n")
+  for attr_name in [a for a in dir(snakemake.output) if not a.startswith('_') and not a in common_atributes]:
+    print(attr_name)
+    print(type(getattr(snakemake.output,attr_name)))
+    print(getattr(snakemake.output,attr_name))
+    print()
+  print("-------------------------\n\nsnakemake.params\n")
+  for attr_name in [a for a in dir(snakemake.params) if not a.startswith('_') and not a in common_atributes]:
+    print(attr_name)
+    print(type(getattr(snakemake.params,attr_name)))
+    print(getattr(snakemake.params,attr_name))
+    print()
 
-    if output_filename:
-        sys.stdout = original_stdout  # Reset the standard output to its original value
-        f.close()
+  if output_filename:
+    sys.stdout = original_stdout  # Reset the standard output to its original value
+    f.close()
