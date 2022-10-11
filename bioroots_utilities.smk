@@ -59,7 +59,7 @@ def load_organism():
     # reference_dict = load_dict(config["globalResources"] + "/resources_info/reference.json")
     # config["organism"] = [organism_name.lower().replace(" ","_") for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["reference"] in reference_dict[organism_name].values()][0]
     reference_dict = load_dict(config["globalResources"] + "/resources_info/reference2.json")
-
+    print(reference_dict)
     config["species_name"] = [organism_name for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["reference"] in reference_dict[organism_name].keys()][0]
     config["organism"] = config["species_name"].split(" (")[0].lower().replace(" ","_")
     if len(config["species_name"].split(" (")) > 1:
