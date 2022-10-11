@@ -137,7 +137,7 @@ def get_path(filename):
                     return S3_BUCKET + task_directory + filename
                 return [S3_BUCKET + task_directory + x for x in filename]
     else:
-      return file_path
+      return filename
 
 
 ##### Helper functions #####
