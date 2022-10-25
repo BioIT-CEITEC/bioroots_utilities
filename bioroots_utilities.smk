@@ -55,10 +55,6 @@ def load_release():
 
 def load_organism():
     # setting organism from reference
-
-    # reference_dict = load_dict(config["globalResources"] + "/resources_info/reference.json")
-    # config["organism"] = [organism_name.lower().replace(" ","_") for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["reference"] in reference_dict[organism_name].values()][0]
-
     reference_dict = load_dict(config["globalResources"] + "/resources_info/reference2.json")
 
     config["species_name"] = [organism_name for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["reference"] in reference_dict[organism_name].keys()][0]
@@ -138,13 +134,29 @@ def get_path(filename):
                     return S3_BUCKET + task_directory + filename
                 return [S3_BUCKET + task_directory + x for x in filename]
     else:
-      return file_path
+        if isinstance(filename,list) and len(filename) == 1:
+            return filename[0]
+        return filename
+
+
+def kubernetes_remote(remote_path):
+     if isinstance(remote_path, list):
+         return [S3.remote(file_path) for file_path in remote_path]
+     return S3.remote(remote_path)
+
+
+def remote(file_path):
+    file_path = get_path(file_path)
+    if config["computing_type"] == "kubernetes":
+        return kubernetes_remote(file_path)
+    return file_path
 
 
 def get_bucket_name():
     if config["computing_type"] == "kubernetes":
         return S3_BUCKET
     return ""
+
 
 ##### Helper functions #####
 ##
