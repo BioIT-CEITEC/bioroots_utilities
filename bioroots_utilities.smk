@@ -22,7 +22,7 @@ def set_read_pair_tags():
 ##
 #
 if not "computing_type" in config:
-  config["computing_type"] = "kubernetes"
+  config["computing_type"] = "local"
 
 if config["computing_type"] == "kubernetes":
 
@@ -42,20 +42,20 @@ if config["computing_type"] == "kubernetes":
 def load_ref():
     if config["lib_ROI"] != "wgs":
         # setting reference from lib_ROI
-        lib_ROI_dict = load_dict(config["globalResources"] + "/resources_info/lib_ROI.json")
+        lib_ROI_dict = load_dict(config["globalResources"] + "/reference_info/lib_ROI.json")
         config["reference"] = [ref_name for ref_name in lib_ROI_dict.keys() if isinstance(lib_ROI_dict[ref_name],dict) and config["lib_ROI"] in lib_ROI_dict[ref_name].keys()][0]
     return config
 
 
-def load_release():
-    release_cfg = load_dict(config["globalResources"] + "/resources_info/reference_release.json")
-    config["release"] = release_cfg[config["reference"]]["release"]
-    return config
+# def load_release():
+#     release_cfg = load_dict(config["globalResources"] + "/reference_info/reference_release.json")
+#     config["release"] = release_cfg[config["reference"]]["release"]
+#     return config
 
 
 def load_organism():
     # setting organism from reference
-    reference_dict = load_dict(config["globalResources"] + "/resources_info/reference2.json")
+    reference_dict = load_dict(config["globalResources"] + "/reference_info/reference2.json")
 
     config["species_name"] = [organism_name for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["reference"] in reference_dict[organism_name].keys()][0]
     config["organism"] = config["species_name"].split(" (")[0].lower().replace(" ","_")
