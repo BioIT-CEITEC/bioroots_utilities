@@ -65,7 +65,7 @@ def load_organism():
 
 
 def reference_directory():
-    return os.path.join(config["globalResources"],"organisms",config["organism"],config["reference"])
+    return os.path.join(config["globalResources"],config["organism"],config["reference"])
 
 ####################
 def load_dict(file_path):
