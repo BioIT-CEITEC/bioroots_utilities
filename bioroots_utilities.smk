@@ -4,6 +4,15 @@ import pandas as pd
 import boto3
 from snakemake.remote.S3 import RemoteProvider as S3RemoteProvider
 
+##### Check resource path
+def check_resources():
+    if "references_backup" in config["globalResources"]:
+        globresource = "bioda"
+    else:
+        globresource = "bioit"
+    return globresource
+
+globresource = check_resources()
 
 ##### Config processing #####
 #
@@ -17,6 +26,20 @@ def set_read_pair_tags():
   else:
     read_pair_tags = ["_R1", "_R2"]
   return read_pair_tags
+
+def set_read_pair_qc_tags():
+  if not config["is_paired"]:
+    read_pair_qc_tags = ["SE"]
+  else:
+    read_pair_qc_tags = ["R1", "R2"]
+  return read_pair_qc_tags
+
+def set_paired_tags():
+  if not config["is_paired"]:
+    paired_tags = "SE"
+  else:
+    paired_tags = "PE"
+  return paired_tags
 
 ##### kubernetes #####
 ##
@@ -57,11 +80,32 @@ def load_organism():
     # setting organism from reference
     reference_dict = load_dict(config["globalResources"] + "/reference_info/reference2.json")
 
-    config["species_name"] = [organism_name for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["reference"] in reference_dict[organism_name].keys()][0]
-    config["organism"] = config["species_name"].split(" (")[0].lower().replace(" ","_")
-    if len(config["species_name"].split(" (")) > 1:
-        config["species"] = config["species_name"].split(" (")[1].replace(")","")
+    if globresource == "bioda":
+        config["species_name"] = [organism_name for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["reference"] in reference_dict[organism_name].keys()][0]
+        config["organism"] = config["species_name"].split(" (")[0].lower().replace(" ","_")
+        if len(config["species_name"].split(" (")) > 1:
+            config["species"] = config["species_name"].split(" (")[1].replace(")","")
+        config[organism_fasta] = config["globalResources"] + "/" + config["species"] + "/" + config["reference"] + "/seq/" + config["reference"] + ".fa"
+        config[organism_ucsc] = config["globalResources"] + "/" + config["species"] + "/" + config["reference"] + "/seq/" + config["reference"] + ".fa.fai.ucsc"
+        config[organism_gtf] = config["globalResources"] + "/" + config["species"] + "/" + config["reference"] + "/annot/" + config["reference"] + ".gtf"
+        config[organism_star] = config["globalResources"] + "/" + config["species"] + "/" + config["reference"] + "/index/STAR/SAindex"
+
+    if globresource == "bioit":
+        config["species_name"] = [organism_name for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["reference"] in reference_dict[organism_name].keys()][0]
+        config["organism"] = config["species_name"].split(" (")[0].lower().replace(" ","_")
+        if len(config["species_name"].split(" (")) > 1:
+            config["species"] = config["species_name"].split(" (")[1].replace(")","")
+        config["assembly"] = config["reference"].split("_")[0]
+        config["release"] = config["reference"].split("_")[1]
+        config[organism_fasta] = config["globalResources"] + "/" + config["species"] + "/" + config["assembly"] + "/seq/" + config["assembly"] + ".fa"
+        config[organism_ucsc] = config["globalResources"] + "/" + config["species"] + "/" + config["assembly"] + "/seq/" + config["assembly"] + ".fa.fai.ucsc"
+        config[organism_gtf] = config["globalResources"] + "/" + config["species"] + "/" + config["assembly"] + "/annot/" + config["release"] + "/" + config["assembly"] + ".gtf"
+        config[organism_star] = config["globalResources"] + "/" + config["species"] + "/" + config["assembly"] + "/tool_data/STAR/" + config["release"] + "/SAindex"
+
     return config
+
+
+
 
 
 def reference_directory():
