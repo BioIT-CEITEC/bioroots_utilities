@@ -12,8 +12,6 @@ def check_resources():
         globresource = "bioit"
     return globresource
 
-globresource = check_resources()
-
 ##### Config processing #####
 #
 def load_sample():
@@ -77,6 +75,7 @@ def load_ref():
 
 
 def load_organism():
+    globresource = check_resources()
     # setting organism from reference
     reference_dict = load_dict(config["globalResources"] + "/reference_info/reference2.json")
 
@@ -85,10 +84,14 @@ def load_organism():
         config["organism"] = config["species_name"].split(" (")[0].lower().replace(" ","_")
         if len(config["species_name"].split(" (")) > 1:
             config["species"] = config["species_name"].split(" (")[1].replace(")","")
-        config[organism_fasta] = config["globalResources"] + "/" + config["species"] + "/" + config["reference"] + "/seq/" + config["reference"] + ".fa"
-        config[organism_ucsc] = config["globalResources"] + "/" + config["species"] + "/" + config["reference"] + "/seq/" + config["reference"] + ".fa.fai.ucsc"
-        config[organism_gtf] = config["globalResources"] + "/" + config["species"] + "/" + config["reference"] + "/annot/" + config["reference"] + ".gtf"
-        config[organism_star] = config["globalResources"] + "/" + config["species"] + "/" + config["reference"] + "/index/STAR/SAindex"
+        config["organism_fasta"] = config["globalResources"] + "/" + config["species"] + "/" + config["reference"] + "/seq/" + config["reference"] + ".fa"
+        config["organism_ucsc"] = config["globalResources"] + "/" + config["species"] + "/" + config["reference"] + "/seq/" + config["reference"] + ".fa.fai.ucsc"
+        config["organism_gtf"] = config["globalResources"] + "/" + config["species"] + "/" + config["reference"] + "/annot/" + config["reference"] + ".gtf"
+        config["organism_gtf"] = config["globalResources"] + "/" + config["species"] + "/" + config["reference"] + "/seq/" + config["reference"] + ".cds.fa"
+        config["organism_star"] = config["globalResources"] + "/" + config["species"] + "/" + config["reference"] + "/index/STAR/SAindex"
+        config["organism_rsem"] = config["globalResources"] + "/" + config["species"] + "/" + config["reference"] + "/index/RSEM/" + config["reference"] + ".idx.fa"
+        config["organism_salmon"] = config["globalResources"] + "/" + config["species"] + "/" + config["reference"] + "/index/Salmon"
+        config["organism_kallisto"] = config["globalResources"] + "/" + config["species"] + "/" + config["reference"] + "/index/Kallisto"
 
     if globresource == "bioit":
         config["species_name"] = [organism_name for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["reference"] in reference_dict[organism_name].keys()][0]
@@ -97,10 +100,14 @@ def load_organism():
             config["species"] = config["species_name"].split(" (")[1].replace(")","")
         config["assembly"] = config["reference"].split("_")[0]
         config["release"] = config["reference"].split("_")[1]
-        config[organism_fasta] = config["globalResources"] + "/" + config["species"] + "/" + config["assembly"] + "/seq/" + config["assembly"] + ".fa"
-        config[organism_ucsc] = config["globalResources"] + "/" + config["species"] + "/" + config["assembly"] + "/seq/" + config["assembly"] + ".fa.fai.ucsc"
-        config[organism_gtf] = config["globalResources"] + "/" + config["species"] + "/" + config["assembly"] + "/annot/" + config["release"] + "/" + config["assembly"] + ".gtf"
-        config[organism_star] = config["globalResources"] + "/" + config["species"] + "/" + config["assembly"] + "/tool_data/STAR/" + config["release"] + "/SAindex"
+        config["organism_fasta"] = config["globalResources"] + "/" + config["species"] + "/" + config["assembly"] + "/seq/" + config["assembly"] + ".fa"
+        config["organism_ucsc"] = config["globalResources"] + "/" + config["species"] + "/" + config["assembly"] + "/seq/" + config["assembly"] + ".fa.fai.ucsc"
+        config["organism_gtf"] = config["globalResources"] + "/" + config["species"] + "/" + config["assembly"] + "/annot/" + config["release"] + "/" + config["assembly"] + ".gtf"
+        config["organism_cds_fasta"] = config["globalResources"] + "/" + config["species"] + "/" + config["assembly"] + "/annot/" + config["release"] + "/" + config["assembly"] + ".cds.fa"
+        config["organism_star"] = config["globalResources"] + "/" + config["species"] + "/" + config["assembly"] + "/tool_data/STAR/" + config["release"] + "/SAindex"
+        config["organism_rsem"] = config["globalResources"] + "/" + config["species"] + "/" + config["assembly"] + "/tool_data/RSEM/" + config["release"] + "/" + config["assembly"] + ".idx.fa"
+        config["organism_salmon"] = config["globalResources"] + "/" + config["species"] + "/" + config["assembly"] + "/tool_data/Salmon/" + config["release"]
+        config["organism_kallisto"] = config["globalResources"] + "/" + config["species"] + "/" + config["assembly"] + "/tool_data/Kallisto/" + config["release"] + "/Kallisto"
 
     return config
 
