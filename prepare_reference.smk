@@ -319,12 +319,18 @@ rule create_salmon_index:
   script: "../wrappers/salmon_index/script.py"
 
 rule create_kallisto_index:
-  input:  cds = expandd("{ref_dir}/seq/{ref}.cds.fa", ref_dir=reference_directory),
+  input:  cds = expandd("{ref_dir}/seq/{ref}.cds.fa", ref_dir=reference_directory, ref=config["assembly"]),
   output: gen = expand("{ref_dir}/tool_data/kallisto/{release}/Kallisto", ref_dir=reference_directory, release=config["release"]),
   log:    run = expand("{ref_dir}/tool_data/kallisto/{release}/kallisto.decoy_creation.log", ref_dir=reference_directory, release=config["release"]),
   threads: 20
   conda: "../wrappers/kallisto_index/env.yaml"
   script: "../wrappers/kallisto_index/script.py"
+
+rule create_gene_table:
+  input:  cds = expand("{ref_dir}/annot/{release}/{ref}.cds.fa", ref_dir=reference_directory, release=config["release"], ref=config["assembly"]),
+  output: transc = expand("{ref_dir}/annot/{release}/transcript_gene.txt", ref_dir=reference_directory, release=config["release"]),
+  log:    run = expand("{ref_dir}/annot/{release}/{release}_transcript_gene.log", ref_dir=reference_directory, release=config["release"]),
+  script: "../wrappers/gene_table/script.py"
 
 rule chrom_sizes:
     input:  idx = "{dir}/{species}/{ref}/seq/{ref}.fa.fai",
