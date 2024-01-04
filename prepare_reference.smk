@@ -138,8 +138,6 @@ rule index_and_gz_bed:
         shell("bgzip -c {input.bed} > {output.bed_gz}")
         shell("tabix -p bed {output.bed_gz}")
 
-
-
 rule interval_list_from_bed:
     input:  bed = "{dir}/{species}/{ref}/intervals/{kit}/{kit}.bed",
             dict = "{dir}/{species}/{ref}/seq/{ref}.dict",
@@ -306,6 +304,27 @@ rule STAR_gen_index:
     threads:    30
     conda:  "../wrappers/STAR_gen_index/env.yaml"
     script: "../wrappers/STAR_gen_index/script.py"
+
+rule create_salmon_index:
+  input:  gen = "{ref_dir}/seq/{ref}.fa",
+          gtf = "{ref_dir}/annot/{release}/{ref}.gtf",
+          cds = "{ref_dir}/seq/{ref}.cds.fa",
+  output: gen = "{ref_dir}/tool_data/Salmon/{release}/Salmon_decoy/gentrome.fa",
+          dec = "{ref_dir}/tool_data/Salmon/{release}/Salmon_decoy/decoys.txt"
+  log:    run = "{ref_dir}/tool_data/Salmon/{release}/{release}_salmon.decoy_creation.log"
+  params: script = "/mnt/ssd/ssd_3/references/general/generateDecoyTranscriptome.sh",
+          folder = "{ref_dir}/tool_data/Salmon/{release}"
+  threads: 20
+  conda: "../wrappers/salmon_index/env.yaml"
+  script: "../wrappers/salmon_index/script.py"
+
+rule create_kallisto_index:
+  input:  cds = "{ref_dir}/seq/{ref}.cds.fa",
+  output: gen = "{ref_dir}/tool_data/kallisto/Kallisto",
+  log:    run = "{ref_dir}/tool_data/kallisto/kallisto.decoy_creation.log"
+  threads: 20
+  conda: "../wrappers/kallisto_index/env.yaml"
+  script: "../wrappers/kallisto_index/script.py"
 
 rule chrom_sizes:
     input:  idx = "{dir}/{species}/{ref}/seq/{ref}.fa.fai",
