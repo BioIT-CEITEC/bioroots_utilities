@@ -306,22 +306,22 @@ rule STAR_gen_index:
     script: "../wrappers/STAR_gen_index/script.py"
 
 rule create_salmon_index:
-  input:  gen = "{ref_dir}/seq/{ref}.fa",
-          gtf = "{ref_dir}/annot/{release}/{ref}.gtf",
-          cds = "{ref_dir}/seq/{ref}.cds.fa",
-  output: gen = "{ref_dir}/tool_data/Salmon/{release}/Salmon_decoy/gentrome.fa",
-          dec = "{ref_dir}/tool_data/Salmon/{release}/Salmon_decoy/decoys.txt"
-  log:    run = "{ref_dir}/tool_data/Salmon/{release}/{release}_salmon.decoy_creation.log"
+  input:  gen = expand("{ref_dir}/seq/{ref}.fa", ref_dir=reference_directory, ref=config["assembly"]),
+          gtf = expand("{ref_dir}/annot/{release}/{ref}.gtf", ref_dir=reference_directory, ref=config["assembly"]),
+          cds = expand("{ref_dir}/seq/{ref}.cds.fa", ref_dir=reference_directory),
+  output: gen = expand("{ref_dir}/tool_data/Salmon/{release}/Salmon_decoy/gentrome.fa", ref_dir=reference_directory, release=config["release"]),
+          dec = expand("{ref_dir}/tool_data/Salmon/{release}/Salmon_decoy/decoys.txt", ref_dir=reference_directory, release=config["release"]),
+  log:    run = expand("{ref_dir}/tool_data/Salmon/{release}/{release}_salmon.decoy_creation.log", ref_dir=reference_directory, release=config["release"]),
   params: script = "/mnt/ssd/ssd_3/references/general/generateDecoyTranscriptome.sh",
-          folder = "{ref_dir}/tool_data/Salmon/{release}"
+          folder = expand("{ref_dir}/tool_data/Salmon/{release}", ref_dir=reference_directory, release=config["release"]),
   threads: 20
   conda: "../wrappers/salmon_index/env.yaml"
   script: "../wrappers/salmon_index/script.py"
 
 rule create_kallisto_index:
-  input:  cds = "{ref_dir}/seq/{ref}.cds.fa",
-  output: gen = "{ref_dir}/tool_data/kallisto/Kallisto",
-  log:    run = "{ref_dir}/tool_data/kallisto/kallisto.decoy_creation.log"
+  input:  cds = expandd("{ref_dir}/seq/{ref}.cds.fa", ref_dir=reference_directory),
+  output: gen = expand("{ref_dir}/tool_data/kallisto/{release}/Kallisto", ref_dir=reference_directory, release=config["release"]),
+  log:    run = expand("{ref_dir}/tool_data/kallisto/{release}/kallisto.decoy_creation.log", ref_dir=reference_directory, release=config["release"]),
   threads: 20
   conda: "../wrappers/kallisto_index/env.yaml"
   script: "../wrappers/kallisto_index/script.py"
