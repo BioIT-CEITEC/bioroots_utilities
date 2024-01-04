@@ -294,19 +294,18 @@ rule postqc_RNA_preparation:
 
 
 rule STAR_gen_index:
-    input:  gen = "{dir}/{species}/{ref}/seq/{ref}.fa",
-            idx = "{dir}/{species}/{ref}/seq/{ref}.fa.fai",
-            ref = "{dir}/{species}/{ref}/annot/{ref}.gtf",
-    output: html = "{dir}/{species}/{ref}/index/STAR.indexation_run.html",
-            SAindex = "{dir}/{species}/{ref}/index/STAR/SAindex",
-    params: dir = "{dir}/{species}/{ref}/index/STAR",
-            log = "{dir}/{species}/{ref}/index/STAR/Log.out",
+    input:  gen = expand("{ref_dir}/seq/{ref}.fa", ref_dir=reference_directory,ref=config["assembly"]),
+            idx = expand("{ref_dir}/seq/{ref}.fa.fai", ref_dir=reference_directory, ref=config["assembly"]),
+            ref = expand("{ref_dir}/annot/{release}/{ref}.gtf", ref_dir=reference_directory,release=config["release"],ref=config["assembly"])
+    output: SAindex = expand("{ref_dir}/tool_data/STAR/{release}/SAindex", ref_dir=reference_directory, release=config["release"]),
+    params: dir = expand("{ref_dir}/tool_data/STAR/{release}", ref_dir=reference_directory, release=config["release"])[0],
+            log = expand("{ref_dir}/tool_data/STAR/{release}/Log.out", ref_dir=reference_directory, release=config["release"])[0],
             extra = "",
-    resources:  mem = 200
-    log:    run = "{dir}/{species}/{ref}/index/STAR.indexation_run.log",
+    resources:  mem = 100
+    log:    run = expand("{ref_dir}/tool_data/STAR/{release}/{release}.indexation_run.log", ref_dir=reference_directory,release=config["release"])
     threads:    30
-    conda:  "../wraps/prepare_reference/STAR_gen_index/env.yaml"
-    script: "../wraps/prepare_reference/STAR_gen_index/script.py"
+    conda:  "../wrappers/STAR_gen_index/env.yaml"
+    script: "../wrappers/STAR_gen_index/script.py"
 
 rule chrom_sizes:
     input:  idx = "{dir}/{species}/{ref}/seq/{ref}.fa.fai",
@@ -388,14 +387,13 @@ rule bed_ucsc_to_ensembl:
         "Rscript "+convert_to_ucsc+" {input.bed} {params.bed} Ensembl {wildcards.species} > {log.run} 2>&1 && gzip {params.bed}"
 
 rule make_fasta_idx_ucsc_version:
-    input:  idx = "{dir}/{species}/{ref}/seq/{ref}.fa.fai",
-    output: ucsc = "{dir}/{species}/{ref}/seq/{ref}.fa.fai.ucsc",
-    log:    run = "{dir}/{species}/{ref}/seq/{ref}.make_fasta_idx_ucsc_version.log",
-    conda:  "../wraps/prepare_reference/make_fasta_idx_ucsc_version/env.yaml"
-    shell:
-        "Rscript "+convert_to_ucsc+" {input.idx} {output.ucsc} UCSC {wildcards.species} > {log.run} 2>&1"
-        #"cat {input.idx} | sed -e 's/^\([0-9XY]\+\)/chr\\1/' -e 's/^\(MT\|mitochondria\)/chrM/' -e 's/^chloroplast/chrC/' | grep '^chr' > {output.ucsc} || cp {input.idx} {output.ucsc}"
-
+    input:  idx = expand("{ref_dir}/seq/{ref}.fa.fai", ref_dir=reference_directory,ref=config["assembly"])
+    output: ucsc = expand("{ref_dir}/seq/{ref}.fa.fai.ucsc", ref_dir=reference_directory,ref=config["assembly"]),
+    log:    run = expand("{ref_dir}/seq/{ref}.make_fasta_idx_ucsc_version.log", ref_dir=reference_directory,ref=config["assembly"])
+    params: dest = "UCSC",
+            organism = expand("{species}", species=config["species"])
+    conda:  "../wrappers/make_fasta_idx_ucsc_version/env.yaml"
+    script: "../wrappers/make_fasta_idx_ucsc_version/script.R"
 
 rule make_fasta_idx:
     input:  gen = "{dir}/{species}/{ref}/seq/{ref}.fa",
