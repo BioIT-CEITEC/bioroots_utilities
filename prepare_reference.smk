@@ -332,6 +332,15 @@ rule create_gene_table:
   log:    run = expand("{ref_dir}/annot/{release}/{release}_transcript_gene.log", ref_dir=reference_directory, release=config["release"]),
   script: "../wrappers/gene_table/script.py"
 
+rule gtf_to_fasta:
+    input:  gen = expand("{ref_dir}/seq/{ref}.fa", ref_dir=reference_directory, ref=config["assembly"]),
+            gtf = expand("{ref_dir}/annot/{release}/{ref}.gff3", ref_dir=reference_directory, release=config["release"], ref=config["assembly"]),
+    output: cds = expand("{ref_dir}/annot/{release}/{ref}.cds.fa", ref_dir=reference_directory, release=config["release"], ref=config["assembly"]),
+            cdna = expand("{ref_dir}/annot/{release}/{ref}.cdna.fa", ref_dir=reference_directory, release=config["release"], ref=config["assembly"]),
+    log:    run = expand("{ref_dir}/annot/{release}/{ref}.log", ref_dir=reference_directory, release=config["release"], ref=config["assembly"])
+    conda: "../wrappers/gtf_to_fasta/env.yml"
+    script: "../wrappers/gtf_to_fasta/script.py"
+
 rule chrom_sizes:
     input:  idx = "{dir}/{species}/{ref}/seq/{ref}.fa.fai",
     output: chs = "{dir}/{species}/{ref}/seq/{ref}.chrom.sizes",
