@@ -125,7 +125,7 @@ def load_organism():
         config["organism_fasta"] = config["reference_dir"] + "/seq/" + config["reference"] + ".fa"
         config["organism_ucsc"] = config["reference_dir"] + "/seq/" + config["reference"] + ".fa.fai.ucsc"
         config["organism_gtf"] = config["reference_dir"] + "/annot/" + config["reference"] + ".gtf"
-        config["organism_gtf"] = config["reference_dir"] + "/seq/" + config["reference"] + ".cds.fa"
+        config["organism_cds_fasta"] = config["reference_dir"] + "/seq/" + config["reference"] + ".cds.fa"
         config["organism_star"] = config["reference_dir"] + "/index/STAR/SAindex"
         config["organism_rsem"] = config["reference_dir"] + "/index/RSEM/" + config["reference"] + ".idx.fa"
         config["organism_salmon"] = config["reference_dir"] + "/index/Salmon"
