@@ -112,7 +112,9 @@ def load_organism():
     # setting organism from reference
     print(config["globalResources"])
     print(config["globalResources"] + "/reference_info/reference2.json")
-    reference_dict = load_dict(config["globalResources"] + "/reference_info/reference2.json")
+    f = open(os.path.join(GLOBAL_REF_PATH,"reference_info","reference2.json"),)
+    reference_dict = json.load(f)
+    f.close()
 
     if globresource == "bioda":
         config["species_name"] = [organism_name for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["reference"] in reference_dict[organism_name].keys()][0]
