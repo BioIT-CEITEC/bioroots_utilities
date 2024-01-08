@@ -108,7 +108,9 @@ def load_ref():
 
 def load_organism():
     globresource = check_resources()
+    print(globresource)
     # setting organism from reference
+    print(["globalResources"] + "/reference_info/reference2.json")
     reference_dict = load_dict(config["globalResources"] + "/reference_info/reference2.json")
 
     if globresource == "bioda":
