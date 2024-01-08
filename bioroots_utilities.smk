@@ -112,7 +112,7 @@ def load_organism():
     # setting organism from reference
     print(config["globalResources"])
     print(config["globalResources"] + "/reference_info/reference2.json")
-    f = open(os.path.join(GLOBAL_REF_PATH,"reference_info","reference2.json"),)
+    f = open(os.path.join(config["globalResources"],"reference_info","reference2.json"),)
     reference_dict = json.load(f)
     f.close()
 
