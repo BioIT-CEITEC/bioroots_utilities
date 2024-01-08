@@ -64,6 +64,7 @@ print(config["computing_type"])
 
 ####################
 def load_dict(file_path):
+    print(file_path)
     if config["computing_type"] == "kubernetes":
         if isinstance(file_path,list) and len(file_path) == 1:
             obj = client.get_object(Bucket=S3_BUCKET,Key=file_path[0])
