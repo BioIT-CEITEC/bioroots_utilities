@@ -56,6 +56,7 @@ if config["computing_type"] == "kubernetes":
     S3_BUCKET = "acgt"
     task_directory = os.path.join(config["globalTaskPath"], config["task_name"]) + "/"
 
+print(config["computing_type"])
 
 ##### Reference processing #####
 ##
