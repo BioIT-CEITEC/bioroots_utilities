@@ -121,7 +121,7 @@ def load_organism():
         config["organism"] = config["species_name"].split(" (")[0].lower().replace(" ","_")
         if len(config["species_name"].split(" (")) > 1:
             config["species"] = config["species_name"].split(" (")[1].replace(")","")
-        config["reference_dir"] = os.path.join(config["globalResources"] , config["species"] , config["reference"])
+        config["reference_dir"] = os.path.join(config["globalResources"] , config["species_name"] , config["reference"])
         config["organism_fasta"] = config["reference_dir"] + "/seq/" + config["reference"] + ".fa"
         config["organism_ucsc"] = config["reference_dir"] + "/seq/" + config["reference"] + ".fa.fai.ucsc"
         config["organism_gtf"] = config["reference_dir"] + "/annot/" + config["reference"] + ".gtf"
@@ -138,7 +138,7 @@ def load_organism():
             config["species"] = config["species_name"].split(" (")[1].replace(")","")
         config["assembly"] = config["reference"].split("_")[0]
         config["release"] = config["reference"].split("_")[1]
-        config["reference_dir"] = os.path.join(config["globalResources"] , config["species"] , config["assembly"])
+        config["reference_dir"] = os.path.join(config["globalResources"] , config["species_name"] , config["assembly"])
         config["organism_fasta"] = config["reference_dir"] + "/seq/" + config["assembly"] + ".fa"
         config["organism_ucsc"] = config["reference_dir"] + "/seq/" + config["assembly"] + ".fa.fai.ucsc"
         config["organism_gtf"] = config["reference_dir"] + "/annot/" + config["release"] + "/" + config["assembly"] + ".gtf"
