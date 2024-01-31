@@ -105,6 +105,13 @@ def load_ref():
 #     config["release"] = release_cfg[config["reference"]]["release"]
 #     return config
 
+def load_tooldir():
+    globresource = check_resources()
+    print(globresource)
+    if globresource == "bioda":
+        config["tooldir"] = os.path.join(config["globalResources"] ,"general")
+    if globresource == "bioit":
+        config["tooldir"] = os.path.join(config["globalResources"],"tools")
 
 def load_organism():
     globresource = check_resources()
@@ -142,7 +149,7 @@ def load_organism():
             config["species"] = config["species_name"].split(" (")[1].replace(")","")
         config["assembly"] = config["reference"].split("_")[0]
         config["release"] = config["reference"].split("_")[1]
-        config["reference_dir"] = os.path.join(config["globalResources"] , config["organism"] , config["assembly"])
+        config["reference_dir"] = os.path.join(config["globalResources"] , "references", config["organism"] , config["assembly"])
         config["organism_fasta"] = config["reference_dir"] + "/seq/" + config["assembly"] + ".fa"
         config["organism_ucsc"] = config["reference_dir"] + "/seq/" + config["assembly"] + ".fa.fai.ucsc"
         config["organism_gtf"] = config["reference_dir"] + "/annot/" + config["release"] + "/" + config["assembly"] + ".gtf"
