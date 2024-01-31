@@ -115,6 +115,9 @@ def load_organism():
     f = open(os.path.join(config["globalResources"],"reference_info","reference2.json"),)
     reference_dict = json.load(f)
     f.close()
+    k = open(os.path.join(config["globalResources"],"reference_info","kegg_reference.json"),)
+    kegg_dict = json.load(k)
+    k.close()
 
     if globresource == "bioda":
         config["species_name"] = [organism_name for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["reference"] in reference_dict[organism_name].keys()][0]
@@ -130,6 +133,7 @@ def load_organism():
         config["organism_rsem"] = config["reference_dir"] + "/index/RSEM/" + config["reference"] + ".idx.fa"
         config["organism_salmon"] = config["reference_dir"] + "/index/Salmon"
         config["organism_kallisto"] = config["reference_dir"] + "/index/Kallisto"
+        config["organism_code"] = kegg_dict.get(config["species_name"])
 
     if globresource == "bioit":
         config["species_name"] = [organism_name for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["reference"] in reference_dict[organism_name].keys()][0]
@@ -147,6 +151,7 @@ def load_organism():
         config["organism_rsem"] = config["reference_dir"] + "/tool_data/RSEM/" + config["release"] + "/" + config["assembly"] + ".idx.fa"
         config["organism_salmon"] = config["reference_dir"] + "/tool_data/Salmon/" + config["release"]
         config["organism_kallisto"] = config["reference_dir"] + "/tool_data/Kallisto/" + config["release"] + "/Kallisto"
+        config["organism_code"] = kegg_dict.get(config["species_name"])
 
     return config
 
