@@ -39,6 +39,13 @@ def set_paired_tags():
     paired_tags = "PE"
   return paired_tags
 
+def set_read_pair_dmtex_tags():
+  if not config["is_paired"]:
+    read_pair_dmtex_tags = ["_R1"]
+  else:
+    read_pair_dmtex_tags = ["_R1", "_R2"]
+  return read_pair_dmtex_tags
+
 ##### kubernetes #####
 ##
 #
