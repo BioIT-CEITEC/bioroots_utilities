@@ -148,6 +148,8 @@ def load_organism():
         config["organism_salmon"] = config["reference_dir"] + "/index/Salmon"
         config["organism_kallisto"] = config["reference_dir"] + "/index/Kallisto"
         config["organism_code"] = kegg_dict.get(config["species_name"])
+        config["organism_picard_bed12"] = config["reference_dir"] + "/other/Picard_data/" + config["reference"] + ".bed12"
+        config["organism_picard_refFlat"] = config["reference_dir"] + "/other/Picard_data/" + config["reference"] + ".refFlat"
 
     if globresource == "bioit":
         config["species_name"] = [organism_name for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["reference"] in reference_dict[organism_name].keys()][0]
@@ -166,6 +168,8 @@ def load_organism():
         config["organism_salmon"] = config["reference_dir"] + "/tool_data/Salmon/" + config["release"]
         config["organism_kallisto"] = config["reference_dir"] + "/tool_data/Kallisto/" + config["release"] + "/Kallisto"
         config["organism_code"] = kegg_dict.get(config["species_name"])
+        config["organism_picard_bed12"] = config["reference_dir"] + "/annot/" + config["release"] + "/Picard/" + config["assembly"] + ".bed12"
+        config["organism_picard_refFlat"] = config["reference_dir"] + "/annot/" + config["release"] + "/Picard/" + config["assembly"] + ".refFlat"
 
     return config
 
