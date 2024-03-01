@@ -126,10 +126,10 @@ def load_organism():
     # setting organism from reference
     print(config["globalResources"])
     print(config["globalResources"] + "/reference_info/reference2.json")
-    f = open(os.path.join(config["globalResources"],"reference_info","reference2.json"),)
+    f = open(os.path.join(config["globalResources"],"reference_info","reference2.json"))
     reference_dict = json.load(f)
     f.close()
-    k = open(os.path.join(config["globalResources"],"reference_info","kegg_reference.json"),)
+    k = open(os.path.join(config["globalResources"],"reference_info","kegg_reference.json"))
     kegg_dict = json.load(k)
     k.close()
 
