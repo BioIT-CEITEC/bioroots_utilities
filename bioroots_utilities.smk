@@ -126,10 +126,10 @@ def load_organism():
     # setting organism from reference
     print(config["globalResources"])
     print(config["globalResources"] + "/reference_info/reference2.json")
-    f = open(os.path.join(config["globalResources"],"reference_info","reference2.json"),)
+    f = open(os.path.join(config["globalResources"],"reference_info","reference2.json"))
     reference_dict = json.load(f)
     f.close()
-    k = open(os.path.join(config["globalResources"],"reference_info","kegg_reference.json"),)
+    k = open(os.path.join(config["globalResources"],"reference_info","kegg_reference.json"))
     kegg_dict = json.load(k)
     k.close()
 
@@ -148,6 +148,11 @@ def load_organism():
         config["organism_salmon"] = config["reference_dir"] + "/index/Salmon"
         config["organism_kallisto"] = config["reference_dir"] + "/index/Kallisto"
         config["organism_code"] = kegg_dict.get(config["species_name"])
+        config["organism_picard_bed12"] = config["reference_dir"] + "/other/Picard_data/" + config["reference"] + ".bed12"
+        config["organism_picard_refFlat"] = config["reference_dir"] + "/other/Picard_data/" + config["reference"] + ".refFlat"
+        config["organism_ncbi_general"] = config["reference_dir"] + "/other/BOWTIE2/fastq_screen_RNA_indexes/" + config["reference"] + ".ncbi.fna"
+        config["organism_ncbi_rRNA"] = config["reference_dir"] + "/other/BOWTIE2/fastq_screen_RNA_indexes/" + config["reference"] + ".ncbi.rRNA.fasta"
+        config["organism_ncbi_tRNA"] = config["reference_dir"] + "/other/BOWTIE2/fastq_screen_RNA_indexes/" + config["reference"] + ".ncbi.tRNA.fasta"
 
     if globresource == "bioit":
         config["species_name"] = [organism_name for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["reference"] in reference_dict[organism_name].keys()][0]
@@ -166,6 +171,11 @@ def load_organism():
         config["organism_salmon"] = config["reference_dir"] + "/tool_data/Salmon/" + config["release"]
         config["organism_kallisto"] = config["reference_dir"] + "/tool_data/Kallisto/" + config["release"] + "/Kallisto"
         config["organism_code"] = kegg_dict.get(config["species_name"])
+        config["organism_picard_bed12"] = config["reference_dir"] + "/annot/" + config["release"] + "/Picard/" + config["assembly"] + ".bed12"
+        config["organism_picard_refFlat"] = config["reference_dir"] + "/annot/" + config["release"] + "/Picard/" + config["assembly"] + ".refFlat"
+        config["organism_ncbi_general"] = config["reference_dir"] + "/seq/BOWTIE2_fastq_screen/" + config["assembly"] + ".ncbi.fna"
+        config["organism_ncbi_rRNA"] = config["reference_dir"] + "/seq/BOWTIE2_fastq_screen/" + config["assembly"] + ".ncbi.rRNA.fasta"
+        config["organism_ncbi_tRNA"] = config["reference_dir"] + "/seq/BOWTIE2_fastq_screen/" + config["assembly"] + ".ncbi.tRNA.fasta"
 
     return config
 
