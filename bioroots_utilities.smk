@@ -58,7 +58,7 @@ if config["computing_type"] == "kubernetes":
     #   S3_credentials = json.load(f)
     #S3 = S3RemoteProvider(host="https://storage-elixir1.cerit-sc.cz",access_key_id=S3_credentials["AWS_ID"],secret_access_key=S3_credentials["AWS_KEY"])
     S3 = S3RemoteProvider(host="https://storage-elixir1.cerit-sc.cz",access_key_id="acgt",secret_access_key="P84RsiL5TmHu0Ijd")
-    client = boto3.client('s3',aws_access_key_id="acgt",aws_secret_access_key="P84RsiL5TmHu0Ijd",region_name="",endpoint_url="https://storage-elixir1.cerit-sc.cz")
+    client = boto3.client("s3",aws_access_key_id="acgt",aws_secret_access_key="P84RsiL5TmHu0Ijd",region_name="",endpoint_url="https://storage-elixir1.cerit-sc.cz")
     # S3_BUCKET = S3_credentials["S3_BUCKET"]
     S3_BUCKET = "acgt"
     task_directory = os.path.join(config["globalTaskPath"], config["task_name"]) + "/"
@@ -258,23 +258,23 @@ def check_snakemake_object(snakemake, output_filename=None):
 
   if output_filename:
     original_stdout = sys.stdout  # Save a reference to the original standard output
-    f = open(output_filename,'w')
+    f = open(output_filename,"w")
     sys.stdout = f  # Change the standard output to the file we created.
 
   print("snakemake.inputs\n")
-  for attr_name in [a for a in dir(snakemake.input) if not a.startswith('_') and not a in common_atributes]:
+  for attr_name in [a for a in dir(snakemake.input) if not a.startswith("_") and not a in common_atributes]:
     print(attr_name)
     print(type(getattr(snakemake.input,attr_name)))
     print(getattr(snakemake.input,attr_name))
     print()
   print("-------------------------\n\nsnakemake.outputs\n")
-  for attr_name in [a for a in dir(snakemake.output) if not a.startswith('_') and not a in common_atributes]:
+  for attr_name in [a for a in dir(snakemake.output) if not a.startswith("_") and not a in common_atributes]:
     print(attr_name)
     print(type(getattr(snakemake.output,attr_name)))
     print(getattr(snakemake.output,attr_name))
     print()
   print("-------------------------\n\nsnakemake.params\n")
-  for attr_name in [a for a in dir(snakemake.params) if not a.startswith('_') and not a in common_atributes]:
+  for attr_name in [a for a in dir(snakemake.params) if not a.startswith("_") and not a in common_atributes]:
     print(attr_name)
     print(type(getattr(snakemake.params,attr_name)))
     print(getattr(snakemake.params,attr_name))
