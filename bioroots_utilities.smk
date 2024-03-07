@@ -180,7 +180,41 @@ def load_organism():
     return config
 
 
+def load_mirna():
+    globresource = check_resources()
+    print(globresource)
+    # setting organism from reference
+    print(config["globalResources"])
+    print(config["globalResources"] + "/reference_info/reference2.json")
+    f = open(os.path.join(config["globalResources"],"reference_info","reference2.json"),)
+    reference_dict = json.load(f)
+    f.close()
+    k = open(os.path.join(config["globalResources"],"reference_info","kegg_reference.json"),)
+    kegg_dict = json.load(k)
+    k.close()
 
+    if globresource == "bioda":
+        config["species_name"] = [organism_name for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["reference"] in reference_dict[organism_name].keys()][0]
+        config["organism"] = config["species_name"].split(" (")[0].lower().replace(" ","_")
+        if len(config["species_name"].split(" (")) > 1:
+            config["species"] = config["species_name"].split(" (")[1].replace(")","")
+        config["reference_dir"] = os.path.join(config["globalResources"] , config["organism"] , config["reference"])
+        config["organism_rrna_star"] = config["reference_dir"] + "/seq/hairpin.fa"
+        config["organism_mirbase"] = config["reference_dir"] + "index/STAR_rrna/SAindex"
+        config["organism_code"] = kegg_dict.get(config["species_name"])
+
+    if globresource == "bioit":
+        config["species_name"] = [organism_name for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["reference"] in reference_dict[organism_name].keys()][0]
+        config["organism"] = config["species_name"].split(" (")[0].lower().replace(" ","_")
+        if len(config["species_name"].split(" (")) > 1:
+            config["species"] = config["species_name"].split(" (")[1].replace(")","")
+        config["assembly"] = config["reference"].rsplit("_",1)[1]
+        config["reference_dir"] = os.path.join(config["globalResources"] , "references", config["organism"] , config["assembly"])
+        config["organism_rrna_star"] = config["reference_dir"] + "/tool_data/STAR/SAindex"
+        config["organism_mirbase"] = config["reference_dir"] + "/seq/hairpin.fa"
+        config["organism_code"] = kegg_dict.get(config["species_name"])
+
+    return config
 
 
 def reference_directory():
