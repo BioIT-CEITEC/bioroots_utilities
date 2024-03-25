@@ -246,19 +246,6 @@ rule smallRNA_prep_contam:
     conda:  "../wraps/prepare_reference/smallRNA_prep_contam/env.yaml"
     script: "../wraps/prepare_reference/smallRNA_prep_contam/script.py"
 
-
-rule BWA_gen_index:
-    input:  gen = "{dir}/{species}/{ref}/seq/{ref}.fa",
-            idx = "{dir}/{species}/{ref}/seq/{ref}.fa.fai",
-    output: bwt = "{dir}/{species}/{ref}/index/BWA/{ref}.bwt",
-    log:    run = "{dir}/{species}/{ref}/index/BWA.indexation_run.log",
-    threads:    20
-    params: extra = "",
-            dir = "{dir}/{species}/{ref}/index/BWA",
-    conda:  "../wraps/prepare_reference/BWA_gen_index/env.yaml"
-    script: "../wraps/prepare_reference/BWA_gen_index/script.py"
-
-
 rule RSEM_prep_ref:
     input:  ref = "{dir}/{species}/{ref}/annot/{ref}.gtf",
             gen = "{dir}/{species}/{ref}/seq/{ref}.fa",
@@ -290,6 +277,16 @@ rule postqc_RNA_preparation:
     conda:  "../wraps/prepare_reference/postqc_RNA_preparation/env.yaml"
     script: "../wraps/prepare_reference/postqc_RNA_preparation/script.py"
 
+rule BWA_gen_index:
+    input:  gen = expand("{ref_dir}/seq/{ref}.fa", ref_dir = reference_directory, ref = config["assembly"]),
+            idx = expand("{ref_dir}/seq/{ref}.fa.fai", ref_dir = reference_directory,ref=config["assembly"]),
+    output: bwt = expand("{ref_dir}/index/BWA/{ref}.bwt", ref_dir = reference_directory, ref=config["assembly"]),
+    log:    run = expand("{ref_dir}/index/BWA.indexation_run.log", ref_dir = reference_directory)[0],
+    threads:    20
+    params: extra = "",
+            dir = expand("{ref_dir}/index/BWA", ref_dir = reference_directory)[0]
+    conda:  "../wraps/prepare_reference/BWA_gen_index/env.yaml"
+    script: "../wraps/prepare_reference/BWA_gen_index/script.py"
 
 rule STAR_gen_index:
     input:  gen = expand("{ref_dir}/seq/{ref}.fa", ref_dir=reference_directory,ref=config["assembly"]),
