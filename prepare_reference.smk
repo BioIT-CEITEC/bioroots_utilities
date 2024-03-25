@@ -316,7 +316,7 @@ rule create_salmon_index:
   script: "../wrappers/salmon_index/script.py"
 
 rule create_kallisto_index:
-  input:  cds = expandd("{ref_dir}/seq/{ref}.cds.fa", ref_dir=reference_directory, ref=config["assembly"]),
+  input:  cds = expand("{ref_dir}/seq/{ref}.cds.fa", ref_dir=reference_directory, ref=config["assembly"]),
   output: gen = expand("{ref_dir}/tool_data/kallisto/{release}/Kallisto", ref_dir=reference_directory, release=config["release"]),
   log:    run = expand("{ref_dir}/tool_data/kallisto/{release}/kallisto.decoy_creation.log", ref_dir=reference_directory, release=config["release"]),
   threads: 20
