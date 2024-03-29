@@ -202,7 +202,7 @@ def load_mirna():
             config["species"] = config["species_name"].split(" (")[1].replace(")","")
         config["reference_dir"] = os.path.join(config["globalResources"] , config["organism"] , config["reference"])
         config["organism_rrna_star"] = config["reference_dir"] + "/seq/hairpin.fa"
-        config["organism_mirbase"] = config["reference_dir"] + "index/STAR_rrna/SAindex"
+        config["organism_mirbase"] = config["reference_dir"] + "/index/STAR_rrna/SAindex"
         config["organism_code"] = kegg_dict.get(config["species_name"])
 
     if globresource == "bioit":
