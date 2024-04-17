@@ -280,26 +280,26 @@ rule postqc_RNA_preparation:
 reference_directory = config["reference_dir"]
 
 rule BWA_gen_index:
-    input:  gen = expand("{ref_dir}/seq/{ref}.fa", ref_dir = reference_directory, ref = config["assembly"]),
-            idx = expand("{ref_dir}/seq/{ref}.fa.fai", ref_dir = reference_directory,ref=config["assembly"]),
-    output: bwt = expand("{ref_dir}/index/BWA/{ref}.bwt", ref_dir = reference_directory, ref=config["assembly"]),
-    log:    run = expand("{ref_dir}/index/BWA.indexation_run.log", ref_dir = reference_directory)[0],
+    input:  gen = config["organism_fasta"],
+            idx = config["organism_fasta"]+".fai",
+    output: bwt = config["organism_bwa"],
+    log:    run = config["organism_kallisto"] + "/tool_dir/BWA/BWA.indexation_run.log",
     threads:    20
     params: extra = "",
-            dir = expand("{ref_dir}/index/BWA", ref_dir = reference_directory)[0]
+            dir = config["reference_dir"]+"/tool_dir/BWA/"
     conda:  "../wraps/prepare_reference/BWA_gen_index/env.yaml"
     script: "../wraps/prepare_reference/BWA_gen_index/script.py"
 
 rule STAR_gen_index:
-    input:  gen = expand("{ref_dir}/seq/{ref}.fa", ref_dir=reference_directory,ref=config["assembly"]),
-            idx = expand("{ref_dir}/seq/{ref}.fa.fai", ref_dir=reference_directory, ref=config["assembly"]),
-            ref = expand("{ref_dir}/annot/{release}/{ref}.gtf", ref_dir=reference_directory,release=config["release"],ref=config["assembly"])
-    output: SAindex = expand("{ref_dir}/tool_data/STAR/{release}/SAindex", ref_dir=reference_directory, release=config["release"]),
-    params: dir = expand("{ref_dir}/tool_data/STAR/{release}", ref_dir=reference_directory, release=config["release"])[0],
-            log = expand("{ref_dir}/tool_data/STAR/{release}/Log.out", ref_dir=reference_directory, release=config["release"])[0],
+    input:  gen = config["organism_fasta"],
+            idx = config["organism_fasta"]+".fai",
+            ref = config["organism_gtf"],
+    output: SAindex = config["organism_star"],
+    params: dir = config["reference_dir"]+"/tool_data/STAR/"+config["release"],
+            log = config["reference_dir"]+"/tool_data/STAR/"+config["release"]+"/Log.out",
             extra = "",
     resources:  mem = 100
-    log:    run = expand("{ref_dir}/tool_data/STAR/{release}/{release}.indexation_run.log", ref_dir=reference_directory,release=config["release"])
+    log:    run = config["reference_dir"]+"/tool_data/STAR/"+config["release"]+"/"+config["release"]+".indexation_run.log",
     threads:    30
     conda:  "../wrappers/STAR_gen_index/env.yaml"
     script: "../wrappers/STAR_gen_index/script.py"
@@ -311,24 +311,23 @@ rule create_salmon_index:
   output: gen = config["organism_salmon_gentrome"],
           dec = config["organism_salmon"]+"/Salmon_decoy/decoys.txt",
   log:    run = config["organism_salmon"]+"/"+config["release"]+"_salmon.decoy_creation.log"
-  params: script = "/mnt/ssd/ssd_3/references/general/generateDecoyTranscriptome.sh",
-          folder = config["organism_salmon"]
+  params: folder = config["organism_salmon"]
   threads: 20
   conda: "../wrappers/salmon_index/env.yaml"
   script: "../wrappers/salmon_index/script.py"
 
 rule create_kallisto_index:
-  input:  cds = expand("{ref_dir}/seq/{ref}.cds.fa", ref_dir=reference_directory, ref=config["assembly"]),
-  output: gen = expand("{ref_dir}/tool_data/kallisto/{release}/Kallisto", ref_dir=reference_directory, release=config["release"]),
-  log:    run = expand("{ref_dir}/tool_data/kallisto/{release}/kallisto.decoy_creation.log", ref_dir=reference_directory, release=config["release"]),
+  input:  cdna = config["organism_cdna_fasta"],
+  output: gen = config["organism_kallisto"],
+  log:    run = config["reference_dir"]+"/tool_data/Kallisto/" + config["release"]+ "/Kallisto.decoy_creation.log",
   threads: 20
   conda: "../wrappers/kallisto_index/env.yaml"
   script: "../wrappers/kallisto_index/script.py"
 
 rule create_gene_table:
-  input:  cds = expand("{ref_dir}/annot/{release}/{ref}.cds.fa", ref_dir=reference_directory, release=config["release"], ref=config["assembly"]),
-  output: transc = expand("{ref_dir}/annot/{release}/transcript_gene.txt", ref_dir=reference_directory, release=config["release"]),
-  log:    run = expand("{ref_dir}/annot/{release}/{release}_transcript_gene.log", ref_dir=reference_directory, release=config["release"]),
+  input:  cdna = config["organism_cdna_fasta"],
+  output: transc = config["reference_dir"] + "/annot/" + config["release"] + "/transcript_gene.txt",
+  log:    run = config["reference_dir"]+"/annot/"+config["release"]+"/"+config["release"]+"_gene_table.log",
   script: "../wrappers/gene_table/script.py"
 
 rule gtf_to_fasta:
