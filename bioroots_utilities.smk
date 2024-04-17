@@ -176,6 +176,7 @@ def load_organism():
         config["organism_starsolo"] = config["reference_dir"] + "/tool_data/STAR/" + config["release"] + "/STAR_cellranger/SAindex"
         config["organism_rsem"] = config["reference_dir"] + "/tool_data/RSEM/" + config["release"] + "/" + config["assembly"] + ".idx.fa"
         config["organism_salmon"] = config["reference_dir"] + "/tool_data/Salmon/" + config["release"]
+        config["organism_salmon_gentrome"] = config["reference_dir"] + "/tool_data/Salmon/" + config["release"] + "/Salmon_decoy/gentrome.fa"
         config["organism_kallisto"] = config["reference_dir"] + "/tool_data/Kallisto/" + config["release"] + "/Kallisto"
         config["organism_code"] = kegg_dict.get(config["species_name"])
         config["organism_picard_bed12"] = config["reference_dir"] + "/annot/" + config["release"] + "/Picard/" + config["assembly"] + ".bed12"
