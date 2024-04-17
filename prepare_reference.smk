@@ -305,14 +305,14 @@ rule STAR_gen_index:
     script: "../wrappers/STAR_gen_index/script.py"
 
 rule create_salmon_index:
-  input:  gen = expand("{ref_dir}/seq/{ref}.fa", ref_dir=reference_directory, ref=config["assembly"]),
-          gtf = expand("{ref_dir}/annot/{release}/{ref}.gtf", ref_dir=reference_directory, ref=config["assembly"],release=config["release"]),
-          cdna = expand("{ref_dir}/seq/{ref}.cdna.fa", ref_dir=reference_directory,ref=config["assembly"]),
-  output: gen = expand("{ref_dir}/tool_data/Salmon/{release}/Salmon_decoy/gentrome.fa", ref_dir=reference_directory, release=config["release"]),
-          dec = expand("{ref_dir}/tool_data/Salmon/{release}/Salmon_decoy/decoys.txt", ref_dir=reference_directory, release=config["release"]),
-  log:    run = expand("{ref_dir}/tool_data/Salmon/{release}/{release}_salmon.decoy_creation.log", ref_dir=reference_directory, release=config["release"]),
+  input:  gen = config["organism_fasta"],
+          gtf = config["organism_gtf"],
+          cdna = config["organism_cdna_fasta"]
+  output: gen = config["organism_salmon_gentrome"],
+          dec = config["organism_salmon"]+"/Salmon_decoy/decoys.txt",
+  log:    run = config["organism_salmon"]+"/"+config["release"]+"_salmon.decoy_creation.log"
   params: script = "/mnt/ssd/ssd_3/references/general/generateDecoyTranscriptome.sh",
-          folder = expand("{ref_dir}/tool_data/Salmon/{release}", ref_dir=reference_directory, release=config["release"]),
+          folder = config["organism_salmon"]
   threads: 20
   conda: "../wrappers/salmon_index/env.yaml"
   script: "../wrappers/salmon_index/script.py"
@@ -332,11 +332,11 @@ rule create_gene_table:
   script: "../wrappers/gene_table/script.py"
 
 rule gtf_to_fasta:
-    input:  gen = expand("{ref_dir}/seq/{ref}.fa", ref_dir=reference_directory, ref=config["assembly"]),
-            gtf = expand("{ref_dir}/annot/{release}/{ref}.gtf", ref_dir=reference_directory, release=config["release"], ref=config["assembly"]),
-    output: cds = expand("{ref_dir}/annot/{release}/{ref}.cds.fa", ref_dir=reference_directory, release=config["release"], ref=config["assembly"]),
+    input:  gen = config["organism_fasta"],
+            gtf = config["organism_gtf"]
+    output: cds = config["organism_cds_fasta"],
             cdna = config["organism_cdna_fasta"],
-    log:    run = expand("{ref_dir}/annot/{release}/{ref}.log", ref_dir=reference_directory, release=config["release"], ref=config["assembly"])
+    log:    run = config["reference_dir"] + "/annot/" + config["release"] + "/" + config["assembly"] + ".log"
     conda: "../wrappers/gtf_to_fasta/env.yml"
     script: "../wrappers/gtf_to_fasta/script.py"
 
