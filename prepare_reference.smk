@@ -419,11 +419,11 @@ rule bed_ucsc_to_ensembl:
         "Rscript "+convert_to_ucsc+" {input.bed} {params.bed} Ensembl {wildcards.species} > {log.run} 2>&1 && gzip {params.bed}"
 
 rule make_fasta_idx_ucsc_version:
-    input:  idx = expand("{ref_dir}/seq/{ref}.fa.fai", ref_dir=reference_directory,ref=config["assembly"])
-    output: ucsc = expand("{ref_dir}/seq/{ref}.fa.fai.ucsc", ref_dir=reference_directory,ref=config["assembly"]),
-    log:    run = expand("{ref_dir}/seq/{ref}.make_fasta_idx_ucsc_version.log", ref_dir=reference_directory,ref=config["assembly"])
+    input:  idx = config["organism_fasta"]+".fai"
+    output: ucsc = config["organism_fasta"]+".fai.ucsc",
+    log:    run =  config["reference_dir"]+"/seq/"+config["assembly"]+".make_fasta_idx_ucsc.log"
     params: dest = "UCSC",
-            organism = expand("{species}", species=config["species"])
+            organism = config["species"],
     conda:  "../wrappers/make_fasta_idx_ucsc_version/env.yaml"
     script: "../wrappers/make_fasta_idx_ucsc_version/script.R"
 
