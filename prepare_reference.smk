@@ -287,8 +287,8 @@ rule BWA_gen_index:
     threads:    20
     params: extra = "",
             dir = config["reference_dir"]+"/tool_dir/BWA/"
-    conda:  "../wraps/prepare_reference/BWA_gen_index/env.yaml"
-    script: "../wraps/prepare_reference/BWA_gen_index/script.py"
+    conda:  "../wrappers/BWA_gen_index/env.yaml"
+    script: "../wrappers/BWA_gen_index/script.py"
 
 rule STAR_gen_index:
     input:  gen = config["organism_fasta"],
