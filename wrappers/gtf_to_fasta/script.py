@@ -15,13 +15,13 @@ f = open(snakemake.log.run, 'wt')
 f.write("## CONDA:\n"+version+"\n")
 f.close()
 
-command = "gffread -F " + snakemake.input.gtf + " -g " + snakemake.input.gen + " -x " + snakemake.output.cds
+command = "gffread -g " + snakemake.input.gen + " -x " + snakemake.output.cds + " " +snakemake.input.gtf
 f = open(snakemake.log.run, 'wt')
 f.write("## CONDA:\n"+version+"\n")
 f.close()
 shell(command)
 
-command = "gffread -F " + snakemake.input.gtf + " -g " + snakemake.input.gen + " -w " + snakemake.output.cdna
+command = "gffread -g " + snakemake.input.gen + " -w " + snakemake.output.cdna + " " +snakemake.input.gtf
 f = open(snakemake.log.run, 'wt')
 f.write("## CONDA:\n"+version+"\n")
 f.close()

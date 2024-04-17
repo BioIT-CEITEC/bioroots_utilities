@@ -331,9 +331,9 @@ rule create_gene_table:
 
 rule gtf_to_fasta:
     input:  gen = expand("{ref_dir}/seq/{ref}.fa", ref_dir=reference_directory, ref=config["assembly"]),
-            gtf = expand("{ref_dir}/annot/{release}/{ref}.gff3", ref_dir=reference_directory, release=config["release"], ref=config["assembly"]),
+            gtf = expand("{ref_dir}/annot/{release}/{ref}.gtf", ref_dir=reference_directory, release=config["release"], ref=config["assembly"]),
     output: cds = expand("{ref_dir}/annot/{release}/{ref}.cds.fa", ref_dir=reference_directory, release=config["release"], ref=config["assembly"]),
-            cdna = expand("{ref_dir}/annot/{release}/{ref}.cdna.fa", ref_dir=reference_directory, release=config["release"], ref=config["assembly"]),
+            cdna = config["organism_cdna_fasta"],
     log:    run = expand("{ref_dir}/annot/{release}/{ref}.log", ref_dir=reference_directory, release=config["release"], ref=config["assembly"])
     conda: "../wrappers/gtf_to_fasta/env.yml"
     script: "../wrappers/gtf_to_fasta/script.py"
