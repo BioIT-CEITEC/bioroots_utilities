@@ -306,7 +306,7 @@ rule STAR_gen_index:
 
 rule create_salmon_index:
   input:  gen = expand("{ref_dir}/seq/{ref}.fa", ref_dir=reference_directory, ref=config["assembly"]),
-          gtf = expand("{ref_dir}/annot/{release}/{ref}.gtf", ref_dir=reference_directory, ref=config["assembly"]),
+          gtf = expand("{ref_dir}/annot/{release}/{ref}.gtf", ref_dir=reference_directory, ref=config["assembly"],release=config["release"]),
           cdna = expand("{ref_dir}/seq/{ref}.cdna.fa", ref_dir=reference_directory),
   output: gen = expand("{ref_dir}/tool_data/Salmon/{release}/Salmon_decoy/gentrome.fa", ref_dir=reference_directory, release=config["release"]),
           dec = expand("{ref_dir}/tool_data/Salmon/{release}/Salmon_decoy/decoys.txt", ref_dir=reference_directory, release=config["release"]),
