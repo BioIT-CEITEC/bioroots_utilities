@@ -277,6 +277,8 @@ rule postqc_RNA_preparation:
     conda:  "../wraps/prepare_reference/postqc_RNA_preparation/env.yaml"
     script: "../wraps/prepare_reference/postqc_RNA_preparation/script.py"
 
+reference_directory = config["reference_dir"]
+
 rule BWA_gen_index:
     input:  gen = expand("{ref_dir}/seq/{ref}.fa", ref_dir = reference_directory, ref = config["assembly"]),
             idx = expand("{ref_dir}/seq/{ref}.fa.fai", ref_dir = reference_directory,ref=config["assembly"]),
