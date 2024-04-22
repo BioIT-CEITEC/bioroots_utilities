@@ -4,12 +4,21 @@ import pandas as pd
 import boto3
 from snakemake.remote.S3 import RemoteProvider as S3RemoteProvider
 
+
+
 ##### Check resource path
 def check_resources():
-    if "references_backup" in config["globalResources"]:
-        globresource = "bioda"
+    if "reference" in config:
+        if "_r" in config["reference"]:
+            globresource = "bioit"
+            config["globalResources"] = config["globalResources"].replace("base/references_backup","resources")
+        else:
+            globresource = "bioda"
     else:
-        globresource = "bioit"
+        if "references_backup" in config["globalResources"]:
+            globresource = "bioda"
+        else:
+            globresource = "bioit"
     return globresource
 
 ##### Config processing #####
