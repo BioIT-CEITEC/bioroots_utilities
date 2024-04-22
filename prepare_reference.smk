@@ -246,38 +246,23 @@ convert_to_ucsc = workflow.basedir + "/../scripts/convert_chromosome_names.R"
 #    conda:  "../wraps/prepare_reference/smallRNA_prep_contam/env.yaml"
 #    script: "../wraps/prepare_reference/smallRNA_prep_contam/script.py"
 
-#rule RSEM_prep_ref:
-#    input:  ref = "{dir}/{species}/{ref}/annot/{ref}.gtf",
-#            gen = "{dir}/{species}/{ref}/seq/{ref}.fa",
-#    output: idx = "{dir}/{species}/{ref}/index/RSEM/{ref}.idx.fa",
-#    log:    run = "{dir}/{species}/{ref}/index/RSEM.indexation_run.log",
-#    threads:    10
-#    params: prefix = "{dir}/{species}/{ref}/index/RSEM/{ref}",
-#            dir = "{dir}/{species}/{ref}/index/RSEM",
-#            use_ref = "--gtf",
-#            extra = "",
-#    conda:  "../wraps/prepare_reference/RSEM_prep_ref/env.yaml"
-#    script: "../wraps/prepare_reference/RSEM_prep_ref/script.py"
 
-
-#rule postqc_RNA_preparation:
-#    input:  ref = "{dir}/{species}/{ref}/annot/{ref}.gtf",
-#            ncbi_annot = "{dir}/{species}/{ref}/annot/ncbi/{ref}.ncbi.gff",
-#            ncbi_genomic = "{dir}/{species}/{ref}/annot/ncbi/{ref}.ncbi.fna"
-#    output: bed12 = "{dir}/{species}/{ref}/other/Picard_data/{ref}.bed12",
-#            tmp_flat = temp("{dir}/{species}/{ref}/annot/{ref}.refFlat.tmp"),
-#            flat = "{dir}/{species}/{ref}/other/Picard_data/{ref}.refFlat",
-#            fs_conf = "{dir}/{species}/{ref}/other/BOWTIE2/fastq_screen_RNA_indexes/fastq_screen.conf",
-#    log:    run = "{dir}/{species}/{ref}/other/Picard_data/Picard_preparation.log",
-#    threads:   15,
-#    params: species = "{species}",
-#            bowtie2_indexes_fasta = "{dir}/{species}/{ref}/other/BOWTIE2/fastq_screen_RNA_indexes/",
-#            rRNA_prefix = "{dir}/{species}/{ref}/annot/ncbi/{ref}.ncbi.rRNA",
-#            tRNA_prefix = "{dir}/{species}/{ref}/annot/ncbi/{ref}.ncbi.tRNA",
-#    conda:  "../wraps/prepare_reference/postqc_RNA_preparation/env.yaml"
-#    script: "../wraps/prepare_reference/postqc_RNA_preparation/script.py"
-
-#reference_directory = config["reference_dir"]
+rule postqc_RNA_preparation:
+    input:  ref = config["organism_gtf"],
+            ncbi_annot = config["organism_ncbi_gff"],
+            ncbi_genomic = config["organism_ncbi_general"]
+    output: bed12 = config["organism_picard_bed12"],
+            tmp_flat = temp(config["organism_picard_refFlat"]+".tmp"),
+            flat = config["organism_picard_refFlat"],
+            fs_conf = config["reference_dir"]+"/seq/BOWTIE2_fastq_screen/fastq_screen.conf",
+    log:    run = config["reference_dir"] + "/annot/" + config["release"] + "/Picard/Picard_preparation.log",
+    threads:   15,
+    params: species = config["organism"],
+            bowtie2_indexes_fasta = config["reference_dir"] + "/seq/BOWTIE2_fastq_screen/",
+            rRNA_prefix = config["organism_ncbi_rRNA"],
+            tRNA_prefix = config["organism_ncbi_tRNA"],
+    conda:  "../wrappers/postqc_RNA_preparation/env.yaml"
+    script: "../wrappers/postqc_RNA_preparation/script.py"
 
 rule BWA_gen_index:
     input:  gen = config["organism_fasta"],
@@ -339,10 +324,63 @@ rule gtf_to_fasta:
     conda: "../wrappers/gtf_to_fasta/env.yml"
     script: "../wrappers/gtf_to_fasta/script.py"
 
-#rule chrom_sizes:
-#    input:  idx = "{dir}/{species}/{ref}/seq/{ref}.fa.fai",
-#    output: chs = "{dir}/{species}/{ref}/seq/{ref}.chrom.sizes",
-#    shell:  "cut -f 1,2 {input.idx} > {output.chs}"
+rule bowite2_index:
+    input: fasta = config["organism_fasta"]
+    output: index = config["organism_bowtie2"]
+    log: run = config["reference_dir"] + "/tool_data/Bowtie2/bowtie2_index_run.log"
+    threads: 30
+    conda: "../wrappers/bowtie2_index/env.yaml"
+    script: '../wrappers/bowtie2_index/script.py'
+
+rule RSEM_prep_ref:
+    input:  ref = config["organism_gtf"],
+            gen = config["organism_fasta"],
+    output: idx = config["organism_rsem"],
+    log:    run = config["reference_dir"] + "/tool_data/RSEM/" + config["release"] + "/" + config["release"] + ".indexation_run.log",
+    threads:    10,
+    params: prefix = config["reference_dir"] + "/tool_data/RSEM/" + config["release"] + "/" + config["assembly"],
+            dir = config["reference_dir"] + "/tool_data/RSEM/" + config["release"],
+            use_ref = "--gtf",
+            extra = "",
+    conda:  "../wrappers/RSEM_prep_ref/env.yaml"
+    script: "../wrappers/RSEM_prep_ref/script.py"
+
+rule make_fasta_idx_ucsc_version:
+    input:  idx = config["organism_fasta"] + ".fai",
+    output: ucsc = config["organism_fasta"] + ".fai.ucsc",
+    log:    run = config["reference_dir"] + "/seq/" + config["assembly"] + ".make_fasta_idx_ucsc_version.log",
+    params: dest = "UCSC",
+            organism = config["organism"],
+    conda:  "../wrappers/make_fasta_idx_ucsc_version/env.yaml"
+    script: "../wrappers/make_fasta_idx_ucsc_version/script.R"
+
+rule chrom_sizes:
+    input:  idx = config["organism_fasta"] + ".fai",
+    output: chs = config["organism_chr_sizes"],
+    shell:  "cut -f 1,2 {input.idx} > {output.chs}"
+
+rule create_genome_dict:
+    input:  fasta = config["organism_fasta"],
+    output: dict = config["organism_dict"],
+    log:    run = config["reference_dir"] + "/seq/create_genome_dict_run.log",
+    conda:  "../wrappers/create_genome_dict/env.yaml"
+    script: "../wrappers/create_genome_dict/script.py"
+
+rule make_fasta_idx:
+    input:  gen = config["organism_fasta"],
+    output: idx = config["organism_fasta"] + ".fai",
+    threads:  1
+    conda:  "../wrappers/STAR_gen_index/env.yaml"
+    shell:
+        "samtools faidx {input.gen}"
+
+rule make_fasta_idx:
+    input:  gen = config["organism_ncbi_general"],
+    output: idx = config["organism_ncbi_general"] + ".fai",
+    threads:  1
+    conda:  "../wrappers/STAR_gen_index/env.yaml"
+    shell:
+        "samtools faidx {input.gen}"
 
 # COMBINE REF FOR SPIKEIN
 #
@@ -418,35 +456,7 @@ rule gtf_to_fasta:
 #    shell:
 #        "Rscript "+convert_to_ucsc+" {input.bed} {params.bed} Ensembl {wildcards.species} > {log.run} 2>&1 && gzip {params.bed}"
 
-rule make_fasta_idx_ucsc_version:
-    input:  idx = config["organism_fasta"]+".fai"
-    output: ucsc = config["organism_fasta"]+".fai.ucsc",
-    log:    run =  config["reference_dir"]+"/seq/"+config["assembly"]+".make_fasta_idx_ucsc.log"
-    params: dest = "UCSC",
-            organism = config["species"],
-    conda:  "../wrappers/make_fasta_idx_ucsc_version/env.yaml"
-    script: "../wrappers/make_fasta_idx_ucsc_version/script.R"
 
-#rule make_fasta_idx:
-#    input:  gen = "{dir}/{species}/{ref}/seq/{ref}.fa",
-#    output: idx = "{dir}/{species}/{ref}/seq/{ref}.fa.fai",
-#    threads:  1
-#    conda:  "../wraps/prepare_reference/make_fasta_idx/env.yaml"
-#    shell:
-#        "samtools faidx {input.gen}"
-
-
-#rule unzip_genome_fasta:
-#    input:  gen = "{dir}/{species}/{ref}/seq/{ref}.fasta.gz"
-#    output: gen = "{dir}/{species}/{ref}/seq/{ref}.fa",
-#            #idx = "{dir}/{species}/{ref}/seq/{ref}.fa.fai",
-#    threads:  10
-#    conda:  "../wraps/prepare_reference/make_fasta_idx/env.yaml"
-#    shell:
-#        """
-#        unpigz -p {threads} -c {input.gen} > {output.gen}
-#        samtools faidx {output.gen}
-#        """
 
 
 #rule make_fasta_idx_ncbi:
@@ -457,33 +467,7 @@ rule make_fasta_idx_ucsc_version:
 #    shell:
 #        "samtools faidx {input.gen}"
 
-
-#rule unzip_genome_fasta_ncbi:
-#    input:  gen = "{dir}/{species}/{ref}/annot/ncbi/{ref}.ncbi.fna.gz"
-#    output: gen = "{dir}/{species}/{ref}/annot/ncbi/{ref}.ncbi.fna",
-#            #idx = "{dir}/{species}/{ref}/annot/ncbi/{ref}.ncbi.fna.fai",
-#    threads:  10
-#    conda:  "../wraps/prepare_reference/make_fasta_idx/env.yaml"
-#    shell:
-#        """
-#        unpigz -p {threads} -c {input.gen} > {output.gen}
-#        samtools faidx {output.gen}
-#        """
-
-
-# rule unzip_genome_fa:
-#     input:  gen = "{dir}/{species}/{ref}/seq/{ref}.fa.gz"
-#     output: gen = "{dir}/{species}/{ref}/seq/{ref}.fa",
-#             idx = "{dir}/{species}/{ref}/seq/{ref}.fa.fai",
-#     threads:  10
-#     conda:  "../wraps/prepare_reference/make_fasta_idx/env.yaml"
-#     shell:
-#         """
-#         unpigz -p {threads} -c {input.gen} > {output.gen}
-#         samtools faidx {output.gen}
-#         """
-
-
+#
 # rule copy_genome:
 #   input:  IN_GENOMES_LIST
 #   output: OUT_GENOMES_LIST
