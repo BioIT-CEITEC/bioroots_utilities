@@ -264,7 +264,7 @@ def load_ROI():
         if len(config["species_name"].split(" (")) > 1:
             config["species"] = config["species_name"].split(" (")[1].replace(")","")
         config["reference_dir"] = os.path.join(config["globalResources"] , config["organism"] , config["reference"])
-        config["folder_name"] = config["lib_ROI"].rsplit("_",1)[0]
+        config["folder_name"] = config["lib_ROI"].split("_",1)[0]
         config["dna_panel"] = config["reference_dir"] + "/intervals/" + config["folder_name"] + "/" + config["folder_name"] + ".bed"
 
     if globresource == "bioit":
@@ -275,7 +275,7 @@ def load_ROI():
             config["species"] = config["species_name"].split(" (")[1].replace(")","")
         config["assembly"] = config["reference"].split("_")[0]
         config["release"] = config["reference"].split("_")[1]
-        config["folder_name"] = config["lib_ROI"].rsplit("_",1)[0]
+        config["folder_name"] = config["lib_ROI"].split("_",1)[0]
         config["reference_dir"] = os.path.join(config["globalResources"] , "references", config["organism"] , config["assembly"])
         config["dna_panel"] = config["reference_dir"] + "/others/DNA_ROI/" + config["folder_name"] + "/" + config["folder_name"] + ".bed"
 
