@@ -171,6 +171,7 @@ def load_organism():
         config["organism_vep_dir"] = config["reference_dir"] + "/annot/vep/"
         config["organism_chr_sizes"] = config["reference_dir"] + "/seq/" + config["reference"] + ".chrom.sizes"
         config["organism_dict"] = config["reference_dir"] + "/seq/" + config["reference"] + ".dict"
+        config["snp_bed"] = config["reference_dir"] + "/other/snp/" + config["reference"] + ".snp.bed"
 
     if globresource == "bioit":
         config["species_name"] = [organism_name for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["reference"] in reference_dict[organism_name].keys()][0]
@@ -204,6 +205,7 @@ def load_organism():
         config["organism_vep_dir"] = config["reference_dir"] + "/annot/" + config["release"] + "/vep/"
         config["organism_chr_sizes"] = config["reference_dir"] + "/seq/" + config["assembly"] + ".chrom.sizes"
         config["organism_dict"] = config["reference_dir"] + "/seq/" + config["assembly"] + ".dict"
+        config["snp_bed"] = config["reference_dir"] + "/seq/" + config["assembly"]  + ".snp.bed"
 
     return config
 
@@ -264,7 +266,6 @@ def load_ROI():
         if len(config["species_name"].split(" (")) > 1:
             config["species"] = config["species_name"].split(" (")[1].replace(")","")
         config["reference_dir"] = os.path.join(config["globalResources"] , config["organism"] , config["reference"])
-        config["snp_bed"] = config["reference_dir"] + "/other/snp/" + config["reference"] + ".snp.bed"
         config["dna_panel"] = config["reference_dir"] + "/intervals/" + config["lib_ROI"] + "/" + config["lib_ROI"] + ".bed"
 
     if globresource == "bioit":
@@ -277,7 +278,6 @@ def load_ROI():
         config["release"] = config["reference"].split("_")[1]
         config["folder_name"] = config["lib_ROI"].rsplit("_",1)[0]
         config["reference_dir"] = os.path.join(config["globalResources"] , "references", config["organism"] , config["assembly"])
-        config["snp_bed"] = config["reference_dir"] + "/seq/" + config["assembly"]  + ".snp.bed"
         config["dna_panel"] = config["reference_dir"] + "/others/DNA_ROI/" + config["folder_name"] + "/" + config["folder_name"] + ".bed"
 
     return config
