@@ -182,12 +182,27 @@ def load_organism():
                 config["org"] = config["species_name"].split(" (")[0].lower().replace(" ","_")
                 if len(config["sp_name"].split(" (")) > 1:
                     config["species_ROI"] = config["sp_name"].split(" (")[1].replace(")","")
+                    config["folder_name"] = config["lib_ROI"].rsplit("_",1)[0]
                     config["ref_dir"] = os.path.join(config["globalResources"] , config["org"] , config["ref"])
-                    config["dna_panel"] = config["ref_dir"] + "/intervals/" + config["lib_ROI"] + "/" + config["lib_ROI"] + ".bed"
-                    config["interval_list"] = config["reference_dir"] + "/intervals/" + config["lib_ROI"] + "/" + config["lib_ROI"] + ".interval_list"
+                    config["dna_panel"] = config["ref_dir"] + "/intervals/" + config["folder_name"] + "/" + config["folder_name"] + ".bed"
+                    config["interval_list"] = config["ref_dir"] + "/intervals/" + config["folder_name"] + "/" + config["folder_name"] + ".interval_list"
+                    config["fasta_vc"] = config["ref_dir"] + "/seq/" + config["ref"] + ".fa"
+                    config["vep_vc"] = config["ref_dir"] + "/annot/vep/"
+                    config["custom_DB_folder"] = config["ref_dir] + "/annot/custom_new2/"
+                    config["gtf_vc"] = config["ref_dir"] + "/annot/" + config["reference"] + ".gtf"
+                    config["cadd_db_snvs"] = config["ref_dir"] + "/annot/vep/CADD_scores_DB/whole_genome_SNVs.tsv.gz"
+                    config["cadd_db_indels"] = config["ref_dir"] + "/annot/vep/CADD_scores_DB/gnomad.genomes.r3.0.indel.tsv.gz"
+                    config["dir_plugins_vep"] = config["ref_dir"] + "/annot/vep/VEP_plugins/"
             else:
                 config["dna_panel"] = config["reference_dir"] + "/intervals/wgs/wgs.bed"
                 config["interval_list"] = config["reference_dir"] + "/intervals/wgs/wgs.interval_list" 
+                config["fasta_vc"] = config["reference_dir"] + "/seq/" + config["reference"] + ".fa"
+                config["vep_vc"] = config["reference_dir"] + "/annot/vep/"
+                config["custom_DB_folder"] = config["reference_dir"] + "/annot/custom_new2/"
+                config["gtf_vc"] = config["reference_dir"] + "/annot/" + config["reference"] + ".gtf"
+                config["cadd_db_snvs"] = config["reference_dir"] + "/annot/vep/CADD_scores_DB/whole_genome_SNVs.tsv.gz"
+                config["cadd_db_indels"] = config["reference_dir"] + "/annot/vep/CADD_scores_DB/gnomad.genomes.r3.0.indel.tsv.gz"
+                config["dir_plugins_vep"] = config["reference_dir"] + "/annot/vep/VEP_plugins/"
             
     if globresource == "bioit":
         config["species_name"] = [organism_name for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["reference"] in reference_dict[organism_name].keys()][0]
@@ -235,9 +250,23 @@ def load_organism():
                     config["ref_dir"] = os.path.join(config["globalResources"] , "references", config["org"] , config["assembly_ROI"])
                     config["dna_panel"] = config["ref_dir"] + "/others/DNA_ROI/" + config["folder_name"] + "/" + config["folder_name"] + ".bed"
                     config["interval_list"] = config["ref_dir"] + "/others/DNA_ROI/" + config["folder_name"] + "/" + config["folder_name"] + ".interval_list"
+                    config["fasta_vc"] = config["ref_dir"] + "/seq/" + config["assembly"] + ".fa"
+                    config["vep_vc"] = config["ref_dir"] + "/annot/" + config["release"] + "/vep/"
+                    config["custom_DB_folder"] = config["ref_dir"] + "/annot/" + config["release"] + "/custom_new2/"
+                    config["gtf_vc] = config["ref_dir"] + "/annot/" + config["release"] + "/" + config["assembly"] + ".gtf"
+                    config["cadd_db_snvs"] = config["ref_dir"] + "/annot/" + config["release"] + "/vep/CADD_scores_DB/whole_genome_SNVs.tsv.gz"
+                    config["cadd_db_indels"] = config["ref_dir"] + "/annot/" + config["release"] + "/vep/CADD_scores_DB/gnomad.genomes.r3.0.indel.tsv.gz"
+                    config["dir_plugins_vep"] = config["ref_dir"] + "/annot/" + config["release"] + "/vep/VEP_plugins/"
             else:
                 config["dna_panel"] = config["reference_dir"] + "/others/DNA_ROI/wgs/wgs.bed"
-                config["interval_list"] = config["reference_dir"] + "/others/DNA_ROI/wgs/wgs.interval_list" 
+                config["interval_list"] = config["reference_dir"] + "/others/DNA_ROI/wgs/wgs.interval_list"
+                config["fasta_vc"] = config["reference_dir"] + "/seq/" + config["assembly"] + ".fa"
+                config["vep_vc"] = config["reference_dir"] + "/annot/" + config["release"] + "/vep/"
+                config["custom_DB_folder] = config["reference_dir"] + "/annot/" + config["release"] + "/custom_new2/"
+                config["gtf_vc] = config["reference_dir"] + "/annot/" + config["release"] + "/" + config["assembly"] + ".gtf"
+                config["cadd_db_snvs"] = config["reference_dir"] + "/annot/" + config["release"] + "/vep/CADD_scores_DB/whole_genome_SNVs.tsv.gz"
+                config["cadd_db_indels"] = config["reference_dir"] + "/annot/" + config["release"] + "/vep/CADD_scores_DB/gnomad.genomes.r3.0.indel.tsv.gz"
+                config["dir_plugins_vep"] = config["reference_dir"] + "/annot/" + config["release"] + "/vep/VEP_plugins/"
 
     return config
 
