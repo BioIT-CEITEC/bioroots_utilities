@@ -181,10 +181,10 @@ def load_organism():
                 config["sp_name"] = [organism_name for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["ref"] in reference_dict[organism_name].keys()][0]
                 config["org"] = config["species_name"].split(" (")[0].lower().replace(" ","_")
                 if len(config["sp_name"].split(" (")) > 1:
-                config["species_ROI"] = config["sp_name"].split(" (")[1].replace(")","")
-                config["ref_dir"] = os.path.join(config["globalResources"] , config["org"] , config["ref"])
-                config["dna_panel"] = config["ref_dir"] + "/intervals/" + config["lib_ROI"] + "/" + config["lib_ROI"] + ".bed"
-                config["interval_list"] = config["reference_dir"] + "/intervals/" + config["lib_ROI"] + "/" + config["lib_ROI"] + ".interval_list"
+                    config["species_ROI"] = config["sp_name"].split(" (")[1].replace(")","")
+                    config["ref_dir"] = os.path.join(config["globalResources"] , config["org"] , config["ref"])
+                    config["dna_panel"] = config["ref_dir"] + "/intervals/" + config["lib_ROI"] + "/" + config["lib_ROI"] + ".bed"
+                    config["interval_list"] = config["reference_dir"] + "/intervals/" + config["lib_ROI"] + "/" + config["lib_ROI"] + ".interval_list"
             else:
                 config["dna_panel"] = config["reference_dir"] + "/intervals/wgs/wgs.bed"
                 config["interval_list"] = config["reference_dir"] + "/intervals/wgs/wgs.interval_list" 
@@ -228,13 +228,13 @@ def load_organism():
                 config["sp_name"] = [organism_name for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["ref"] in reference_dict[organism_name].keys()][0]
                 config["org"] = config["sp_name"].split(" (")[0].lower().replace(" ","_")
                 if len(config["sp_name"].split(" (")) > 1:
-                config["species_ROI"] = config["sp_name"].split(" (")[1].replace(")","")
-                config["assembly_ROI"] = config["ref"].split("_")[0]
-                config["release_ROI"] = config["ref"].split("_")[1]
-                config["folder_name"] = config["lib_ROI"].rsplit("_",1)[0]
-                config["ref_dir"] = os.path.join(config["globalResources"] , "references", config["org"] , config["assembly_ROI"])
-                config["dna_panel"] = config["ref_dir"] + "/others/DNA_ROI/" + config["folder_name"] + "/" + config["folder_name"] + ".bed"
-                config["interval_list"] = config["ref_dir"] + "/others/DNA_ROI/" + config["folder_name"] + "/" + config["folder_name"] + ".interval_list"
+                    config["species_ROI"] = config["sp_name"].split(" (")[1].replace(")","")
+                    config["assembly_ROI"] = config["ref"].split("_")[0]
+                    config["release_ROI"] = config["ref"].split("_")[1]
+                    config["folder_name"] = config["lib_ROI"].rsplit("_",1)[0]
+                    config["ref_dir"] = os.path.join(config["globalResources"] , "references", config["org"] , config["assembly_ROI"])
+                    config["dna_panel"] = config["ref_dir"] + "/others/DNA_ROI/" + config["folder_name"] + "/" + config["folder_name"] + ".bed"
+                    config["interval_list"] = config["ref_dir"] + "/others/DNA_ROI/" + config["folder_name"] + "/" + config["folder_name"] + ".interval_list"
             else:
                 config["dna_panel"] = config["reference_dir"] + "/others/DNA_ROI/wgs/wgs.bed"
                 config["interval_list"] = config["reference_dir"] + "/others/DNA_ROI/wgs/wgs.interval_list" 
