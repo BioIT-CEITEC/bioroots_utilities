@@ -181,9 +181,6 @@ def load_organism():
         config["cadd_db_snvs"] = config["reference_dir"] + "/annot/vep/CADD_scores_DB/whole_genome_SNVs.tsv.gz"
         config["cadd_db_indels"] = config["reference_dir"] + "/annot/vep/CADD_scores_DB/gnomad.genomes.r3.0.indel.tsv.gz"
         config["dir_plugins_vep"] = config["reference_dir"] + "/annot/vep/VEP_plugins/"
-
-        if "lib_ROI" in config and config["lib_ROI"] != "wgs""
-            ROI = load_ROI()
             
     if globresource == "bioit":
         config["species_name"] = [organism_name for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["reference"] in reference_dict[organism_name].keys()][0]
@@ -227,6 +224,9 @@ def load_organism():
         config["cadd_db_snvs"] = config["reference_dir"] + "/annot/" + config["release"] + "/vep/CADD_scores_DB/whole_genome_SNVs.tsv.gz"
         config["cadd_db_indels"] = config["reference_dir"] + "/annot/" + config["release"] + "/vep/CADD_scores_DB/gnomad.genomes.r3.0.indel.tsv.gz"
         config["dir_plugins_vep"] = config["reference_dir"] + "/annot/" + config["release"] + "/vep/VEP_plugins/"
+
+    if "lib_ROI" in config and config["lib_ROI"] != "wgs""
+        ROI = load_ROI()
 
     return config
 
