@@ -225,7 +225,7 @@ def load_organism():
         config["cadd_db_indels"] = config["reference_dir"] + "/annot/" + config["release"] + "/vep/CADD_scores_DB/gnomad.genomes.r3.0.indel.tsv.gz"
         config["dir_plugins_vep"] = config["reference_dir"] + "/annot/" + config["release"] + "/vep/VEP_plugins/"
 
-    if "lib_ROI" in config and config["lib_ROI"] != "wgs""
+    if "lib_ROI" in config and config["lib_ROI"] != "wgs":
         ROI = load_ROI()
 
     return config
