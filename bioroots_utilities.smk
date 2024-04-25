@@ -307,8 +307,8 @@ def load_ROI():
         config["release"] = config["reference"].split("_")[1]
         config["lib_ROI"] = config["lib_ROI"].rsplit("_",1)[0]
         config["reference_dir"] = os.path.join(config["globalResources"] , "references", config["organism"] , config["assembly"])
-        config["dna_panel"] = config["reference_dir"] + "/others/DNA_ROI/" + config["folder_name"] + "/" + config["folder_name"] + ".bed"
-        config["interval_list"] = config["reference_dir"] + "/others/DNA_ROI/" + config["folder_name"] + "/" + config["folder_name"] + ".interval_list"
+        config["dna_panel"] = config["reference_dir"] + "/others/DNA_ROI/" + config["lib_ROI"] + "/" + config["lib_ROI"] + ".bed"
+        config["interval_list"] = config["reference_dir"] + "/others/DNA_ROI/" + config["lib_ROI"] + "/" + config["lib_ROI"] + ".interval_list"
         config["fasta_vc"] = config["reference_dir"] + "/seq/" + config["assembly"] + ".fa"
         config["vep_vc"] = config["reference_dir"] + "/annot/" + config["release"] + "/vep/"
         config["custom_DB_folder"] = config["reference_dir"] + "/annot/" + config["release"] + "/custom_new2/"
