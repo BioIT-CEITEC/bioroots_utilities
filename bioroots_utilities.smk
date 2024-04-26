@@ -179,7 +179,8 @@ def load_organism():
         config["organism_snp_bed"] = config["reference_dir"] + "/other/snp/" + config["reference"] + ".snp.bed"
         config["organism_custom_DB_folder"] = config["reference_dir"] + "/annot/custom_new2/"
         config["organism_cadd_db_snvs"] = config["reference_dir"] + "/annot/vep/CADD_scores_DB/whole_genome_SNVs.tsv.gz"
-        config["organism_cadd_db_indels"] = config["reference_dir"] + "/annot/vep/CADD_scores_DB/gnomad.genomes.r3.0.indel.tsv.gz"        
+        config["organism_cadd_db_indels"] = config["reference_dir"] + "/annot/vep/CADD_scores_DB/gnomad.genomes.r3.0.indel.tsv.gz"
+        config["organism_dbsnp"] = config["reference_dir"] + "/annot/dbSNP/common_all.vcf.gz"        
 
     if globresource == "bioit":
         config["species_name"] = [organism_name for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["reference"] in reference_dict[organism_name].keys()][0]
@@ -219,6 +220,7 @@ def load_organism():
         config["organism_custom_DB_folder"] = config["reference_dir"] + "/annot/" + config["release"] + "/custom_new2/"
         config["organism_cadd_db_snvs"] = config["reference_dir"] + "/annot/" + config["release"] + "/vep/CADD_scores_DB/whole_genome_SNVs.tsv.gz"
         config["organism_cadd_db_indels"] = config["reference_dir"] + "/annot/" + config["release"] + "/vep/CADD_scores_DB/gnomad.genomes.r3.0.indel.tsv.gz"
+        config["organism_dbsnp"] = config["reference_dir"] + "/annot/" + config["release"] + "/dbSNP/common_all.vcf.gz"
 
 
     return config
