@@ -141,6 +141,9 @@ def load_organism():
     k = open(os.path.join(config["globalResources"],"reference_info","kegg_reference.json"))
     kegg_dict = json.load(k)
     k.close()
+
+    if "lib_ROI" in config and config["lib_ROI"] != "wgs":
+        config = load_ROI(globresource)
  
     if globresource == "bioda":
         config["species_name"] = [organism_name for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["reference"] in reference_dict[organism_name].keys()][0]
@@ -171,13 +174,14 @@ def load_organism():
         config["organism_vep_dir"] = config["reference_dir"] + "/annot/vep/"
         config["organism_chr_sizes"] = config["reference_dir"] + "/seq/" + config["reference"] + ".chrom.sizes"
         config["organism_dict"] = config["reference_dir"] + "/seq/" + config["reference"] + ".dict"
+        config["organism_dna_panel"] = config["ref_dir"] + "/intervals/" + config["lib_ROI"] + "/" + config["lib_ROI"] + ".bed"
+        config["organism_interval_list"] = config["ref_dir"] + "/intervals/" + config["lib_ROI"] + "/" + config["lib_ROI"] + ".interval_list"
         config["organism_snp_bed"] = config["reference_dir"] + "/other/snp/" + config["reference"] + ".snp.bed"
-        config["organism_dna_panel"] = config["reference_dir"] + "/intervals/wgs/wgs.bed"
-        config["interval_list"] = config["reference_dir"] + "/intervals/wgs/wgs.interval_list"
         config["custom_DB_folder"] = config["reference_dir"] + "/annot/custom_new2/"
         config["cadd_db_snvs"] = config["reference_dir"] + "/annot/vep/CADD_scores_DB/whole_genome_SNVs.tsv.gz"
         config["cadd_db_indels"] = config["reference_dir"] + "/annot/vep/CADD_scores_DB/gnomad.genomes.r3.0.indel.tsv.gz"
         config["dir_plugins_vep"] = config["reference_dir"] + "/annot/vep/VEP_plugins/"
+        
 
     if globresource == "bioit":
         config["species_name"] = [organism_name for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["reference"] in reference_dict[organism_name].keys()][0]
@@ -212,14 +216,12 @@ def load_organism():
         config["organism_chr_sizes"] = config["reference_dir"] + "/seq/" + config["assembly"] + ".chrom.sizes"
         config["organism_dict"] = config["reference_dir"] + "/seq/" + config["assembly"] + ".dict"
         config["organism_snp_bed"] = config["reference_dir"] + "/seq/" + config["assembly"]  + ".snp.bed"
-        config["organism_dna_panel"] = config["reference_dir"] + "/others/DNA_ROI/wgs/wgs.bed"
-        config["organism_interval_list"] = config["reference_dir"] + "/others/DNA_ROI/wgs/wgs.interval_list"
+        config["organism_dna_panel"] = config["ref_dir"] + "/others/DNA_ROI/" + config["lib_ROI"] + "/" + config["lib_ROI"] + ".bed"
+        config["organism_interval_list"] = config["ref_dir"] + "/others/DNA_ROI/" + config["lib_ROI"] + "/" + config["lib_ROI"] + ".interval_list"
         config["organism_custom_DB_folder"] = config["reference_dir"] + "/annot/" + config["release"] + "/custom_new2/"
         config["organism_cadd_db_snvs"] = config["reference_dir"] + "/annot/" + config["release"] + "/vep/CADD_scores_DB/whole_genome_SNVs.tsv.gz"
         config["organism_cadd_db_indels"] = config["reference_dir"] + "/annot/" + config["release"] + "/vep/CADD_scores_DB/gnomad.genomes.r3.0.indel.tsv.gz"
 
-    if "lib_ROI" in config and config["lib_ROI"] != "wgs":
-        ROI = load_ROI()
 
     return config
 
@@ -260,55 +262,22 @@ def load_mirna():
 
     return config
 
-def load_ROI():
-    globresource = check_resources()
-    print(globresource)
-    # setting organism from reference
-    print(config["globalResources"])
-    print(config["globalResources"] + "/reference_info/reference2.json")
-    f = open(os.path.join(config["globalResources"],"reference_info","reference2.json"),)
-    reference_dict = json.load(f)
-    f.close()
+def load_ROI(globresource):
+    
     k = open(os.path.join(config["globalResources"],"reference_info","lib_ROI.json"),)
     lib_ROI_dict = json.load(k)
     k.close()
 
-    if globresource == "bioda":
-        config["ref_name"] = [ref_name for ref_name in lib_ROI_dict.keys() if isinstance(lib_ROI_dict[ref_name],dict) and config["lib_ROI"] in lib_ROI_dict[ref_name].keys()][0]
-        config["species_name"] = [organism_name for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["ref_name"] in reference_dict[organism_name].keys()][0]
-        config["organism"] = config["species_name"].split(" (")[0].lower().replace(" ","_")
-        if len(config["species_name"].split(" (")) > 1:
-            config["species"] = config["species_name"].split(" (")[1].replace(")","")
-        config["ref_dir"] = os.path.join(config["globalResources"] , config["organism"] , config["ref_name"])
-        config["organism_dna_panel"] = config["ref_dir"] + "/intervals/" + config["lib_ROI"] + "/" + config["lib_ROI"] + ".bed"
-        config["organism_interval_list"] = config["ref_dir"] + "/intervals/" + config["lib_ROI"] + "/" + config["lib_ROI"] + ".interval_list"
-        config["fasta_vc"] = config["ref_dir"] + "/seq/" + config["ref_name"] + ".fa"
-        config["vep_vc"] = config["ref_dir"] + "/annot/vep/"
-        config["organism_custom_DB_folder"] = config["ref_dir"] + "/annot/custom_new2/"
-        config["gtf_vc"] = config["ref_dir"] + "/annot/" + config["ref_name"] + ".gtf"
-        config["organism_cadd_db_snvs"] = config["ref_dir"] + "/annot/vep/CADD_scores_DB/whole_genome_SNVs.tsv.gz"
-        config["organism_cadd_db_indels"] = config["ref_dir"] + "/annot/vep/CADD_scores_DB/gnomad.genomes.r3.0.indel.tsv.gz"
-        config["dict_vc"] = config["reference_dir"] + "/seq/" + config["reference"] + ".dict"
+    if config["lib_ROI"] == "rna":
+        config["material"] = "RNA"
+    else:
+        if globresource == "bioda":
+            config["reference"] = [ref_name for ref_name in lib_ROI_dict.keys() if isinstance(lib_ROI_dict[ref_name],dict) and config["lib_ROI"] in lib_ROI_dict[ref_name].keys()][0]
+            
 
-    if globresource == "bioit":
-        config["ref_name"] = [ref_name for ref_name in lib_ROI_dict.keys() if isinstance(lib_ROI_dict[ref_name],dict) and config["lib_ROI"] in lib_ROI_dict[ref_name].keys()][0]
-        config["species_name"] = [organism_name for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["ref_name"] in reference_dict[organism_name].keys()][0]
-        config["organism"] = config["species_name"].split(" (")[0].lower().replace(" ","_")
-        if len(config["species_name"].split(" (")) > 1:
-            config["species"] = config["species_name"].split(" (")[1].replace(")","")
-        config["assembly"] = config["ref_name"].split("_")[0]
-        config["release"] = config["ref_name"].split("_")[1]
-        config["lib_ROI"] = config["lib_ROI"].rsplit("_",1)[0]
-        config["ref_dir"] = os.path.join(config["globalResources"] , "references", config["organism"] , config["assembly"])
-        config["organism_dna_panel"] = config["ref_dir"] + "/others/DNA_ROI/" + config["lib_ROI"] + "/" + config["lib_ROI"] + ".bed"
-        config["organism_interval_list"] = config["ref_dir"] + "/others/DNA_ROI/" + config["lib_ROI"] + "/" + config["lib_ROI"] + ".interval_list"
-        config["fasta_vc"] = config["ref_dir"] + "/seq/" + config["assembly"] + ".fa"
-        config["vep_vc"] = config["ref_dir"] + "/annot/" + config["release"] + "/vep/"
-        config["organism_custom_DB_folder"] = config["ref_dir"] + "/annot/" + config["release"] + "/custom_new2/"
-        config["gtf_vc"] = config["ref_dir"] + "/annot/" + config["release"] + "/" + config["assembly"] + ".gtf"
-        config["organism_cadd_db_snvs"] = config["ref_dir"] + "/annot/" + config["release"] + "/vep/CADD_scores_DB/whole_genome_SNVs.tsv.gz"
-        config["organism_cadd_db_indels"] = config["ref_dir"] + "/annot/" + config["release"] + "/vep/CADD_scores_DB/gnomad.genomes.r3.0.indel.tsv.gz"
-        config["dict_vc"] = config["ref_dir"] + "/seq/" + config["assembly"] + ".dict"
+        if globresource == "bioit":
+            config["ref_name"] = [ref_name for ref_name in lib_ROI_dict.keys() if isinstance(lib_ROI_dict[ref_name],dict) and config["lib_ROI"] in lib_ROI_dict[ref_name].keys()][0]
+            config["lib_ROI"] = config["lib_ROI"].rsplit("_",1)[0]
 
     return config
 
