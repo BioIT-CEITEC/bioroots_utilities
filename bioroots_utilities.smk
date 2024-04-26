@@ -144,7 +144,10 @@ def load_organism():
     j = open(os.path.join(config["globalResources"],"reference_info","lib_ROI.json"),)
     lib_ROI_dict = json.load(j)
     j.close()
-    
+
+    if "lib_ROI" in config and config["lib_ROI"] != "wgs":
+        config = load_ROI()
+
     if globresource == "bioda":
         config["species_name"] = [organism_name for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["reference"] in reference_dict[organism_name].keys()][0]
         config["organism"] = config["species_name"].split(" (")[0].lower().replace(" ","_")
