@@ -280,14 +280,14 @@ def load_ROI():
         if len(config["species_name"].split(" (")) > 1:
             config["species"] = config["species_name"].split(" (")[1].replace(")","")
         config["ref_dir"] = os.path.join(config["globalResources"] , config["organism"] , config["ref_name"])
-        config["dna_panel"] = config["ref_dir"] + "/intervals/" + config["lib_ROI"] + "/" + config["lib_ROI"] + ".bed"
-        config["interval_list"] = config["ref_dir"] + "/intervals/" + config["lib_ROI"] + "/" + config["lib_ROI"] + ".interval_list"
+        config["organism_dna_panel"] = config["ref_dir"] + "/intervals/" + config["lib_ROI"] + "/" + config["lib_ROI"] + ".bed"
+        config["organism_interval_list"] = config["ref_dir"] + "/intervals/" + config["lib_ROI"] + "/" + config["lib_ROI"] + ".interval_list"
         config["fasta_vc"] = config["ref_dir"] + "/seq/" + config["ref_name"] + ".fa"
         config["vep_vc"] = config["ref_dir"] + "/annot/vep/"
-        config["custom_DB_folder"] = config["ref_dir"] + "/annot/custom_new2/"
+        config["organism_custom_DB_folder"] = config["ref_dir"] + "/annot/custom_new2/"
         config["gtf_vc"] = config["ref_dir"] + "/annot/" + config["ref_name"] + ".gtf"
-        config["cadd_db_snvs"] = config["ref_dir"] + "/annot/vep/CADD_scores_DB/whole_genome_SNVs.tsv.gz"
-        config["cadd_db_indels"] = config["ref_dir"] + "/annot/vep/CADD_scores_DB/gnomad.genomes.r3.0.indel.tsv.gz"
+        config["organism_cadd_db_snvs"] = config["ref_dir"] + "/annot/vep/CADD_scores_DB/whole_genome_SNVs.tsv.gz"
+        config["organism_cadd_db_indels"] = config["ref_dir"] + "/annot/vep/CADD_scores_DB/gnomad.genomes.r3.0.indel.tsv.gz"
         config["dict_vc"] = config["reference_dir"] + "/seq/" + config["reference"] + ".dict"
 
     if globresource == "bioit":
