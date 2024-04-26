@@ -177,11 +177,9 @@ def load_organism():
         config["organism_dna_panel"] = config["reference_dir"] + "/intervals/" + config["lib_ROI"] + "/" + config["lib_ROI"] + ".bed"
         config["organism_interval_list"] = config["reference_dir"] + "/intervals/" + config["lib_ROI"] + "/" + config["lib_ROI"] + ".interval_list"
         config["organism_snp_bed"] = config["reference_dir"] + "/other/snp/" + config["reference"] + ".snp.bed"
-        config["custom_DB_folder"] = config["reference_dir"] + "/annot/custom_new2/"
-        config["cadd_db_snvs"] = config["reference_dir"] + "/annot/vep/CADD_scores_DB/whole_genome_SNVs.tsv.gz"
-        config["cadd_db_indels"] = config["reference_dir"] + "/annot/vep/CADD_scores_DB/gnomad.genomes.r3.0.indel.tsv.gz"
-        config["dir_plugins_vep"] = config["reference_dir"] + "/annot/vep/VEP_plugins/"
-        
+        config["organism_custom_DB_folder"] = config["reference_dir"] + "/annot/custom_new2/"
+        config["organism_cadd_db_snvs"] = config["reference_dir"] + "/annot/vep/CADD_scores_DB/whole_genome_SNVs.tsv.gz"
+        config["organism_cadd_db_indels"] = config["reference_dir"] + "/annot/vep/CADD_scores_DB/gnomad.genomes.r3.0.indel.tsv.gz"        
 
     if globresource == "bioit":
         config["species_name"] = [organism_name for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["reference"] in reference_dict[organism_name].keys()][0]
