@@ -374,13 +374,13 @@ rule make_fasta_idx:
     shell:
         "samtools faidx {input.gen}"
 
-rule make_fasta_idx:
-    input:  gen = config["organism_ncbi_general"],
-    output: idx = config["organism_ncbi_general"] + ".fai",
-    threads:  1
-    conda:  "../wrappers/STAR_gen_index/env.yaml"
-    shell:
-        "samtools faidx {input.gen}"
+# rule make_fasta_idx:
+#     input:  gen = config["organism_ncbi_general"],
+#     output: idx = config["organism_ncbi_general"] + ".fai",
+#     threads:  1
+#     conda:  "../wrappers/STAR_gen_index/env.yaml"
+#     shell:
+#         "samtools faidx {input.gen}"
 
 # COMBINE REF FOR SPIKEIN
 #
