@@ -174,8 +174,6 @@ def load_organism():
         config["organism_vep_dir"] = config["reference_dir"] + "/annot/vep/"
         config["organism_chr_sizes"] = config["reference_dir"] + "/seq/" + config["reference"] + ".chrom.sizes"
         config["organism_dict"] = config["reference_dir"] + "/seq/" + config["reference"] + ".dict"
-        config["organism_dna_panel"] = config["reference_dir"] + "/intervals/" + config["lib_ROI"] + "/" + config["lib_ROI"] + ".bed"
-        config["organism_interval_list"] = config["reference_dir"] + "/intervals/" + config["lib_ROI"] + "/" + config["lib_ROI"] + ".interval_list"
         config["organism_snp_bed"] = config["reference_dir"] + "/other/snp/" + config["reference"] + ".snp.bed"
         config["organism_custom_DB_folder"] = config["reference_dir"] + "/annot/custom_new2/"
         config["organism_cadd_db_snvs"] = config["reference_dir"] + "/annot/vep/CADD_scores_DB/whole_genome_SNVs.tsv.gz"
@@ -215,8 +213,6 @@ def load_organism():
         config["organism_chr_sizes"] = config["reference_dir"] + "/seq/" + config["assembly"] + ".chrom.sizes"
         config["organism_dict"] = config["reference_dir"] + "/seq/" + config["assembly"] + ".dict"
         config["organism_snp_bed"] = config["reference_dir"] + "/seq/" + config["assembly"]  + ".snp.bed"
-        config["organism_dna_panel"] = config["reference_dir"] + "/others/DNA_ROI/" + config["lib_ROI"] + "/" + config["lib_ROI"] + ".bed"
-        config["organism_interval_list"] = config["reference_dir"] + "/others/DNA_ROI/" + config["lib_ROI"] + "/" + config["lib_ROI"] + ".interval_list"
         config["organism_custom_DB_folder"] = config["reference_dir"] + "/annot/" + config["release"] + "/custom_new2/"
         config["organism_cadd_db_snvs"] = config["reference_dir"] + "/annot/" + config["release"] + "/vep/CADD_scores_DB/whole_genome_SNVs.tsv.gz"
         config["organism_cadd_db_indels"] = config["reference_dir"] + "/annot/" + config["release"] + "/vep/CADD_scores_DB/gnomad.genomes.r3.0.indel.tsv.gz"
@@ -273,11 +269,18 @@ def load_ROI(globresource):
     else:
         if globresource == "bioda":
             config["reference"] = [ref_name for ref_name in lib_ROI_dict.keys() if isinstance(lib_ROI_dict[ref_name],dict) and config["lib_ROI"] in lib_ROI_dict[ref_name].keys()][0]
-            
+            config["organism_dna_panel"] = config["reference_dir"] + "/intervals/" + config["lib_ROI"] + "/" + config[
+                "lib_ROI"] + ".bed"
+            config["organism_interval_list"] = config["reference_dir"] + "/intervals/" + config["lib_ROI"] + "/" + \
+                                               config["lib_ROI"] + ".interval_list"
 
         if globresource == "bioit":
             config["reference"] = [ref_name for ref_name in lib_ROI_dict.keys() if isinstance(lib_ROI_dict[ref_name],dict) and config["lib_ROI"] in lib_ROI_dict[ref_name].keys()][0]
             config["lib_ROI"] = config["lib_ROI"].rsplit("_",1)[0]
+            config["organism_dna_panel"] = config["reference_dir"] + "/others/DNA_ROI/" + config["lib_ROI"] + "/" + \
+                                           config["lib_ROI"] + ".bed"
+            config["organism_interval_list"] = config["reference_dir"] + "/others/DNA_ROI/" + config["lib_ROI"] + "/" + \
+                                               config["lib_ROI"] + ".interval_list"
 
     return config
 
