@@ -212,6 +212,7 @@ def load_organism():
         config["organism_vep_dir"] = config["reference_dir"] + "/annot/" + config["release"] + "/vep/"
         config["organism_chr_sizes"] = config["reference_dir"] + "/seq/" + config["assembly"] + ".chrom.sizes"
         config["organism_dict"] = config["reference_dir"] + "/seq/" + config["assembly"] + ".dict"
+        config["organism_snp_bed"] = config["reference_dir"] + "/seq/" + config["assembly"] + ".snp.bed"
         config["organism_custom_DB_folder"] = config["reference_dir"] + "/annot/" + config["release"] + "/custom_new2/"
         config["organism_cadd_db_snvs"] = config["reference_dir"] + "/annot/" + config["release"] + "/vep/CADD_scores_DB/whole_genome_SNVs.tsv.gz"
         config["organism_cadd_db_indels"] = config["reference_dir"] + "/annot/" + config["release"] + "/vep/CADD_scores_DB/gnomad.genomes.r3.0.indel.tsv.gz"
