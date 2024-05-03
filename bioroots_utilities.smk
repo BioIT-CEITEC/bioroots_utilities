@@ -178,7 +178,9 @@ def load_organism():
         config["organism_custom_DB_folder"] = config["reference_dir"] + "/annot/custom_new2/"
         config["organism_cadd_db_snvs"] = config["reference_dir"] + "/annot/vep/CADD_scores_DB/whole_genome_SNVs.tsv.gz"
         config["organism_cadd_db_indels"] = config["reference_dir"] + "/annot/vep/CADD_scores_DB/gnomad.genomes.r3.0.indel.tsv.gz"
-        config["organism_dbsnp"] = config["reference_dir"] + "/annot/dbSNP/common_all.vcf.gz"        
+        config["organism_dbsnp"] = config["reference_dir"] + "/annot/dbSNP/common_all.vcf.gz"
+        config["organism_cytoband"] = config["reference_dir"] + "/other/cytoband/" + config["reference"] + ".cytoband.tsv"        
+        config["organism_svdb"] = config["reference_dir"] + "/other/svdb/gnomad_v2.1_sv.sites.vcf"
 
     if globresource == "bioit":
         config["species_name"] = [organism_name for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["reference"] in reference_dict[organism_name].keys()][0]
@@ -217,17 +219,23 @@ def load_organism():
         config["organism_cadd_db_snvs"] = config["reference_dir"] + "/annot/" + config["release"] + "/vep/CADD_scores_DB/whole_genome_SNVs.tsv.gz"
         config["organism_cadd_db_indels"] = config["reference_dir"] + "/annot/" + config["release"] + "/vep/CADD_scores_DB/gnomad.genomes.r3.0.indel.tsv.gz"
         config["organism_dbsnp"] = config["reference_dir"] + "/annot/" + config["release"] + "/dbSNP/common_all.vcf.gz"
+        config["organism_cytoband"] = config["reference_dir"] + "/others/cytoband/" + config["assembly"] + ".cytoband.tsv"
+        config["organism_svdb"] = config["reference_dir"] + "/others/svdb/gnomad_v2.1_sv.sites.vcf"
 
 
     if "lib_ROI" in config:
         if globresource == "bioda":
             config["organism_dna_panel"] = config["reference_dir"] + "/intervals/" + config["lib_ROI"] + "/" + config[
                 "lib_ROI"] + ".bed"
+            config["organism_snps_panel"] = config["reference_dir"] + "/other/snp/" + config["lib_ROI"] + "/" + \
+                                            config["lib_ROI"] + "_snps.bed"
             config["organism_interval_list"] = config["reference_dir"] + "/intervals/" + config["lib_ROI"] + "/" + \
                                                config["lib_ROI"] + ".interval_list"
         if globresource == "bioit":
             config["organism_dna_panel"] = config["reference_dir"] + "/others/DNA_ROI/" + config["lib_ROI"] + "/" + \
                                            config["lib_ROI"] + ".bed"
+            config["organism_snps_panel"] = config["reference_dir"] + "/others/snp/" + config["lib_ROI"] + "/" + \
+                                           config["lib_ROI"] + "_snps.bed
             config["organism_interval_list"] = config["reference_dir"] + "/others/DNA_ROI/" + config["lib_ROI"] + "/" + \
                                                config["lib_ROI"] + ".interval_list"
 
