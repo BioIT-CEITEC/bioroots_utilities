@@ -235,7 +235,7 @@ def load_organism():
             config["organism_dna_panel"] = config["reference_dir"] + "/others/DNA_ROI/" + config["lib_ROI"] + "/" + \
                                            config["lib_ROI"] + ".bed"
             config["organism_snps_panel"] = config["reference_dir"] + "/others/snp/" + config["lib_ROI"] + "/" + \
-                                           config["lib_ROI"] + "_snps.bed
+                                           config["lib_ROI"] + "_snps.bed"
             config["organism_interval_list"] = config["reference_dir"] + "/others/DNA_ROI/" + config["lib_ROI"] + "/" + \
                                                config["lib_ROI"] + ".interval_list"
 
