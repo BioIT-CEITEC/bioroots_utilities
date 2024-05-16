@@ -129,6 +129,29 @@ def load_tooldir():
     if globresource == "bioit":
         config["tooldir"] = os.path.join(config["globalResources"],"tools")
 
+
+def load_ROI(globresource):
+    k = open(os.path.join(config["globalResources"],"reference_info","lib_ROI.json"),)
+    lib_ROI_dict = json.load(k)
+    k.close()
+
+    if config["lib_ROI"] == "rna":
+        config["material"] = "RNA"
+    else:
+        if globresource == "bioda":
+            config["reference"] = [ref_name for ref_name in lib_ROI_dict.keys() if
+                                   isinstance(lib_ROI_dict[ref_name],dict) and config["lib_ROI"] in lib_ROI_dict[
+                                       ref_name].keys()][0]
+
+        if globresource == "bioit":
+            config["reference"] = [ref_name for ref_name in lib_ROI_dict.keys() if
+                                   isinstance(lib_ROI_dict[ref_name],dict) and config["lib_ROI"] in lib_ROI_dict[
+                                       ref_name].keys()][0]
+            config["lib_ROI"] = config["lib_ROI"].rsplit("_",1)[0]
+
+    return config
+
+
 def load_organism():
     globresource = check_resources()
     print(globresource)
@@ -143,7 +166,7 @@ def load_organism():
     k.close()
 
     if "lib_ROI" in config and config["lib_ROI"] != "wgs":
-        regions_of_interest = load_ROI(globresource)
+        load_ROI(globresource)
  
     if globresource == "bioda":
         config["species_name"] = [organism_name for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["reference"] in reference_dict[organism_name].keys()][0]
@@ -278,24 +301,6 @@ def load_mirna():
 
     return config
 
-def load_ROI(globresource):
-    
-    k = open(os.path.join(config["globalResources"],"reference_info","lib_ROI.json"),)
-    lib_ROI_dict = json.load(k)
-    k.close()
-
-    if config["lib_ROI"] == "rna":
-        config["material"] = "RNA"
-    else:
-        if globresource == "bioda":
-            config["reference"] = [ref_name for ref_name in lib_ROI_dict.keys() if isinstance(lib_ROI_dict[ref_name],dict) and config["lib_ROI"] in lib_ROI_dict[ref_name].keys()][0]
-
-
-        if globresource == "bioit":
-            config["reference"] = [ref_name for ref_name in lib_ROI_dict.keys() if isinstance(lib_ROI_dict[ref_name],dict) and config["lib_ROI"] in lib_ROI_dict[ref_name].keys()][0]
-            config["lib_ROI"] = config["lib_ROI"].rsplit("_",1)[0]
-
-    return config
 
 def reference_directory():
     return os.path.join(config["globalResources"],config["organism"],config["reference"])
