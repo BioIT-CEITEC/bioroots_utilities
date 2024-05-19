@@ -204,6 +204,7 @@ def load_organism():
         config["organism_dbsnp"] = config["reference_dir"] + "/annot/dbSNP/common_all.vcf.gz"
         config["organism_cytoband"] = config["reference_dir"] + "/other/cytoband/" + config["reference"] + ".cytoband.tsv"        
         config["organism_svdb"] = config["reference_dir"] + "/other/svdb/gnomad_v2.1_sv.sites.vcf"
+        config["organism_transcriptome"] = config["reference_dir"] + "/other/cellranger/refdata-gex-" + config["reference"]
 
     if globresource == "bioit":
         config["species_name"] = [organism_name for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["reference"] in reference_dict[organism_name].keys()][0]
@@ -244,6 +245,7 @@ def load_organism():
         config["organism_dbsnp"] = config["reference_dir"] + "/annot/" + config["release"] + "/dbSNP/common_all.vcf.gz"
         config["organism_cytoband"] = config["reference_dir"] + "/others/cytoband/" + config["assembly"] + ".cytoband.tsv"
         config["organism_svdb"] = config["reference_dir"] + "/others/svdb/gnomad_v2.1_sv.sites.vcf"
+        config["organism_transcriptome"] = config["reference_dir"] + "/tool_data/Cellranger/refdata-gex-" + config["assembly"]
 
 
     if "lib_ROI" in config:
