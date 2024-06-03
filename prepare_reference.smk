@@ -294,7 +294,7 @@ rule create_salmon_index:
           gtf = config["organism_gtf"],
           cdna = config["organism_cdna_fasta"]
   output: gen = config["organism_salmon_gentrome"],
-          dec = config["organism_salmon"]+"/Salmon_decoy/decoys.txt",
+          dec = config["organism_salmon"]+"/decoy/decoys.txt",
   log:    run = config["organism_salmon"]+"/"+config["release"]+"_salmon.decoy_creation.log"
   params: folder = config["organism_salmon"]
   threads: 20
