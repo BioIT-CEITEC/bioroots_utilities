@@ -247,10 +247,10 @@ def load_organism():
         config["organism_svdb"] = config["reference_dir"] + "/others/svdb/gnomad_v2.1_sv.sites.vcf"
         config["organism_transcriptome"] = config["reference_dir"] + "/tool_data/Cellranger/refdata-gex-" + config["assembly"]
         config["organism_gmap_folder"] = config["reference_dir"] + "/tool_data/GMAP/" + config["release"]
-        config["organism_splicesites"] = config["reference_dir"] + "/tool_data/GMAP/" + config["release"] + "/" + config["assembly"] + ".splicesites
-        config["organism_introns"] = config["reference_dir"] + "/tool_data/GMAP/" + config["release"] + "/" + config["assembly"] + ".introns
-        config["organism_map_splice"] = config["reference_dir"] + "/tool_data/GMAP/" + config["release"] + "/" + config["assembly"] + "/" + config["assembly"] + ".maps/" + config["assembly"] + ".splicesites.iit
-        config["organism_map_introns"] = config["reference_dir"] + "/tool_data/GMAP/" + config["release"] + "/" + config["assembly"] + "/" + config["assembly"] + ".maps/" + config["assembly"] + ".introns.iit
+        config["organism_splicesites"] = config["reference_dir"] + "/tool_data/GMAP/" + config["release"] + "/" + config["assembly"] + ".splicesites"
+        config["organism_introns"] = config["reference_dir"] + "/tool_data/GMAP/" + config["release"] + "/" + config["assembly"] + ".introns"
+        config["organism_map_splice"] = config["reference_dir"] + "/tool_data/GMAP/" + config["release"] + "/" + config["assembly"] + "/" + config["assembly"] + ".maps/" + config["assembly"] + ".splicesites.iit"
+        config["organism_map_introns"] = config["reference_dir"] + "/tool_data/GMAP/" + config["release"] + "/" + config["assembly"] + "/" + config["assembly"] + ".maps/" + config["assembly"] + ".introns.iit"
 
     if "lib_ROI" in config:
         if globresource == "bioda":
