@@ -8,17 +8,15 @@ from snakemake.remote.S3 import RemoteProvider as S3RemoteProvider
 
 ##### Check resource path
 def check_resources():
-    if "reference" in config:
-        if "_r" in config["reference"]:
-            globresource = "bioit"
-            config["globalResources"] = config["globalResources"].replace("base/references_backup","resources")
-        else:
-            globresource = "bioda"
+    if "references_backup" in config["globalResources"]:
+        if "reference" in config:
+            if "_r" in config["reference"]:
+                globresource = "bioit"
+                config["globalResources"] = config["globalResources"].replace("base/references_backup","resources")
+            else:
+                globresource = "bioda"
     else:
-        if "references_backup" in config["globalResources"]:
-            globresource = "bioda"
-        else:
-            globresource = "bioit"
+        globresource = "bioit"
     return globresource
 
 ##### Config processing #####
