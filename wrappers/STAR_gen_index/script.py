@@ -29,6 +29,6 @@ command = "rm -rf _STARtmp " + " >> " + str(snakemake.log.run) + " 2>&1"
 print("## COMMAND: "+command+"\n")
 shell(command)
 
-command = "mv Log.out "+ snakemake.params.log +" >> "+ str(snakemake.log.run) +" 2>&1"
+command = "cat "+ snakemake.params.log +" >> "+ str(snakemake.log.run) +" 2>&1"
 print("## COMMAND: "+command+"\n")
 shell(command)
