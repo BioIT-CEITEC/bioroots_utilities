@@ -171,6 +171,7 @@ def load_organism():
         config["organism"] = config["species_name"].split(" (")[0].lower().replace(" ","_")
         if len(config["species_name"].split(" (")) > 1:
             config["species"] = config["species_name"].split(" (")[1].replace(")","")
+        config["release"] = "old_ref"
         config["reference_dir"] = os.path.join(config["globalResources"] , config["organism"] , config["reference"])
         config["organism_fasta"] = config["reference_dir"] + "/seq/" + config["reference"] + ".fa"
         config["organism_ucsc"] = config["reference_dir"] + "/seq/" + config["reference"] + ".fa.fai.ucsc"
