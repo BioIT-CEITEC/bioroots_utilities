@@ -8,7 +8,7 @@ from snakemake.remote.S3 import RemoteProvider as S3RemoteProvider
 
 ##### Check resource path
 def check_resources():
-    if "references_backup" in config["globalResources"]:
+    if "references_backup" in config["globalResources"] and "organism" not in config:
         if "reference" in config:
             if "_r" in config["reference"]:
                 globresource = "bioit"
@@ -142,9 +142,11 @@ def load_ROI(globresource):
                                        ref_name].keys()][0]
 
         if globresource == "bioit":
-            config["reference"] = [ref_name for ref_name in lib_ROI_dict.keys() if
-                                   isinstance(lib_ROI_dict[ref_name],dict) and config["lib_ROI"] in lib_ROI_dict[
-                                       ref_name].keys()][0]
+            if "organism" not in config:
+                config["reference"] = [ref_name for ref_name in lib_ROI_dict.keys() if
+                                       isinstance(lib_ROI_dict[ref_name],dict) and config["lib_ROI"] in lib_ROI_dict[
+                                           ref_name].keys()][0]
+
             config["lib_ROI"] = config["lib_ROI"].rsplit("_",1)[0]
 
     return config
@@ -162,16 +164,16 @@ def load_organism():
     k = open(os.path.join(config["globalResources"],"reference_info","kegg_reference.json"))
     kegg_dict = json.load(k)
     k.close()
+    organism_tab = pd.read_csv(os.path.join(config["globalResources"] + "/reference_info/sample_info.csv"), sep = "\t")
 
     if "lib_ROI" in config and config["lib_ROI"] != "wgs":
         load_ROI(globresource)
- 
+q
     if globresource == "bioda":
         config["species_name"] = [organism_name for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["reference"] in reference_dict[organism_name].keys()][0]
         config["organism"] = config["species_name"].split(" (")[0].lower().replace(" ","_")
         if len(config["species_name"].split(" (")) > 1:
             config["species"] = config["species_name"].split(" (")[1].replace(")","")
-        config["release"] = "old_ref"
         config["reference_dir"] = os.path.join(config["globalResources"] , config["organism"] , config["reference"])
         config["organism_fasta"] = config["reference_dir"] + "/seq/" + config["reference"] + ".fa"
         config["organism_ucsc"] = config["reference_dir"] + "/seq/" + config["reference"] + ".fa.fai.ucsc"
@@ -206,12 +208,21 @@ def load_organism():
         config["organism_transcriptome"] = config["reference_dir"] + "/other/cellranger/refdata-gex-" + config["reference"]
 
     if globresource == "bioit":
-        config["species_name"] = [organism_name for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["reference"] in reference_dict[organism_name].keys()][0]
-        config["organism"] = config["species_name"].split(" (")[0].lower().replace(" ","_")
-        if len(config["species_name"].split(" (")) > 1:
-            config["species"] = config["species_name"].split(" (")[1].replace(")","")
-        config["assembly"] = config["reference"].rsplit("_",1)[0]
-        config["release"] = config["reference"].rsplit("_",1)[1]
+        if "organism" not in config:
+            config["species_name"] = [organism_name for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["reference"] in reference_dict[organism_name].keys()][0]
+            config["organism"] = config["species_name"].split(" (")[0].lower().replace(" ","_")
+            if len(config["species_name"].split(" (")) > 1:
+                config["species"] = config["species_name"].split(" (")[1].replace(")","")
+            config["assembly"] = config["reference"].rsplit("_",1)[0]
+            config["release"] = config["reference"].rsplit("_",1)[1]
+            config["organism_code"] = kegg_dict.get(config["species_name"])
+
+        else:
+            organism_row = organism_tab[organism_tab["organism"] == config["organism"]]
+            config["species_name"] = organism_row["full_name"].values[0]
+            config["organism_code"] = organism_row["kegg_term"].values[0]
+
+
         config["reference_dir"] = os.path.join(config["globalResources"] , "references", config["organism"] , config["assembly"])
         config["organism_fasta"] = config["reference_dir"] + "/seq/" + config["assembly"] + ".fa"
         config["organism_ucsc"] = config["reference_dir"] + "/seq/" + config["assembly"] + ".fa.fai.ucsc"
@@ -225,7 +236,6 @@ def load_organism():
         config["organism_salmon"] = config["reference_dir"] + "/tool_data/Salmon/" + config["release"]
         config["organism_salmon_gentrome"] = config["reference_dir"] + "/tool_data/Salmon/" + config["release"] + "/Salmon_decoy/gentrome.fa"
         config["organism_kallisto"] = config["reference_dir"] + "/tool_data/Kallisto/" + config["release"] + "/Kallisto"
-        config["organism_code"] = kegg_dict.get(config["species_name"])
         config["organism_picard_bed12"] = config["reference_dir"] + "/annot/" + config["release"] + "/Picard/" + config["assembly"] + ".bed12"
         config["organism_picard_refFlat"] = config["reference_dir"] + "/annot/" + config["release"] + "/Picard/" + config["assembly"] + ".refFlat"
         config["organism_ncbi_general"] = config["reference_dir"] + "/seq/BOWTIE2_fastq_screen/" + config["assembly"] + ".ncbi.fna",
@@ -282,6 +292,8 @@ def load_mirna():
     k = open(os.path.join(config["globalResources"],"reference_info","kegg_reference.json"),)
     kegg_dict = json.load(k)
     k.close()
+    organism_tab = pd.read_csv(os.path.join(config["globalResources"] + "/reference_info/sample_info.csv"), sep = "\t")
+
 
     if globresource == "bioda":
         config["species_name"] = [organism_name for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["reference"] in reference_dict[organism_name].keys()][0]
@@ -294,15 +306,23 @@ def load_mirna():
         config["organism_code"] = kegg_dict.get(config["species_name"])
 
     if globresource == "bioit":
-        config["species_name"] = [organism_name for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["reference"] in reference_dict[organism_name].keys()][0]
-        config["organism"] = config["species_name"].split(" (")[0].lower().replace(" ","_")
-        if len(config["species_name"].split(" (")) > 1:
-            config["species"] = config["species_name"].split(" (")[1].replace(")","")
-        config["assembly"] = config["reference"].rsplit("_",1)[1]
+        if "organism" not in config:
+            config["reference"] = [ref_name for ref_name in lib_ROI_dict.keys() if isinstance(lib_ROI_dict[ref_name],dict) and config["lib_ROI"] in lib_ROI_dict[ref_name].keys()][0]
+            config["species_name"] = [organism_name for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["reference"] in reference_dict[organism_name].keys()][0]
+            config["organism"] = config["species_name"].split(" (")[0].lower().replace(" ","_")
+            if len(config["species_name"].split(" (")) > 1:
+                config["species"] = config["species_name"].split(" (")[1].replace(")","")
+            config["assembly"] = config["reference"].rsplit("_",1)[1]
+            config["organism_code"] = kegg_dict.get(config["species_name"])
+
+        else:
+            organism_row = organism_tab[organism_tab["organism"] == config["organism"]]
+            config["species_name"] = organism_row["full_name"].values[0]
+            config["organism_code"] = organism_row["kegg_term"].values[0]
+
         config["reference_dir"] = os.path.join(config["globalResources"] , "references", config["organism"] , config["assembly"])
         config["organism_rrna_star"] = config["reference_dir"] + "/tool_data/STAR/SAindex"
         config["organism_mirbase"] = config["reference_dir"] + "/seq/hairpin.fa"
-        config["organism_code"] = kegg_dict.get(config["species_name"])
 
     return config
 
