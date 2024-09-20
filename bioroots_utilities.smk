@@ -164,7 +164,7 @@ def load_organism():
     k = open(os.path.join(config["globalResources"],"reference_info","kegg_reference.json"))
     kegg_dict = json.load(k)
     k.close()
-    organism_tab = pd.read_csv(os.path.join(config["globalResources"] + "/reference_info/sample_info.csv"), sep = "\t")
+    organism_tab = pd.read_csv(os.path.join(config["globalResources"],"reference_info","organism_tab.tsv"), sep = "\t")
 
     if "lib_ROI" in config and config["lib_ROI"] != "wgs":
         load_ROI(globresource)
@@ -292,7 +292,7 @@ def load_mirna():
     k = open(os.path.join(config["globalResources"],"reference_info","kegg_reference.json"),)
     kegg_dict = json.load(k)
     k.close()
-    organism_tab = pd.read_csv(os.path.join(config["globalResources"] + "/reference_info/sample_info.csv"), sep = "\t")
+    organism_tab = pd.read_csv(os.path.join(config["globalResources"],"reference_info","organism_tab.tsv"), sep = "\t")
 
 
     if globresource == "bioda":
