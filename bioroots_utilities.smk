@@ -17,6 +17,7 @@ def check_resources():
                 globresource = "bioda"
     else:
         globresource = "bioit"
+        config["globalResources"] = config["globalResources"].replace("base/references_backup","resources")
     return globresource
 
 ##### Config processing #####
@@ -168,7 +169,7 @@ def load_organism():
 
     if "lib_ROI" in config and config["lib_ROI"] != "wgs":
         load_ROI(globresource)
-q
+
     if globresource == "bioda":
         config["species_name"] = [organism_name for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["reference"] in reference_dict[organism_name].keys()][0]
         config["organism"] = config["species_name"].split(" (")[0].lower().replace(" ","_")
@@ -218,9 +219,9 @@ q
             config["organism_code"] = kegg_dict.get(config["species_name"])
 
         else:
-            organism_row = organism_tab[organism_tab["organism"] == config["organism"]]
-            config["species_name"] = organism_row["full_name"].values[0]
-            config["organism_code"] = organism_row["kegg_term"].values[0]
+            config["species_name"] = organism_tab[organism_tab["organism"] == config["organism"]]["full_name"].values[0]
+            config["organism_code"] = organism_tab[organism_tab["organism"] == config["organism"]]["kegg_term"].values[0]
+            config["release"] = config["release"].rsplit("_",1)[1]
 
 
         config["reference_dir"] = os.path.join(config["globalResources"] , "references", config["organism"] , config["assembly"])
@@ -316,9 +317,8 @@ def load_mirna():
             config["organism_code"] = kegg_dict.get(config["species_name"])
 
         else:
-            organism_row = organism_tab[organism_tab["organism"] == config["organism"]]
-            config["species_name"] = organism_row["full_name"].values[0]
-            config["organism_code"] = organism_row["kegg_term"].values[0]
+            config["organism_code"] = organism_tab[organism_tab["organism"] == config["organism"]]["kegg_term"].values[0]
+            config["release"] = config["release"].rsplit("_",1)[1]
 
         config["reference_dir"] = os.path.join(config["globalResources"] , "references", config["organism"] , config["assembly"])
         config["organism_rrna_star"] = config["reference_dir"] + "/tool_data/STAR/SAindex"
