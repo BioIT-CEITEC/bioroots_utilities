@@ -211,21 +211,23 @@ def load_organism():
 
     if globresource == "bioit":
         if "organism" not in config:
-            config["species_name"] = [organism_name for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["reference"] in reference_dict[organism_name].keys()][0]
-            config["organism"] = config["species_name"].split(" (")[0].lower().replace(" ","_")
+            config["species_name"] = [organism_name for organism_name in reference_dict.keys() 
+                                      if isinstance(reference_dict[organism_name], dict) 
+                                      and config["reference"] in reference_dict[organism_name].keys()][0]
+            config["organism"] = config["species_name"].split(" (")[0].lower().replace(" ", "_")
             if len(config["species_name"].split(" (")) > 1:
-                config["species"] = config["species_name"].split(" (")[1].replace(")","")
-            config["assembly"] = config["reference"].rsplit("_",1)[0]
-            config["release"] = config["reference"].rsplit("_",1)[1]
+                config["species"] = config["species_name"].split(" (")[1].replace(")", "")
+            config["assembly"] = config["reference"].rsplit("_", 1)[0]
+            config["release"] = config["reference"].rsplit("_", 1)[1]
             config["organism_code"] = kegg_dict.get(config["species_name"])
-
         else:
             config["species_name"] = organism_tab[organism_tab["organism"] == config["organism"]]["full_name"].values[0]
             config["organism_code"] = organism_tab[organism_tab["organism"] == config["organism"]]["kegg_term"].values[0]
-                if "release" not in config:
-                    config["release"] = organism_tab[organism_tab["organism"] == config["organism"]]["release"].values[0]
-                else:
-                    config["release"] = config["release"].rsplit("_",1)[1]
+
+            if "release" not in config:
+                config["release"] = organism_tab[organism_tab["organism"] == config["organism"]]["release"].values[0]
+            else:
+                config["release"] = config["release"].rsplit("_", 1)[1]
 
 
         config["reference_dir"] = os.path.join(config["globalResources"] , "references", config["organism"] , config["assembly"])
