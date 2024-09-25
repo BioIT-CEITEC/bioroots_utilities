@@ -8,16 +8,16 @@ from snakemake.remote.S3 import RemoteProvider as S3RemoteProvider
 
 ##### Check resource path
 def check_resources():
-    if "references_backup" in config["globalResources"] and "organism" not in config:
-        if "reference" in config:
-            if "_r" in config["reference"]:
+    if "references_backup" in config["globalResources"]:
+        if "organism" not in config:
+            if "reference" in config and "_r" in config["reference"]:
                 globresource = "bioit"
-                config["globalResources"] = config["globalResources"].replace("base/references_backup","resources")
+                config["globalResources"] = config["globalResources"].replace("base/references_backup", "resources")
             else:
                 globresource = "bioda"
-    else:
-        globresource = "bioit"
-        config["globalResources"] = config["globalResources"].replace("base/references_backup","resources")
+        else:
+            globresource = "bioit"
+            config["globalResources"] = config["globalResources"].replace("base/references_backup", "resources")
     return globresource
 
 ##### Config processing #####
@@ -221,7 +221,10 @@ def load_organism():
         else:
             config["species_name"] = organism_tab[organism_tab["organism"] == config["organism"]]["full_name"].values[0]
             config["organism_code"] = organism_tab[organism_tab["organism"] == config["organism"]]["kegg_term"].values[0]
-            config["release"] = config["release"].rsplit("_",1)[1]
+                if "release" not in config:
+                    config["release"] = organism_tab[organism_tab["organism"] == config["organism"]]["release"].values[0]
+                else:
+                    config["release"] = config["release"].rsplit("_",1)[1]
 
 
         config["reference_dir"] = os.path.join(config["globalResources"] , "references", config["organism"] , config["assembly"])
