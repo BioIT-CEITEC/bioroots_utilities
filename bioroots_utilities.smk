@@ -128,9 +128,7 @@ def load_tooldir():
         config["tooldir"] = os.path.join(config["globalResources"],"tools")
 
 
-def load_ROI():
-    globresource = check_resources()
-    print(globresource)
+def load_ROI(globresource):
     k = open(os.path.join(config["globalResources"],"reference_info","lib_ROI.json"),)
     lib_ROI_dict = json.load(k)
     k.close()
