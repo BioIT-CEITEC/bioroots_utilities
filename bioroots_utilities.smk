@@ -219,11 +219,11 @@ def load_organism():
             config["release"] = config["reference"].rsplit("_", 1)[1]
             config["organism_code"] = kegg_dict.get(config["species_name"])
         else:
-            config["species_name"] = organism_tab[organism_tab["organism"] == config["organism"]]["full_name"].values[0]
-            config["organism_code"] = organism_tab[organism_tab["organism"] == config["organism"]]["kegg_term"].values[0]
+            config["species_name"] = organism_tab[organism_tab["assembly"] == config["assembly"]]["full_name"].values[0]
+            config["organism_code"] = organism_tab[organism_tab["assembly"] == config["assembly"]]["kegg_term"].values[0]
 
-            if "release" not in config:
-                config["release"] = organism_tab[organism_tab["organism"] == config["organism"]]["release"].values[0]
+            if "release" not in config or config["release"] == "UNK_UNK":
+                config["release"] = organism_tab[organism_tab["assembly"] == config["assembly"]]["release"].values[0]
             else:
                 config["release"] = config["release"].rsplit("_", 1)[1]
 
