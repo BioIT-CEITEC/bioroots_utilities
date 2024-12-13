@@ -374,7 +374,7 @@ def load_and_configure_UMI(wf_config_path):
 
 
 def spikein_reference():
-    return os.path.join(config["globalResources"],"escherichia_coli/JM101/tool_data/Bowtie2/JM101.1.bt2")
+    return os.path.join(config["globalResources"],"references/escherichia_coli/JM101/tool_data/Bowtie2/JM101.1.bt2")
 
 def reference_directory():
     return os.path.join(config["globalResources"],config["organism"],config["reference"])
