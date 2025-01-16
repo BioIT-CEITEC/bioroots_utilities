@@ -289,6 +289,20 @@ rule STAR_gen_index:
     conda:  "../wrappers/STAR_gen_index/env.yaml"
     script: "../wrappers/STAR_gen_index/script.py"
 
+rule STARrrna_gen_index:
+    input:  gen = config["organism_fasta"],
+            idx = config["organism_fasta"]+".fai",
+            ref = config["organism_gtf"],
+    output: SAindex = config["organism_rrna_star"],
+    params: dir = config["reference_dir"]+"/tool_data/STARrrna/"+config["release"],
+            log = config["reference_dir"]+"/tool_data/STARrrna/"+config["release"]+"/Log.out",
+            extra = "",
+    resources:  mem = 100
+    log:    run = config["reference_dir"]+"/tool_data/STARrrna/"+config["release"]+"/"+config["release"]+".indexation_run.log",
+    threads:    30
+    conda:  "../wrappers/STARrrna_gen_index/env.yaml"
+    script: "../wrappers/STARrrna_gen_index/script.py"
+
 rule create_salmon_index:
   input:  gen = config["organism_fasta"],
           gtf = config["organism_gtf"],
