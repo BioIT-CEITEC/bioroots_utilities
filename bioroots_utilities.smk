@@ -325,7 +325,7 @@ def load_mirna():
             config["release"] = config["release"].rsplit("_",1)[1]
 
         config["reference_dir"] = os.path.join(config["globalResources"] , "references", config["organism"] , config["assembly"])
-        config["organism_rrna_star"] = config["reference_dir"] + "/tool_data/STAR/SAindex"
+        config["organism_rrna_star"] = config["reference_dir"]+"/tool_data/STAR_rrna/"+config["release"]+"/SAindex"
         config["organism_mirbase"] = config["reference_dir"] + "/seq/hairpin.fa"
 
     return config
