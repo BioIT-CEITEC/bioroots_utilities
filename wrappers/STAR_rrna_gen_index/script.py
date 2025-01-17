@@ -21,17 +21,24 @@ STAR_GENOME_BASES_LOG = min(14,math.floor(math.log(float(int(help)),2)/2-1))
 command = "mkdir -p "+ snakemake.params.dir + " >> " + str(snakemake.log.run) + " 2>&1"
 print("## COMMAND: "+command+"\n")
 shell(command)
-
-command = "grep -e 'gene_biotype \"rRNA\"' -e 'gene_biotype \"snoRNA\"' -e 'gene_biotype \"snRNA\"' " + str(snakemake.input.ref) + " | awk -F'\t' '$3 == \"gene\" {{ \
-    split($9, attr, \";\"); \
-    for (i in attr) {{ \
-        if (attr[i] ~ /gene_id/) {{ \
-            gsub(/gene_id |\"/, \"\", attr[i]); \
-            gene_id = attr[i]; \
-        }} \
-    }} \
-    print $1, $4-1, $5, gene_id, \"1\", $7 \
-}}' OFS='\t' > " + str(snakemake.params.rrna_bed) + " >> " + str(snakemake.log.run) + " 2>&1"
+command = (
+    "grep -e 'gene_biotype \"rRNA\"' -e 'gene_biotype \"snoRNA\"' -e 'gene_biotype \"snRNA\"' "
+    + str(snakemake.input.ref)
+    + " | awk -F'\t' '$3 == \"gene\" {{ "
+    + "split($9, attr, \";\"); "
+    + "for (i in attr) {{ "
+    + "if (attr[i] ~ /gene_id/) {{ "
+    + "gsub(/gene_id |\"/, \"\", attr[i]); "
+    + "gene_id = attr[i]; "
+    + "}} "
+    + "}} "
+    + "print $1, $4-1, $5, gene_id, \"1\", $7 "
+    + "}}' OFS='\t' > "
+    + str(snakemake.params.rrna_bed)
+    + " >> "
+    + str(snakemake.log.run)
+    + " 2>&1"
+)
 print("## COMMAND: "+command+"\n")
 shell(command)
 
