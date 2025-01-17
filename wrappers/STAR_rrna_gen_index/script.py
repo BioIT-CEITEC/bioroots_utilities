@@ -21,7 +21,7 @@ command = "mkdir -p "+ snakemake.params.dir + " >> " + str(snakemake.log.run) + 
 print("## COMMAND: "+command+"\n")
 shell(command)
 
-command = "grep -Pe '\tgene\t' "+ str(snakemake.input.ref) + """ grep -e 'rRNA' -e 'snoRNA' -e 'snRNA' | cut -d';' -f1 | sed -e 's/gene_id //' | awk 'BEGIN{FS=OFS="\t"}{print $1,$4,$5,$9,"1",$7}' > """+ str(snakemake.params.rrna_bed) + " >> " + str(snakemake.log.run) + " 2>&1
+command = "grep -Pe '\tgene\t' "+ str(snakemake.input.ref) + """ | grep -e 'rRNA' -e 'snoRNA' -e 'snRNA' | cut -d';' -f1 | sed -e 's/gene_id //' | awk 'BEGIN{FS=OFS="\t"}{print $1,$4,$5,$9,"1",$7}' > """+ str(snakemake.params.rrna_bed) + " >> " + str(snakemake.log.run) + " 2>&1
 print("## COMMAND: "+command+"\n")
 shell(command)
 
