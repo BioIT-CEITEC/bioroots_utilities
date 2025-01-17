@@ -22,19 +22,19 @@ command = "mkdir -p "+ snakemake.params.dir + " >> " + str(snakemake.log.run) + 
 print("## COMMAND: "+command+"\n")
 shell(command)
 
-command = f"""
-grep -e 'gene_biotype "rRNA"' -e 'gene_biotype "snoRNA"' -e 'gene_biotype "snRNA"' {str(snakemake.input.ref)} | \
-awk -F'\t' '$3 == "gene" {{
-    split($9, attr, ";");
-    for (i in attr) {{
-        if (attr[i] ~ /gene_id/) {{
-            gsub(/gene_id |"/, "", attr[i]);
-            gene_id = attr[i];
-        }}
-    }}
-    print $1, $4-1, $5, gene_id, "1", $7
-}}' OFS='\t' > {str(snakemake.params.rrna_bed)} >> {str(snakemake.log.run)} 2>&1
-"""
+command = (
+    f"grep -e 'gene_biotype \"rRNA\"' -e 'gene_biotype \"snoRNA\"' -e 'gene_biotype \"snRNA\"' {str(snakemake.input.ref)} | "
+    f"awk -F'\\t' '$3 == \"gene\" {{ "
+    f"    split($9, attr, \";\"); "
+    f"    for (i in attr) {{ "
+    f"        if (attr[i] ~ /gene_id/) {{ "
+    f"            gsub(/gene_id |\\\"/, \"\", attr[i]); "
+    f"            gene_id = attr[i]; "
+    f"        }} "
+    f"    }} "
+    f"    print $1, $4-1, $5, gene_id, \"1\", $7 "
+    f"}}' OFS='\\t' > {str(snakemake.params.rrna_bed)} >> {str(snakemake.log.run)} 2>&1"
+)
 print("## COMMAND: "+command+"\n")
 shell(command)
 
