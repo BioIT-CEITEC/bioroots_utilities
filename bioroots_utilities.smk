@@ -206,6 +206,9 @@ def load_organism():
         config["organism_cytoband"] = config["reference_dir"] + "/other/cytoband/" + config["reference"] + ".cytoband.tsv"        
         config["organism_svdb"] = config["reference_dir"] + "/other/svdb/gnomad_v2.1_sv.sites.vcf"
         config["organism_transcriptome"] = config["reference_dir"] + "/other/cellranger/refdata-gex-" + config["reference"]
+        config["organism_rrna_star"] = config["reference_dir"] + "/index/STAR_rrna/SAindex"
+        config["organism_mirbase"] = config["reference_dir"] + "/seq/hairpin.fa"
+        config["organism_code"] = kegg_dict.get(config["species_name"])
 
     if globresource == "bioit":
         if "organism" not in config:
@@ -265,6 +268,9 @@ def load_organism():
         config["organism_introns"] = config["reference_dir"] + "/tool_data/GMAP/" + config["release"] + "/" + config["assembly"] + ".introns"
         config["organism_map_splice"] = config["reference_dir"] + "/tool_data/GMAP/" + config["release"]  + "/" + config["assembly"] + ".maps/" + config["assembly"] + ".splicesites.iit"
         config["organism_map_introns"] = config["reference_dir"] + "/tool_data/GMAP/" + config["release"] + "/" + config["assembly"] + ".maps/" + config["assembly"] + ".introns.iit"
+        config["organism_rrna_star"] = config["reference_dir"] + "/tool_data/STAR_rrna/" + config[
+            "release"] + "/SAindex"
+        config["organism_mirbase"] = config["reference_dir"] + "/seq/hairpin.fa"
 
     if "lib_ROI" in config:
         if globresource == "bioda":
