@@ -324,7 +324,11 @@ def load_mirna():
             config["organism_code"] = organism_tab[organism_tab["organism"] == config["organism"]]["kegg_term"].values[0]
             config["release"] = config["release"].rsplit("_",1)[1]
 
-        config["reference_dir"] = os.path.join(config["globalResources"] , "references", config["organism"] , config["assembly"])
+        config["reference_dir"] = os.path.join(
+            config["globalResources"],"references",config["organism"],config["assembly"])
+        config["organism_fasta"] = config["reference_dir"] + "/seq/" + config["assembly"] + ".fa"
+        config["organism_gtf"] = config["reference_dir"] + "/annot/" + config["release"] + "/" + config[
+            "assembly"] + ".gtf"
         config["organism_rrna_star"] = config["reference_dir"]+"/tool_data/STAR_rrna/"+config["release"]+"/SAindex"
         config["organism_mirbase"] = config["reference_dir"] + "/seq/hairpin.fa"
 
