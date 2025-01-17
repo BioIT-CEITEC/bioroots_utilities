@@ -21,13 +21,15 @@ command = "mkdir -p "+ snakemake.params.dir + " >> " + str(snakemake.log.run) + 
 print("## COMMAND: "+command+"\n")
 shell(command)
 
-command = "grep -Pe '\tgene\t' "+ str(snakemake.input.ref) + " | grep -e 'snoRNA' -e 'rRNA' -e 'snRNA' > "+ str(snakemake.params.rrna_gtf) + " >> " + str(snakemake.log.run) + " 2>&1
+command = "grep -Pe '\tgene\t' "+ str(snakemake.input.ref) + """ grep -e 'rRNA' -e 'snoRNA' -e 'snRNA' | cut -d';' -f1 | sed -e 's/gene_id //' | awk 'BEGIN{FS=OFS="\t"}{print $1,$4,$5,$9,"1",$7}' > """+ str(snakemake.params.rrna_bed) + " >> " + str(snakemake.log.run) + " 2>&1
 print("## COMMAND: "+command+"\n")
 shell(command)
 
-command = "bedtools getfasta"
+command = "bedtools getfasta -name -s -fi "+ str(snakemake.input.gen) + " -bed "+ str(snakemake.params.rrna_bed) + " -fo "+ str(snakemake.params.rrna_fa) + " >> " + str(snakemake.log.run) + " 2>&1"
+print("## COMMAND: "+command+"\n")
+shell(command)
 
-command = "STAR --runMode genomeGenerate --runThreadN "+str(snakemake.threads)+" --limitGenomeGenerateRAM " + str(snakemake.resources.mem * 1000000000) +" --genomeDir "+ snakemake.params.dir +" --genomeFastaFiles "+str(snakemake.params.rrna_fa)+" --sjdbGTFfile " + str(snakemake.input.ref) + " --genomeSAindexNbases "+str(STAR_GENOME_BASES_LOG)+" "+str(snakemake.params.extra)+" >> "+str(snakemake.log.run)+" 2>&1 "
+command = "STAR --runMode genomeGenerate --runThreadN "+str(snakemake.threads)+" --genomeDir "+ snakemake.params.dir +" --genomeFastaFiles "+str(snakemake.params.rrna_fa)+" --genomeSAindexNbases "+str(STAR_GENOME_BASES_LOG)+" >> "+str(snakemake.log.run)+" 2>&1 "
 print("## COMMAND: "+command+"\n")
 shell(command)
 

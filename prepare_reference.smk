@@ -297,11 +297,11 @@ rule STAR_rrna_gen_index:
     params: dir = config["reference_dir"]+"/tool_data/STAR_rrna/"+config["release"],
             log = config["reference_dir"]+"/tool_data/STAR_rrna/"+config["release"]+"/Log.out",
             extra = "",
-            rrna_gtf = config["reference_dir"] + "/annot/" + config["release"] + "/" + config["assembly"] + ".rrna.gtf",
-            rrna_fa = config["reference_dir"] + "/annot/" + config["release"] + "/" + config["assembly"] + ".rrna.fa",
+            rrna_bed = config["reference_dir"] + "/annot/" + config["release"] + "/" + config["assembly"] + ".rRNA.bed",
+            rrna_fa = config["reference_dir"] + "/annot/" + config["release"] + "/" + config["assembly"] + ".rRNA.fa",
     resources:  mem = 100
     log:    run = config["reference_dir"]+"/tool_data/STAR_rrna/"+config["release"]+"/"+config["release"]+".indexation_run.log",
-    threads:    30
+    threads:    20
     conda:  "../wrappers/STAR_rrna_gen_index/env.yaml"
     script: "../wrappers/STAR_rrna_gen_index/script.py"
 
