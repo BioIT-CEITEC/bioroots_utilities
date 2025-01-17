@@ -31,7 +31,7 @@ command = "grep -e 'gene_biotype \"rRNA\"' -e 'gene_biotype \"snoRNA\"' -e 'gene
         }} \
     }} \
     print $1, $4-1, $5, gene_id, \"1\", $7 \
-}}' OFS='\\t' > " + str(snakemake.params.rrna_bed) + " >> " + str(snakemake.log.run) + " 2>&1"
+}}' OFS='\\t' > " + str(snakemake.params.rrna_bed) + " 2>> " + str(snakemake.log.run) + " 2>&1"
 print("## COMMAND: "+command+"\n")
 shell(command)
 
