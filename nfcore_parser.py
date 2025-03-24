@@ -43,7 +43,8 @@ output = {
     "gui_params": {
         "primary": {},
         "detailed": {}
-    }
+    },
+
 }
 
 # Populate GUI parameters
@@ -63,6 +64,29 @@ for key, value in schema.get("$defs", {}).items():
                 output["gui_params"]["primary"][param] = param_entry
             else:
                 output["gui_params"]["detailed"][param] = param_entry
+
+# Open and parse the README file for ```csv patterns
+csv_lines = []
+with open(args.readme, "r") as readme_file:
+    lines = readme_file.readlines()
+    for i, line in enumerate(lines):
+        if line.strip() == "```csv":
+            # Capture the line following ```csv
+            if i + 1 < len(lines):
+                csv_lines.extend(lines[i + 1].strip().split(","))
+
+# Convert csv_lines into a JSON structure with label, type, and default
+csv_json = {
+    var.strip(): {
+        "label": var.strip(),
+        "type": "string",
+        "default": ""
+    }
+    for var in csv_lines
+}
+
+# Add the parsed CSV JSON structure to the output under "samples"
+output["samples"] = csv_json
 
 # Save the output to the specified JSON file
 with open(args.output_json, "w") as outfile:
