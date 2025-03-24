@@ -1,8 +1,15 @@
 import json
+import argparse
 
-#filepath = "/Users/alejandromedaglia/Documents/nfcore_hackaton/rnaseq/nextflow_schema.json"
+# Set up argument parsing
+parser = argparse.ArgumentParser(description="Convert Nextflow schema JSON to a structured format.")
+parser.add_argument("input_json", help="Path to the input JSON schema file.")
+parser.add_argument("readme", help="Path to the README.md file (currently unused).")
+parser.add_argument("output_json", help="Path to the output JSON file.")
+args = parser.parse_args()
+
 # Load the JSON schema
-with open("nextflow_schema.json", "r") as file:
+with open(args.input_json, "r") as file:
     schema = json.load(file)
 
 # Define the output structure
@@ -52,6 +59,6 @@ for key, value in schema.get("$defs", {}).items():
             else:
                 output["gui_params"]["detailed"][param] = param_entry
 
-# Save the output to a new JSON file
-with open("converted_schema.json", "w") as outfile:
+# Save the output to the specified JSON file
+with open(args.output_json, "w") as outfile:
     json.dump(output, outfile, indent=4)
