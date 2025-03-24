@@ -12,19 +12,24 @@ args = parser.parse_args()
 with open(args.input_json, "r") as file:
     schema = json.load(file)
 
+
+workflow_type = None
+for key, value in schema.items():
+    if key == "title" and isinstance(value, str) and value.startswith("nf-core/"):
+        # Extract everything after "nf-core/" and before the next space
+        workflow_type = value.split("nf-core/")[1].split()[0]
+        break
+
 # Define the output structure
 output = {
     "workflow_description": {
-        "name": "rnaseq_analysis",
+        "name": workflow_type,
         "version": 1.0,
-        "label": "RNA-Seq Analysis",
+        "label": "workflow_type",
         "type": "rnaseq_analysis",
         "inputs": "raw_fastq/{sample}*fastq.gz",
         "outputs": [
-            "qc_reports/*",
-            "logs/*",
-            "sequences_summary/*",
-            "aligned_reads/{sample}*aligned.bam"
+            "results/" + workflow_type+ "/*"
         ],
         "report_index": "qc_reports/multiqc/multiqc_report.html",
         "reports": [
