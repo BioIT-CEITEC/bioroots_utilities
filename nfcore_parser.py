@@ -57,6 +57,12 @@ for key, value in schema.get("$defs", {}).items():
                 "default": details.get("default", None),
                 "info": details.get("help_text", ""),
             }
+            # Handle default values for specific types
+            if param_entry["type"] == "string" and param_entry["default"] is None:
+                param_entry["default"] = ""
+            elif param_entry["type"] == "boolean" and param_entry["default"] is None:
+                param_entry["default"] = False
+
             if "enum" in details:
                 param_entry["list"] = {item: item for item in details["enum"]}
                 param_entry["type"] = "enum"
@@ -64,7 +70,6 @@ for key, value in schema.get("$defs", {}).items():
                 output["gui_params"]["primary"][param] = param_entry
             else:
                 output["gui_params"]["detailed"][param] = param_entry
-
 # Open and parse the README file for ```csv patterns
 csv_lines = []
 with open(args.readme, "r") as readme_file:
