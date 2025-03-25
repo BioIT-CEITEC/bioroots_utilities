@@ -70,6 +70,7 @@ for key, value in schema.get("$defs", {}).items():
                 output["gui_params"]["primary"][param] = param_entry
             else:
                 output["gui_params"]["detailed"][param] = param_entry
+
 # Open and parse the README file for ```csv patterns
 csv_lines = []
 with open(args.readme, "r") as readme_file:
@@ -81,17 +82,33 @@ with open(args.readme, "r") as readme_file:
                 csv_lines.extend(lines[i + 1].strip().split(","))
 
 # Convert csv_lines into a JSON structure with label, type, and default
-csv_json = {
-    var.strip(): {
-        "label": var.strip(),
-        "type": "string",
-        "default": ""
-    }
-    for var in csv_lines
-}
+csv_json = {}
+requested_params = []
 
-# Add the parsed CSV JSON structure to the output under "samples"
-output["samples"] = csv_json
+for var in csv_lines:
+    var = var.strip()
+    # Skip specific labels
+    if var in ["sample", "fastq_1", "fastq_2"]:
+        continue
+    # Add specific keys to requested_params based on labels
+    if var == "paired":
+        requested_params.append("is_paired")
+    elif var == "strandedness":
+        requested_params.append("strandness")
+    else:
+        # Add the variable to csv_json if it's not excluded
+        csv_json[var] = {
+            "label": var,
+            "type": "string",
+            "default": ""
+        }
+
+# Add requested_params to the output
+output["requested_params"] = requested_params
+
+# Only add "samples" to the output if csv_json is not empty
+if csv_json:
+    output["samples"] = csv_json
 
 # Save the output to the specified JSON file
 with open(args.output_json, "w") as outfile:
