@@ -103,13 +103,23 @@ for var in csv_lines:
             "default": ""
         }
 
-# Add requested_params to the output
-output["requested_params"] = requested_params
+# Reconstruct the output dictionary to enforce the desired order
+final_output = {
+    "workflow_description": output["workflow_description"],
+    "general_params": output["general_params"],
+}
 
-# Only add "samples" to the output if csv_json is not empty
+# Add requested_params if it exists
+if requested_params:
+    final_output["requested_params"] = requested_params
+
+# Add gui_params
+final_output["gui_params"] = output["gui_params"]
+
+# Add samples if csv_json is not empty
 if csv_json:
-    output["samples"] = csv_json
+    final_output["samples"] = csv_json
 
-# Save the output to the specified JSON file
+# Save the final output to the specified JSON file
 with open(args.output_json, "w") as outfile:
-    json.dump(output, outfile, indent=4)
+    json.dump(final_output, outfile, indent=4)
