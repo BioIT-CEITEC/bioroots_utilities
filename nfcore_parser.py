@@ -31,9 +31,9 @@ output = {
         "outputs": [
             "results/" + workflow_type+ "/*"
         ],
-        "report_index": "reports/multiqc_report.html",
+        "report_index": "results/" + workflow_type+ "/pipeline_info/pipeline_report.html",
         "reports": [
-            "reports/multiqc_report.html"
+            "results/" + workflow_type+ "/pipeline_info/pipeline_report.html"
         ]
     },
     "general_params": [
@@ -48,7 +48,7 @@ output = {
 }
 
 # Populate GUI parameters
-for key, value in schema.get("$defs", {}).items():
+for key, value in (schema.get("$defs", {}) or schema.get("definitions", {})).items():
     if "properties" in value:
         for param, details in value["properties"].items():
             if param == "input":
