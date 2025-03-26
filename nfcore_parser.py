@@ -31,9 +31,9 @@ output = {
         "outputs": [
             "results/" + workflow_type+ "/*"
         ],
-        "report_index": "qc_reports/multiqc/multiqc_report.html",
+        "report_index": "reports/multiqc_report.html",
         "reports": [
-            "qc_reports/multiqc/multiqc_report.html"
+            "reports/multiqc_report.html"
         ]
     },
     "general_params": [
@@ -51,25 +51,70 @@ output = {
 for key, value in schema.get("$defs", {}).items():
     if "properties" in value:
         for param, details in value["properties"].items():
-            param_entry = {
-                "label": details.get("description", param),
-                "type": details.get("type", "string"),
-                "default": details.get("default", None),
-                "info": details.get("help_text", ""),
-            }
-            # Handle default values for specific types
-            if param_entry["type"] == "string" and param_entry["default"] is None:
-                param_entry["default"] = ""
-            elif param_entry["type"] == "boolean" and param_entry["default"] is None:
-                param_entry["default"] = False
-
-            if "enum" in details:
-                param_entry["list"] = {item: item for item in details["enum"]}
-                param_entry["type"] = "enum"
-            if key == "input_output_options":
-                output["gui_params"]["primary"][param] = param_entry
+            if param == "input":
+                # Handle the "input" parameter
+                output["gui_params"]["primary"]["input"] = {
+                    "type": "constant",
+                    "default": "samplesheet.csv"
+                }
+            elif param == "outdir":
+                # Handle the "outdir" parameter
+                output["gui_params"]["primary"]["outdir"] = {
+                    "type": "constant",
+                    "default": "results/" + workflow_type + "/"
+                }
+            elif param == "genome":
+                # Replace "genome" with the desired structure
+                output["gui_params"]["primary"]["organism"] = {
+                    "label": "Organism",
+                    "type": "enum",
+                    "dynamicEnumName": "organism"
+                }
+                output["gui_params"]["primary"]["assembly"] = {
+                    "label": "Assembly",
+                    "type": "enum",
+                    "dynamicEnumName": "assembly",
+                    "filters": {
+                        "group": {
+                            "param": "organism",
+                            "type": "value",
+                            "showGroupLabel": False
+                        }
+                    }
+                }
+                output["gui_params"]["primary"]["release"] = {
+                    "label": "Release",
+                    "type": "enum",
+                    "dynamicEnumName": "release",
+                    "filters": {
+                        "group": {
+                            "param": "assembly",
+                            "type": "value",
+                            "showGroupLabel": False
+                        }
+                    }
+                }
             else:
-                output["gui_params"]["detailed"][param] = param_entry
+                # Default behavior for other parameters
+                param_entry = {
+                    "label": details.get("description", param),
+                    "type": details.get("type", "string"),
+                    "default": details.get("default", None),
+                    "info": details.get("help_text", ""),
+                }
+                # Handle default values for specific types
+                if param_entry["type"] == "string" and param_entry["default"] is None:
+                    param_entry["default"] = ""
+                elif param_entry["type"] == "boolean" and param_entry["default"] is None:
+                    param_entry["default"] = False
+
+                if "enum" in details:
+                    param_entry["list"] = {item: item for item in details["enum"]}
+                    param_entry["type"] = "enum"
+                if key == "input_output_options":
+                    output["gui_params"]["primary"][param] = param_entry
+                else:
+                    output["gui_params"]["detailed"][param] = param_entry
 
 # Open and parse the README file for ```csv patterns
 csv_lines = []
