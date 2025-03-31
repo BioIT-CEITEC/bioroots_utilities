@@ -1,29 +1,17 @@
 import json
 import argparse
-import os
 
 # Set up argument parsing
 parser = argparse.ArgumentParser(description="Convert Nextflow schema JSON to a structured format.")
-parser.add_argument("input_folder", help="Path to the input folder containing the required files.")
+parser.add_argument("input_json", help="Path to the input JSON schema file.")
+parser.add_argument("readme", help="Path to the README.md file (currently unused).")
 parser.add_argument("output_json", help="Path to the output JSON file.")
 args = parser.parse_args()
 
-# Define the expected file paths
-schema_file = os.path.join(args.input_folder, "nextflow_schema.json")
-readme_file = os.path.join(args.input_folder, "README.md")
-usage_file = os.path.join(args.input_folder, "docs", "usage.md")
-
-# Check if the required files exist
-if not os.path.isfile(schema_file):
-    raise FileNotFoundError(f"Required file not found: {schema_file}")
-if not os.path.isfile(readme_file):
-    raise FileNotFoundError(f"Required file not found: {readme_file}")
-if not os.path.isfile(usage_file):
-    raise FileNotFoundError(f"Required file not found: {usage_file}")
-
 # Load the JSON schema
-with open(schema_file, "r") as file:
+with open(args.input_json, "r") as file:
     schema = json.load(file)
+
 
 workflow_type = None
 for key, value in schema.items():
@@ -41,11 +29,11 @@ output = {
         "type": "rnaseq_analysis",
         "inputs": "raw_fastq/{sample}*fastq.gz",
         "outputs": [
-            "results/" + workflow_type + "/*"
+            "results/" + workflow_type+ "/*"
         ],
-        "report_index": "results/" + workflow_type + "/pipeline_info/pipeline_report.html",
+        "report_index": "results/" + workflow_type+ "/pipeline_info/pipeline_report.html",
         "reports": [
-            "results/" + workflow_type + "/pipeline_info/pipeline_report.html"
+            "results/" + workflow_type+ "/pipeline_info/pipeline_report.html"
         ]
     },
     "general_params": [
@@ -56,6 +44,7 @@ output = {
         "primary": {},
         "detailed": {}
     },
+
 }
 
 # Populate GUI parameters
@@ -63,16 +52,19 @@ for key, value in (schema.get("$defs", {}) or schema.get("definitions", {})).ite
     if "properties" in value:
         for param, details in value["properties"].items():
             if param == "input":
+                # Handle the "input" parameter
                 output["gui_params"]["primary"]["input"] = {
                     "type": "constant",
                     "default": "samplesheet.csv"
                 }
             elif param == "outdir":
+                # Handle the "outdir" parameter
                 output["gui_params"]["primary"]["outdir"] = {
                     "type": "constant",
                     "default": "results/" + workflow_type + "/"
                 }
             elif param == "genome":
+                # Replace "genome" with the desired structure
                 output["gui_params"]["primary"]["organism"] = {
                     "label": "Organism",
                     "type": "enum",
@@ -103,12 +95,14 @@ for key, value in (schema.get("$defs", {}) or schema.get("definitions", {})).ite
                     }
                 }
             else:
+                # Default behavior for other parameters
                 param_entry = {
                     "label": details.get("description", param),
                     "type": details.get("type", "string"),
                     "default": details.get("default", None),
                     "info": details.get("help_text", ""),
                 }
+                # Handle default values for specific types
                 if param_entry["type"] == "string" and param_entry["default"] is None:
                     param_entry["default"] = ""
                 elif param_entry["type"] == "boolean" and param_entry["default"] is None:
@@ -124,59 +118,50 @@ for key, value in (schema.get("$defs", {}) or schema.get("definitions", {})).ite
 
 # Open and parse the README file for ```csv patterns
 csv_lines = []
-found_pattern = False
-
-with open(readme_file, "r") as readme:
-    lines = readme.readlines()
+with open(args.readme, "r") as readme_file:
+    lines = readme_file.readlines()
     for i, line in enumerate(lines):
-        if "```csv" in line:  # Check if the pattern is anywhere in the line
-            found_pattern = True
+        if line.strip() == "```csv":
+            # Capture the line following ```csv
             if i + 1 < len(lines):
                 csv_lines.extend(lines[i + 1].strip().split(","))
-            break
 
-if not found_pattern:
-    print("No ```csv pattern found in README.md. Searching in docs/usage.md...")
-    with open(usage_file, "r") as usage:
-        lines = usage.readlines()
-        for i, line in enumerate(lines):
-            if "```csv" in line:  # Check if the pattern is anywhere in the line
-                found_pattern = True
-                if i + 1 < len(lines):
-                    csv_lines.extend(lines[i + 1].strip().split(","))
-                break
-
-if not found_pattern:
-    print("No ```csv pattern found in either README.md or docs/usage.md.")
-
+# Convert csv_lines into a JSON structure with label, type, and default
 csv_json = {}
 requested_params = []
 
 for var in csv_lines:
     var = var.strip()
+    # Skip specific labels
     if var in ["sample", "fastq_1", "fastq_2"]:
         continue
+    # Add specific keys to requested_params based on labels
     if var == "paired":
         requested_params.append("is_paired")
     elif var == "strandedness":
         requested_params.append("strandness")
     else:
+        # Add the variable to csv_json if it's not excluded
         csv_json[var] = {
             "label": var,
             "type": "string",
             "default": ""
         }
 
+# Reconstruct the output dictionary to enforce the desired order
 final_output = {
     "workflow_description": output["workflow_description"],
     "general_params": output["general_params"],
 }
 
+# Add requested_params if it exists
 if requested_params:
     final_output["requested_params"] = requested_params
 
+# Add gui_params
 final_output["gui_params"] = output["gui_params"]
 
+# Add samples if csv_json is not empty
 if csv_json:
     final_output["samples"] = csv_json
 
