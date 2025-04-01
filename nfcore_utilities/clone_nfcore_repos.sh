@@ -24,6 +24,9 @@ if [[ ! -d "$OUTPUT_FOLDER" ]]; then
     mkdir -p "$OUTPUT_FOLDER"
 fi
 
+# Convert OUTPUT_FOLDER to an absolute path
+OUTPUT_FOLDER=$(realpath "$OUTPUT_FOLDER")
+
 # Read the file line by line
 while IFS= read -r repo_name || [[ -n "$repo_name" ]]; do
     # Skip empty lines
@@ -52,7 +55,7 @@ if [[ -d "$REPO_DIR" ]]; then
         echo "No tags found. Resetting to the latest commit on the default branch."
         git reset --hard "origin/$default_branch"
     fi
-    cd ..
+    cd $OUTPUT_FOLDER
 else
     # Clone the repository if it doesn't exist
     echo "Cloning repository: $repo_name"
@@ -71,7 +74,7 @@ else
         echo "No tags found. Keeping the default branch."
         git checkout "$default_branch"
     fi
-    cd ..
+    cd $OUTPUT_FOLDER
 fi
 
     # Check if the operation was successful
