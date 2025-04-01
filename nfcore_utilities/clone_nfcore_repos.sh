@@ -36,17 +36,43 @@ while IFS= read -r repo_name || [[ -n "$repo_name" ]]; do
     REPO_DIR="$OUTPUT_FOLDER/$repo_name"
 
     # Check if the repository already exists
-    if [[ -d "$REPO_DIR" ]]; then
-        echo "Repository '$repo_name' already exists. Checking for updates..."
-        cd "$REPO_DIR"
-        git fetch --all
-        git reset --hard origin/main
-        cd ..
+if [[ -d "$REPO_DIR" ]]; then
+    echo "Repository '$repo_name' already exists. Checking for updates..."
+    cd "$REPO_DIR"
+    git fetch --all --tags
+
+    # Determine the default branch (main or master)
+    default_branch=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@')
+
+    latest_tag=$(git describe --tags `git rev-list --tags --max-count=1`)
+    if [[ -n "$latest_tag" ]]; then
+        echo "Checking out the latest release: $latest_tag"
+        git checkout "$latest_tag"
     else
-        # Clone the repository if it doesn't exist
-        echo "Cloning repository: $repo_name"
-        git clone "$REPO_URL" "$REPO_DIR"
+        echo "No tags found. Resetting to the latest commit on the default branch."
+        git reset --hard "origin/$default_branch"
     fi
+    cd ..
+else
+    # Clone the repository if it doesn't exist
+    echo "Cloning repository: $repo_name"
+    git clone "$REPO_URL" "$REPO_DIR"
+    cd "$REPO_DIR"
+    git fetch --all --tags
+
+    # Determine the default branch (main or master)
+    default_branch=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@')
+
+    latest_tag=$(git describe --tags `git rev-list --tags --max-count=1`)
+    if [[ -n "$latest_tag" ]]; then
+        echo "Checking out the latest release: $latest_tag"
+        git checkout "$latest_tag"
+    else
+        echo "No tags found. Keeping the default branch."
+        git checkout "$default_branch"
+    fi
+    cd ..
+fi
 
     # Check if the operation was successful
     if [[ $? -ne 0 ]]; then
