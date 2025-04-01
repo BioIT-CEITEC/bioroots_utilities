@@ -1,7 +1,27 @@
 import json
 import argparse
 import os
+import subprocess
 
+def get_git_version(repo_path):
+    """
+    Retrieve the version of the Git repository at the given path.
+    Returns the latest tag or commit hash if no tags are available.
+    """
+    try:
+        # Run 'git describe' to get the latest tag or commit hash
+        result = subprocess.run(
+            ["git", "-C", repo_path, "describe", "--tags", "--always"],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            check=True
+        )
+        return result.stdout.strip()
+    except subprocess.CalledProcessError as e:
+        print(f"Error retrieving Git version: {e.stderr}")
+        return None
+    
 # Set up argument parsing
 parser = argparse.ArgumentParser(description="Convert Nextflow schema JSON to a structured format.")
 parser.add_argument("input_folder", help="Path to the input folder containing the required files.")
@@ -12,6 +32,9 @@ args = parser.parse_args()
 schema_file = os.path.join(args.input_folder, "nextflow_schema.json")
 readme_file = os.path.join(args.input_folder, "README.md")
 usage_file = os.path.join(args.input_folder, "docs", "usage.md")
+
+repo_path = args.input_folder  # Assuming the repository is in the input folder
+git_version = get_git_version(repo_path)
 
 # Check if the required files exist
 if not os.path.isfile(schema_file):
@@ -57,6 +80,11 @@ output = {
         "detailed": {}
     },
 }
+
+if git_version:
+    output["workflow_description"]["version"] = git_version
+else:
+    output["workflow_description"]["version"] = 1.0
 
 # Populate GUI parameters
 for key, value in (schema.get("$defs", {}) or schema.get("definitions", {})).items():
