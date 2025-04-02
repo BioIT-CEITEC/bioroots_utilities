@@ -64,6 +64,10 @@ parser.add_argument("input_folder", help="Path to the input folder containing th
 parser.add_argument("output_json", help="Path to the output JSON file.")
 args = parser.parse_args()
 
+# Extract workflow_type from the input folder name
+workflow_type = os.path.basename(os.path.normpath(args.input_folder))
+
+
 # Define the expected file paths
 schema_file = os.path.join(args.input_folder, "nextflow_schema.json")
 config_file = os.path.join(args.input_folder, "nextflow.config")
@@ -79,7 +83,7 @@ output = {
     "workflow_description": {
         "name": workflow_type,
         "version": 1.0,
-        "label": "workflow_type",
+        "label": workflow_type,
         "type": "rnaseq_analysis",
         "inputs": "raw_fastq/{sample}*fastq.gz",
         "outputs": [
@@ -103,7 +107,7 @@ output = {
 if git_version:
     output["workflow_description"]["version"] = git_version
 else:
-    output["workflow_description"]["version"] = 1.0
+    output["workflow_description"]["version"] = "1.0"
 
 # Check if the required files exist
 # Parsing the main parameters:
@@ -234,26 +238,6 @@ else:
                     else:
                         output["gui_params"]["detailed"][param] = param_entry
 
-# Parsing the samplesheet structure:
-if not os.path.isfile(samplesheet_file):
-    print(f"{samplesheet_file} does not exist, try to extract parameters from {readme_file}")
-    if not os.path.isfile(readme_file):
-        print(f"{readme_file} does not exist, try to extract parameters from {usage_file}")
-        if not os.path.isfile(usage_file):
-            raise FileNotFoundError(f"Required file not found: {usage_file}")
-
-
-
-workflow_type = None
-for key, value in schema.items():
-    if key == "title" and isinstance(value, str) and value.startswith("nf-core/"):
-        # Extract everything after "nf-core/" and before the next space
-        workflow_type = value.split("nf-core/")[1].split()[0]
-        break
-
-# Open and parse the README file for ```csv or table patterns
-csv_lines = []
-found_pattern = False
 
 def extract_csv_from_lines(lines):
     """
@@ -270,25 +254,41 @@ def extract_csv_from_lines(lines):
             return [col.strip() for col in line.strip().split("|") if col.strip()]
     return None
 
-# Search in README.md
-with open(readme_file, "r") as readme:
-    lines = readme.readlines()
-    csv_lines = extract_csv_from_lines(lines)
-    if csv_lines:
-        found_pattern = True
+# Parsing the samplesheet structure:
+csv_lines = []
+found_pattern = False
 
-# If not found, search in docs/usage.md
-if not found_pattern:
-    print("No ```csv or table pattern found in README.md. Searching in docs/usage.md...")
-    with open(usage_file, "r") as usage:
-        lines = usage.readlines()
-        csv_lines = extract_csv_from_lines(lines)
-        if csv_lines:
-            found_pattern = True
+# Check if samplesheet_file exists
+if os.path.isfile(samplesheet_file):
+    print(f"Parsing samplesheet structure from {samplesheet_file}...")
+    with open(samplesheet_file, "r") as samplesheet:
+        # Read the first line of the CSV file
+        first_line = samplesheet.readline().strip()
+        csv_lines = first_line.split(",")
+        found_pattern = True
+else:
+    print(f"{samplesheet_file} does not exist, trying to extract parameters from {readme_file}...")
+    if os.path.isfile(readme_file):
+        # Search in README.md
+        with open(readme_file, "r") as readme:
+            lines = readme.readlines()
+            csv_lines = extract_csv_from_lines(lines)
+            if csv_lines:
+                found_pattern = True
+    else:
+        print(f"{readme_file} does not exist, trying to extract parameters from {usage_file}...")
+
+    # If not found in README.md, search in usage_file
+    if not found_pattern and os.path.isfile(usage_file):
+        with open(usage_file, "r") as usage:
+            lines = usage.readlines()
+            csv_lines = extract_csv_from_lines(lines)
+            if csv_lines:
+                found_pattern = True
 
 # If still not found, print a message
 if not found_pattern:
-    print("No ```csv or table pattern found in either README.md or docs/usage.md.")
+    print("No valid samplesheet structure found in samplesheet_file, README.md, or usage_file.")
 
 # Process the extracted CSV lines
 csv_json = {}
@@ -297,7 +297,7 @@ requested_params = []
 if csv_lines:
     for var in csv_lines:
         var = var.strip()
-        if var in ["sample","sample_id", "fastq_1", "fastq_2", "filename_R1", "filename_R2"]:
+        if var in ["sample", "sample_id", "fastq_1", "fastq_2", "filename_R1", "filename_R2"]:
             continue
         if var == "paired":
             requested_params.append("is_paired")
@@ -309,6 +309,8 @@ if csv_lines:
                 "type": "string",
                 "default": ""
             }
+
+# Final output structure
 final_output = {
     "workflow_description": output["workflow_description"],
     "general_params": output["general_params"],
