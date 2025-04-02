@@ -112,7 +112,8 @@ else:
 # Check if the required files exist
 # Parsing the main parameters:
 if not os.path.isfile(schema_file):
-    print(f"{schema_file} does not exist, try to extract parameters from {config_file}")
+    print(f"{schema_file} does not exist")
+    print(f"Extract parameters from {config_file}")
     if not os.path.isfile(config_file):
         raise FileNotFoundError(f"{config_file} does not exist, cannot extract pipeline parameters")
 
@@ -171,6 +172,7 @@ if not os.path.isfile(schema_file):
 
 else:
     # Load the JSON schema
+    print(f"Extract parameters from {schema_file}...")
     with open(schema_file, "r") as file:
         schema = json.load(file)
 
@@ -267,7 +269,8 @@ if os.path.isfile(samplesheet_file):
         csv_lines = first_line.split(",")
         found_pattern = True
 else:
-    print(f"{samplesheet_file} does not exist, trying to extract parameters from {readme_file}...")
+    print(f"{samplesheet_file} does not exist")
+    print(f"trying to parse samplesheet structure from {readme_file}...")
     if os.path.isfile(readme_file):
         # Search in README.md
         with open(readme_file, "r") as readme:
@@ -276,7 +279,8 @@ else:
             if csv_lines:
                 found_pattern = True
     else:
-        print(f"{readme_file} does not exist, trying to extract parameters from {usage_file}...")
+        print(f"{readme_file} does not exist")
+        print(f"trying to parse samplesheet structure from {usage_file}...")
 
     # If not found in README.md, search in usage_file
     if not found_pattern and os.path.isfile(usage_file):
