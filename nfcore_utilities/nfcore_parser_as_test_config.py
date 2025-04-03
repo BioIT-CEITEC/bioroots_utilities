@@ -205,10 +205,9 @@ if csv_lines:
 
     for var in csv_lines:
         var = var.strip()
-        if var in ["sample", "sample_id", "fastq_1", "fastq_2", "filename_R1", "filename_R2"]:
-            # These are already handled in the samples structure
+        if var in ["sample", "sample_id", "fastq_1", "filename_R1"]:
             continue
-        elif var == "paired":
+        elif var in ["paired", "fastq_2", "filename_R2"]:
             output["is_paired"] = True
         elif var == "strandedness":
             output["strandness"] = "reverse"

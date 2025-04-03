@@ -301,9 +301,9 @@ requested_params = []
 if csv_lines:
     for var in csv_lines:
         var = var.strip()
-        if var in ["sample", "sample_id", "fastq_1", "fastq_2", "filename_R1", "filename_R2"]:
+        if var in ["sample", "sample_id", "fastq_1", "filename_R1"]:
             continue
-        if var == "paired":
+        if var in ["paired", "fastq_2", "filename_R2"]:
             requested_params.append("is_paired")
         elif var == "strandedness":
             requested_params.append("strandness")
