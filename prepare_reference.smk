@@ -334,8 +334,8 @@ rule create_gene_table:
 rule gtf_to_fasta:
     input:  gen = config["organism_fasta"],
             gtf = config["organism_gtf"]
-    output: cds = config["organism_cds_fasta"],
-            cdna = config["organism_cdna_fasta"],
+    output: cdna = config["organism_cdna_fasta"],
+            # cds = config["organism_cds_fasta"],
     log:    run = config["reference_dir"] + "/annot/" + config["release"] + "/" + config["assembly"] + ".log"
     conda: "../wrappers/gtf_to_fasta/env.yml"
     script: "../wrappers/gtf_to_fasta/script.py"
