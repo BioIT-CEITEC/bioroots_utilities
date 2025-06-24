@@ -271,6 +271,7 @@ rule BWA_gen_index:
     log:    run = config["organism_kallisto"] + "/tool_dir/BWA/BWA.indexation_run.log",
     threads:    20
     params: extra = "",
+            assembly = config["assembly"],
             dir = config["reference_dir"]+"/tool_dir/BWA/"
     conda:  "../wrappers/BWA_gen_index/env.yaml"
     script: "../wrappers/BWA_gen_index/script.py"
