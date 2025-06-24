@@ -268,7 +268,7 @@ rule BWA_gen_index:
     input:  gen = config["organism_fasta"],
             idx = config["organism_fasta"]+".fai",
     output: bwt = config["organism_bwa"],
-    log:    run = config["organism_kallisto"] + "/tool_dir/BWA/BWA.indexation_run.log",
+    log:    run = config["reference_dir"] + "/tool_dir/BWA/BWA.indexation_run.log",
     threads:    20
     params: extra = "",
             assembly = config["assembly"],
