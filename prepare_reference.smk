@@ -268,11 +268,11 @@ rule BWA_gen_index:
     input:  gen = config["organism_fasta"],
             idx = config["organism_fasta"]+".fai",
     output: bwt = config["organism_bwa"],
-    log:    run = config["reference_dir"] + "/tool_dir/BWA/BWA.indexation_run.log",
+    log:    run = config["reference_dir"] + "/tool_data/BWA/BWA.indexation_run.log",
     threads:    20
     params: extra = "",
             assembly = config["assembly"],
-            dir = config["reference_dir"]+"/tool_dir/BWA/"
+            dir = config["reference_dir"]+"/tool_data/BWA/"
     conda:  "../wrappers/BWA_gen_index/env.yaml"
     script: "../wrappers/BWA_gen_index/script.py"
 
