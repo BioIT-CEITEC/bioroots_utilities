@@ -446,10 +446,10 @@ def remote(file_path):
     return file_path
 
 
-def get_bucket_name():
-    if config["computing_type"] == "kubernetes":
-        return S3_BUCKET
-    return ""
+#def get_bucket_name():
+#    if config["computing_type"] == "kubernetes":
+#        return S3_BUCKET
+#    return ""
 
 
 ##### Helper functions #####
