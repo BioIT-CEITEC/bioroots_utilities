@@ -59,51 +59,51 @@ def set_read_pair_dmtex_tags():
 if not "computing_type" in config:
   config["computing_type"] = "local"
 
-if config["computing_type"] == "kubernetes":
+#if config["computing_type"] == "kubernetes":
 
     # with open(config["globalResources"] + "resources_info/.secret/S3_credentials.json") as f:
     #   S3_credentials = json.load(f)
     #S3 = S3RemoteProvider(host="https://storage-elixir1.cerit-sc.cz",access_key_id=S3_credentials["AWS_ID"],secret_access_key=S3_credentials["AWS_KEY"])
-    S3 = S3RemoteProvider(host="https://storage-elixir1.cerit-sc.cz",access_key_id="acgt",secret_access_key="P84RsiL5TmHu0Ijd")
-    client = boto3.client("s3",aws_access_key_id="acgt",aws_secret_access_key="P84RsiL5TmHu0Ijd",region_name="",endpoint_url="https://storage-elixir1.cerit-sc.cz")
+    #S3 = S3RemoteProvider(host="https://storage-elixir1.cerit-sc.cz",access_key_id="acgt",secret_access_key="P84RsiL5TmHu0Ijd")
+    #client = boto3.client("s3",aws_access_key_id="acgt",aws_secret_access_key="P84RsiL5TmHu0Ijd",region_name="",endpoint_url="https://storage-elixir1.cerit-sc.cz")
     # S3_BUCKET = S3_credentials["S3_BUCKET"]
-    S3_BUCKET = "acgt"
-    task_directory = os.path.join(config["globalTaskPath"], config["task_name"]) + "/"
+    #S3_BUCKET = "acgt"
+    #task_directory = os.path.join(config["globalTaskPath"], config["task_name"]) + "/"
 
-print(config["computing_type"])
+#print(config["computing_type"])
 
 ##### Reference processing #####
 ##
 #
 
 ####################
-def load_dict(file_path):
-    print(file_path)
-    if config["computing_type"] == "kubernetes":
-        if isinstance(file_path,list) and len(file_path) == 1:
-            obj = client.get_object(Bucket=S3_BUCKET,Key=file_path[0])
-            dictionary = json.loads(obj["Body"].read())
-            return dictionary[0]
-        else:
-            if isinstance(file_path,str):
-                obj = client.get_object(Bucket=S3_BUCKET,Key=file_path)
-                dictionary = json.loads(obj["Body"].read())
-                return dictionary
-            else:
-                obj = client.get_object(Bucket=S3_BUCKET,Key=file_path)
-                dictionary = json.loads(obj["Body"].read())
-                return (x for x in dictionary)
-    else:
-        if isinstance(file_path,list) and len(file_path) == 1:
-            obj = open(file_path[0])
-            dictionary = json.load(obj)
-            obj.close()
-            return dictionary[0]
-        else:
-            obj = open(file_path)
-            dictionary = json.load(obj)
-            obj.close()
-            return dictionary
+#def load_dict(file_path):
+#    print(file_path)
+#    if config["computing_type"] == "kubernetes":
+#        if isinstance(file_path,list) and len(file_path) == 1:
+#            obj = client.get_object(Bucket=S3_BUCKET,Key=file_path[0])
+#            dictionary = json.loads(obj["Body"].read())
+#            return dictionary[0]
+#        else:
+#            if isinstance(file_path,str):
+#                obj = client.get_object(Bucket=S3_BUCKET,Key=file_path)
+#                dictionary = json.loads(obj["Body"].read())
+#                return dictionary
+#            else:
+#                obj = client.get_object(Bucket=S3_BUCKET,Key=file_path)
+#                dictionary = json.loads(obj["Body"].read())
+#                return (x for x in dictionary)
+#    else:
+#        if isinstance(file_path,list) and len(file_path) == 1:
+#            obj = open(file_path[0])
+#            dictionary = json.load(obj)
+#            obj.close()
+#            return dictionary[0]
+#        else:
+#            obj = open(file_path)
+#            dictionary = json.load(obj)
+#            obj.close()
+#            return dictionary
 
 
 def load_ref():
@@ -390,53 +390,53 @@ def reference_directory():
     return os.path.join(config["globalResources"],config["organism"],config["reference"])
 
 
-def remote_input_dir(dir_path: str):
-    if isinstance(dir_path, list):
-        directories = dir_path
-    elif isinstance(dir_path, str):
-        directories = [dir_path]
-    contents = []
-    if config["computing_type"] == "kubernetes":
-        for path in directories:
-            response = client.list_objects_v2(Bucket=S3_BUCKET, Prefix=path)
-            contents += [S3.remote(os.path.join(S3_BUCKET, file_path["Key"])) for file_path in response["Contents"]]
-    else:
-        for path in directories:
-            for root, dirs, files in os.walk(path,followlinks=True):
-                for file in files:
-                    contents.append(os.path.join(root,file))
-    return contents
+#def remote_input_dir(dir_path: str):
+#    if isinstance(dir_path, list):
+#        directories = dir_path
+#    elif isinstance(dir_path, str):
+#        directories = [dir_path]
+#    contents = []
+#    if config["computing_type"] == "kubernetes":
+#        for path in directories:
+#            response = client.list_objects_v2(Bucket=S3_BUCKET, Prefix=path)
+#            contents += [S3.remote(os.path.join(S3_BUCKET, file_path["Key"])) for file_path in response["Contents"]]
+#    else:
+#        for path in directories:
+#            for root, dirs, files in os.walk(path,followlinks=True):
+#                for file in files:
+#                    contents.append(os.path.join(root,file))
+#    return contents
 
 
-def get_path(filename):
-    if len(filename) == 0:
-        return filename
-    if config["computing_type"] == "kubernetes":
-        if os.path.isabs(filename[0]):
-            if isinstance(filename,list) and len(filename) == 1:
-                return S3_BUCKET + filename[0]
-            else:
-                if isinstance(filename,str):
-                    return S3_BUCKET + filename
-                return [S3_BUCKET + x for x in filename]
+#def get_path(filename):
+#    if len(filename) == 0:
+#        return filename
+#    if config["computing_type"] == "kubernetes":
+#        if os.path.isabs(filename[0]):
+#            if isinstance(filename,list) and len(filename) == 1:
+#                return S3_BUCKET + filename[0]
+#            else:
+#                if isinstance(filename,str):
+#                    return S3_BUCKET + filename
+#                return [S3_BUCKET + x for x in filename]
 
-        else:
-            if isinstance(filename,list) and len(filename) == 1:
-                return S3_BUCKET + task_directory + filename[0]
-            else:
-                if isinstance(filename,str):
-                    return S3_BUCKET + task_directory + filename
-                return [S3_BUCKET + task_directory + x for x in filename]
-    else:
-        if isinstance(filename,list) and len(filename) == 1:
-            return filename[0]
-        return filename
+#        else:
+#            if isinstance(filename,list) and len(filename) == 1:
+#                return S3_BUCKET + task_directory + filename[0]
+#            else:
+#                if isinstance(filename,str):
+#                    return S3_BUCKET + task_directory + filename
+#                return [S3_BUCKET + task_directory + x for x in filename]
+#    else:
+#        if isinstance(filename,list) and len(filename) == 1:
+#            return filename[0]
+#        return filename
 
 
-def kubernetes_remote(remote_path):
-     if isinstance(remote_path, list):
-         return [S3.remote(file_path) for file_path in remote_path]
-     return S3.remote(remote_path)
+#def kubernetes_remote(remote_path):
+#     if isinstance(remote_path, list):
+#         return [S3.remote(file_path) for file_path in remote_path]
+#     return S3.remote(remote_path)
 
 
 def remote(file_path):
