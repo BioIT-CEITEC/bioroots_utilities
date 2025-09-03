@@ -233,7 +233,7 @@ def load_organism():
 
         config["reference_dir"] = os.path.join(config["globalResources"] , "references", config["organism"] , config["assembly"])
         config["organism_fasta"] = config["reference_dir"] + "/seq/" + config["assembly"] + ".fa"
-        config["organism_fasta_triophaser"] = config["reference_dir"] + "/seq/" + config["assembly"] + "_triophaser.fa"
+        config["organism_fasta_triophaser"] = config["reference_dir"] + "/seq/" + config["assembly"] + "_ncbi.fa"
         config["organism_ucsc"] = config["reference_dir"] + "/seq/" + config["assembly"] + ".fa.fai.ucsc"
         config["organism_gtf"] = config["reference_dir"] + "/annot/" + config["release"] + "/" + config["assembly"] + ".gtf"
         config["organism_gtf_cellranger"] = config["reference_dir"] + "/annot/" + config["release"] + "/" + config["assembly"] + "_cellranger.gtf"
@@ -248,6 +248,7 @@ def load_organism():
         config["organism_picard_bed12"] = config["reference_dir"] + "/annot/" + config["release"] + "/Picard/" + config["assembly"] + ".bed12"
         config["organism_picard_refFlat"] = config["reference_dir"] + "/annot/" + config["release"] + "/Picard/" + config["assembly"] + ".refFlat"
         config["organism_ncbi_general"] = config["reference_dir"] + "/seq/BOWTIE2_fastq_screen/" + config["assembly"] + ".ncbi.fna",
+        config["organism_ncbi_fasta"] = config["reference_dir"] + "/seq/" + config["assembly"] + "_ncbi.fa"
         config["organism_ncbi_gff"] = config["reference_dir"] + "/seq/BOWTIE2_fastq_screen/" + config["assembly"] + ".ncbi.gff"
         config["organism_ncbi_rRNA"] = config["reference_dir"] + "/seq/BOWTIE2_fastq_screen/" + config["assembly"] + ".ncbi.rRNA.fasta"
         config["organism_ncbi_tRNA"] = config["reference_dir"] + "/seq/BOWTIE2_fastq_screen/" + config["assembly"] + ".ncbi.tRNA.fasta"
