@@ -247,22 +247,30 @@ convert_to_ucsc = workflow.basedir + "/../scripts/convert_chromosome_names.R"
 #    script: "../wraps/prepare_reference/smallRNA_prep_contam/script.py"
 
 
-rule postqc_RNA_preparation:
+rule postqc_Picard_index:
+    input:  ref = config["organism_gtf"]
+    output: bed12 = config["organism_picard_bed12"],
+            tmp_flat = temp(config["organism_picard_refFlat"]+".tmp"),
+            flat = config["organism_picard_refFlat"]
+    log:    run = config["reference_dir"] + "/annot/" + config["release"] + "/Picard/Picard_preparation.log",
+    threads:   15,
+    params: species = config["organism"]
+    conda:  "../wrappers/postqc_Picard_index/env.yaml"
+    script: "../wrappers/postqc_Picard_index/script.py"
+
+rule postqc_fastq_screen_index:
     input:  ref = config["organism_gtf"],
             ncbi_annot = config["organism_ncbi_gff"],
             ncbi_genomic = config["organism_ncbi_general"]
-    output: bed12 = config["organism_picard_bed12"],
-            tmp_flat = temp(config["organism_picard_refFlat"]+".tmp"),
-            flat = config["organism_picard_refFlat"],
-            fs_conf = config["reference_dir"]+"/seq/BOWTIE2_fastq_screen/fastq_screen.conf",
-    log:    run = config["reference_dir"] + "/annot/" + config["release"] + "/Picard/Picard_preparation.log",
+    output: fs_conf = config["reference_dir"]+"/seq/BOWTIE2_fastq_screen/fastq_screen.conf",
+    log:    run = config["reference_dir"] + "/seq/BOWTIE2_fastq_screen/fastq_screen_preparation.log",
     threads:   15,
     params: species = config["organism"],
             bowtie2_indexes_fasta = config["reference_dir"] + "/seq/BOWTIE2_fastq_screen/",
             rRNA_prefix = config["organism_ncbi_rRNA"],
             tRNA_prefix = config["organism_ncbi_tRNA"],
-    conda:  "../wrappers/postqc_RNA_preparation/env.yaml"
-    script: "../wrappers/postqc_RNA_preparation/script.py"
+    conda:  "../wrappers/postqc_fastq_screen_index/env.yaml"
+    script: "../wrappers/postqc_fastq_screen_index/script.py"    
 
 rule BWA_gen_index:
     input:  gen = config["organism_fasta"],
