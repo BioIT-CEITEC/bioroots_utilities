@@ -19,6 +19,9 @@ shell.executable("/bin/bash")
 # f = sys.stdout
 
 print("\n##\n## RULE: postqc_fastq_screen_index \n##\n")
+f = open(snakemake.log.run, 'wt')
+f.write("## RULE: postqc_fastq_screen_index \n")
+f.close()
 
 version = str(subprocess.Popen("conda list 2>&1 ", shell=True, stdout=subprocess.PIPE).communicate()[0], 'utf-8')
 print("## CONDA:\n"+version+"\n")
@@ -30,8 +33,8 @@ f.close()
 shell(command)
 
 # extract rRNA data and build BOWTIE2 index
-# command = "cat "+ snakemake.input.ncbi_annot + " | grep 'gbkey=rRNA' | grep -v 'ribosomal RNA protein' > " + snakemake.params.rRNA_prefix + ".gff 2>> " + snakemake.log.run + " || echo '## INFO: Command returned non-zero status. Probably, there are no gbkey=rRNA lines.' >> " + snakemake.log.run + " 2>&1"
-command = "cat "+ snakemake.input.ncbi_annot + " | grep 'gbkey=rRNA' | grep -v 'ribosomal RNA protein' > " + snakemake.params.rRNA_prefix + ".gff
+command = "cat "+ snakemake.input.ncbi_annot + " | grep 'gbkey=rRNA' | grep -v 'ribosomal RNA protein' > " + snakemake.params.rRNA_prefix + ".gff 2>> " + snakemake.log.run + " || echo '## INFO: Command returned non-zero status. Probably, there are no gbkey=rRNA lines.' >> " + snakemake.log.run + " 2>&1"
+# command = "cat "+ snakemake.input.ncbi_annot + " | grep 'gbkey=rRNA' | grep -v 'ribosomal RNA protein' > " + snakemake.params.rRNA_prefix + ".gff
 f = open(snakemake.log.run, 'wt')
 f.write("## COMMAND:\n"+command+"\n")
 f.close()
