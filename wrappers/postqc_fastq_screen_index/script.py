@@ -13,7 +13,8 @@ GENE_PRED_TO_BED="genePredToBed"
 GFF_READ="gffread"
 BOWTIE2_BUILD="bowtie2-build"
 
-rRNA_prefix = str(snakemake.params.rRNA_prefix)
+rRNA_prefix = str(snakemake.params.rRNA_prefix[0])
+tRNA_prefix = str(snakemake.params.tRNA_prefix[0])
 
 shell.executable("/bin/bash")
 
@@ -36,16 +37,16 @@ shell(command)
 
 # extract rRNA data and build BOWTIE2 index
 # command = "cat "+ snakemake.input.ncbi_annot + " | grep 'gbkey=rRNA' | grep -v 'ribosomal RNA protein' > " + snakemake.params.rRNA_prefix.replace("fasta","gff") + " 2>> " + snakemake.log.run + " || echo '## INFO: Command returned non-zero status. Probably, there are no gbkey=rRNA lines.' >> " + snakemake.log.run + " 2>&1"
-command = "cat "+ snakemake.input.ncbi_annot + " | grep 'gbkey=rRNA' | grep -v 'ribosomal RNA protein' > " + snakemake.params.rRNA_prefix.replace("fasta","gff")
+command = "cat "+ snakemake.input.ncbi_annot + " | grep 'gbkey=rRNA' | grep -v 'ribosomal RNA protein' > " + rRNA_prefix.replace(".fasta",".gff")
 f = open(snakemake.log.run, 'wt')
 f.write("## COMMAND:\n"+command+"\n")
 f.close()
 shell(command)
 
-if sum(1 for line in open(snakemake.params.rRNA_prefix.replace("fasta","gff"))) == 0:
+if sum(1 for line in open(rRNA_prefix.replace(".fasta",".gff"))) == 0:
   no_rrna = True
   f = open(snakemake.log.run, 'wt')
-  f.write("## INFO: file "+ snakemake.params.rRNA_prefix.replace("fasta","gff") + " is empty, therefore, skipping building of BOWTIE2 index for rRNAs."+"\n")
+  f.write("## INFO: file "+ rRNA_prefix.replace(".fasta",".gff") + " is empty, therefore, skipping building of BOWTIE2 index for rRNAs."+"\n")
   f.close()
 else:
   no_rrna = False
@@ -54,13 +55,13 @@ else:
   #f.write("## COMMAND: "+command+"\n")
   #shell(command)
 
-  command = GFF_READ + " " + rRNA_prefix.replace("fasta","gff") + " -g " +snakemake.input.ncbi_genomic + " -w " + snakemake.params.rRNA_prefix + " 2>> " + snakemake.log.run
+  command = GFF_READ + " " + rRNA_prefix.replace(".fasta",".gff") + " -g " +snakemake.input.ncbi_genomic + " -w " + rRNA_prefix + " 2>> " + snakemake.log.run
   f = open(snakemake.log.run, 'wt')
   f.write("## COMMAND:\n"+command+"\n")
   f.close()
   shell(command)
 
-  command = BOWTIE2_BUILD + " --threads " + str(snakemake.threads) + " " + snakemake.params.rRNA_prefix + " " + snakemake.params.bowtie2_indexes_fasta + os.path.basename(snakemake.params.rRNA_prefix) + " >> " + snakemake.log.run
+  command = BOWTIE2_BUILD + " --threads " + str(snakemake.threads) + " " + rRNA_prefix + " " + snakemake.params.bowtie2_indexes_fasta + os.path.basename(rRNA_prefix) + " >> " + snakemake.log.run
   f = open(snakemake.log.run, 'wt')
   f.write("## COMMAND:\n"+command+"\n")
   f.close()
