@@ -65,7 +65,7 @@ else:
   f.close()
   shell(command)
 
-  command = BOWTIE2_BUILD + " --threads " + str(snakemake.threads) + " " + str(snakemake.params.rRNA_prefix) + " " + str(snakemake.params.bowtie2_indexes_fasta) + os.path.basename(snakemake.params.rRNA_prefix) + " >> " + LOG_RUN
+  command = BOWTIE2_BUILD + " --threads " + str(snakemake.threads) + " " + str(snakemake.params.rRNA_prefix) + " " + str(snakemake.params.bowtie2_indexes_fasta) + os.path.basename(str(snakemake.params.rRNA_prefix)) + " >> " + LOG_RUN
   f = open(LOG_RUN, 'a+')
   f.write("## COMMAND:\n"+command+"\n")
   f.close()
@@ -90,7 +90,7 @@ else:
   f.close()
   shell(command)
 
-  command = BOWTIE2_BUILD +" --threads "+ str(snakemake.threads) + " " + str(snakemake.params.tRNA_prefix) + " " + str(snakemake.params.bowtie2_indexes_fasta) + os.path.basename(snakemake.params.tRNA_prefix) + " >> " + LOG_RUN
+  command = BOWTIE2_BUILD +" --threads "+ str(snakemake.threads) + " " + str(snakemake.params.tRNA_prefix) + " " + str(snakemake.params.bowtie2_indexes_fasta) + os.path.basename(str(snakemake.params.tRNA_prefix)) + " >> " + LOG_RUN
   f = open(LOG_RUN, 'a+')
   f.write("## COMMAND:\n"+command+"\n")
   f.close()
@@ -110,7 +110,7 @@ if no_rrna and no_trna:
   shell(command)
 else:
   # build BOWTIE2 index for whole genome
-  command = BOWTIE2_BUILD +" --threads "+ str(snakemake.threads) + " " + str(snakemake.input.ncbi_genomic) + " " + str(snakemake.params.bowtie2_indexes_fasta) + os.path.basename(snakemake.input.ncbi_genomic) + " >> " + LOG_RUN
+  command = BOWTIE2_BUILD +" --threads "+ str(snakemake.threads) + " " + str(snakemake.input.ncbi_genomic) + " " + str(snakemake.params.bowtie2_indexes_fasta) + os.path.basename(str(snakemake.input.ncbi_genomic)) + " >> " + LOG_RUN
   f = open(LOG_RUN, 'a+')
   f.write("## COMMAND:\n"+command+"\n")
   f.close()
@@ -123,21 +123,21 @@ else:
   f.close()
   shell(command)
 
-  command = "echo 'DATABASE " + str(snakemake.params.species) + " " + str(snakemake.params.bowtie2_indexes_fasta) + os.path.basename(snakemake.input.ncbi_genomic) + "' >> " + str(snakemake.output.fs_conf) + " 2>> " + LOG_RUN
+  command = "echo 'DATABASE " + str(snakemake.params.species) + " " + str(snakemake.params.bowtie2_indexes_fasta) + os.path.basename(str(snakemake.input.ncbi_genomic)) + "' >> " + str(snakemake.output.fs_conf) + " 2>> " + LOG_RUN
   f = open(LOG_RUN, 'a+')
   f.write("## COMMAND:\n"+command+"\n")
   f.close()
   shell(command)
 
   if not no_rrna:
-    command = "echo 'DATABASE rRNA " + str(snakemake.params.bowtie2_indexes_fasta) + os.path.basename(snakemake.params.rRNA_prefix) + "' >> " + str(snakemake.output.fs_conf) + " 2>> " + LOG_RUN
+    command = "echo 'DATABASE rRNA " + str(snakemake.params.bowtie2_indexes_fasta) + os.path.basename(str(snakemake.params.rRNA_prefix)) + "' >> " + str(snakemake.output.fs_conf) + " 2>> " + LOG_RUN
     f = open(LOG_RUN, 'a+')
     f.write("## COMMAND:\n"+command+"\n")
     f.close()
     shell(command)
     
   if not no_trna:
-    command = "echo 'DATABASE tRNA " + str(snakemake.params.bowtie2_indexes_fasta) + os.path.basename(snakemake.params.tRNA_prefix) + "' >> " + str(snakemake.output.fs_conf) + " 2>> " + LOG_RUN
+    command = "echo 'DATABASE tRNA " + str(snakemake.params.bowtie2_indexes_fasta) + os.path.basename(str(snakemake.params.tRNA_prefix)) + "' >> " + str(snakemake.output.fs_conf) + " 2>> " + LOG_RUN
     f = open(LOG_RUN, 'a+')
     f.write("## COMMAND:\n"+command+"\n")
     f.close()
