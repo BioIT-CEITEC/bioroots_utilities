@@ -65,7 +65,7 @@ else:
   f.close()
   shell(command)
 
-  command = BOWTIE2_BUILD + " --threads " + str(snakemake.threads) + " " + rRNA_prefix + " " + snakemake.params.bowtie2_indexes_fasta + os.path.basename(snakemake.params.rRNA_prefix) + " >> " + LOG_RUN
+  command = BOWTIE2_BUILD + " --threads " + str(snakemake.threads) + " " + str(snakemake.params.rRNA_prefix) + " " + snakemake.params.bowtie2_indexes_fasta + os.path.basename(snakemake.params.rRNA_prefix) + " >> " + LOG_RUN
   f = open(LOG_RUN, 'a+')
   f.write("## COMMAND:\n"+command+"\n")
   f.close()
