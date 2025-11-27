@@ -28,7 +28,7 @@ f.write("## COMMAND: " + command + "\n")
 shell(command)
 
 # extract rRNA data and build BOWTIE2 index
-command = "cat "+ snakemake.input.ncbi_annot + " | grep 'gbkey=rRNA' | grep -v 'ribosomal RNA protein' > " + snakemake.params.rRNA_prefix + ".gff 2>> " + snakemake.log.run + " || echo '## INFO: Command returned non-zero status. Probably, there are no gbkey=rRNA lines.' >> " + snakemake.log.run + " 2>&1"
+command = "grep 'gbkey=rRNA'" + snakemake.input.ncbi_annot + " | grep -v 'ribosomal RNA protein' > " + snakemake.params.rRNA_prefix + ".gff 2>> " + snakemake.log.run + " || echo '## INFO: Command returned non-zero status. Probably, there are no gbkey=rRNA lines.' >> " + snakemake.log.run + " 2>&1"
 f.write("## COMMAND: "+command+"\n")
 shell(command)
 
