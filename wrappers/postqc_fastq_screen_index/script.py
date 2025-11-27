@@ -65,7 +65,7 @@ else:
   f.close()
   shell(command)
 
-  command = BOWTIE2_BUILD + " --threads " + str(snakemake.threads) + " " + rRNA_prefix + " " + snakemake.params.bowtie2_indexes_fasta + os.path.basename(rRNA_prefix) + " >> " + LOG_RUN
+  command = BOWTIE2_BUILD + " --threads " + str(snakemake.threads) + " " + rRNA_prefix + " " + snakemake.params.bowtie2_indexes_fasta + os.path.basename(snakemake.params.rRNA_prefix) + " >> " + LOG_RUN
   f = open(LOG_RUN, 'a+')
   f.write("## COMMAND:\n"+command+"\n")
   f.close()
@@ -84,7 +84,7 @@ if sum(1 for line in open(snakemake.params.tRNA_prefix.replace("fasta","gff"))) 
   f.write("## INFO: file "+snakemake.params.tRNA_prefix.replace("fasta","gff") + " is empty, therefore, skipping building of BOWTIE2 index for tRNAs."+"\n")
 else:
   no_trna = False
-  command = GFF_READ + " " + snakemake.params.tRNA_prefix.replace("fasta","gff") + " -g " +snakemake.input.ncbi_genomic + " -w " + snakemake.params.tRNA_prefix + " 2>> " + LOG_RUN
+  command = GFF_READ + " " + str(snakemake.params.tRNA_prefix).replace("fasta","gff") + " -g " + str(snakemake.input.ncbi_genomic) + " -w " + str(snakemake.params.tRNA_prefix) + " 2>> " + LOG_RUN
   f = open(LOG_RUN, 'a+')
   f.write("## COMMAND:\n"+command+"\n")
   f.close()
@@ -110,7 +110,7 @@ if no_rrna and no_trna:
   shell(command)
 else:
   # build BOWTIE2 index for whole genome
-  command = BOWTIE2_BUILD +" --threads "+ str(snakemake.threads) + " " +snakemake.input.ncbi_genomic + " " + snakemake.params.bowtie2_indexes_fasta + os.path.basename(snakemake.input.ncbi_genomic) + " >> " + LOG_RUN
+  command = BOWTIE2_BUILD +" --threads "+ str(snakemake.threads) + " " + snakemake.input.ncbi_genomic + " " + snakemake.params.bowtie2_indexes_fasta + os.path.basename(snakemake.input.ncbi_genomic) + " >> " + LOG_RUN
   f = open(LOG_RUN, 'a+')
   f.write("## COMMAND:\n"+command+"\n")
   f.close()
