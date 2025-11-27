@@ -110,7 +110,7 @@ if no_rrna and no_trna:
   shell(command)
 else:
   # build BOWTIE2 index for whole genome
-  command = BOWTIE2_BUILD +" --threads "+ str(snakemake.threads) + " " + srt(snakemake.input.ncbi_genomic) + " " + str(snakemake.params.bowtie2_indexes_fasta) + os.path.basename(snakemake.input.ncbi_genomic) + " >> " + LOG_RUN
+  command = BOWTIE2_BUILD +" --threads "+ str(snakemake.threads) + " " + str(snakemake.input.ncbi_genomic) + " " + str(snakemake.params.bowtie2_indexes_fasta) + os.path.basename(snakemake.input.ncbi_genomic) + " >> " + LOG_RUN
   f = open(LOG_RUN, 'a+')
   f.write("## COMMAND:\n"+command+"\n")
   f.close()
