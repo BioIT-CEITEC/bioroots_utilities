@@ -58,7 +58,7 @@ else:
   #f.write("## COMMAND: "+command+"\n")
   #shell(command)
 
-  command = GFF_READ + " " + snakemake.params.rRNA_prefix.replace("fasta","gff") + " -g " +snakemake.input.ncbi_genomic + " -w " + snakemake.params.rRNA_prefix + " 2>> " + snakemake.log.run
+  command = GFF_READ + " " + str(snakemake.params.rRNA_prefix).replace("fasta","gff") + " -g " + snakemake.input.ncbi_genomic + " -w " + snakemake.params.rRNA_prefix + " 2>> " + snakemake.log.run
   f = open(snakemake.log.run, 'a+')
   f.write("## COMMAND:\n"+command+"\n")
   f.close()
