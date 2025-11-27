@@ -193,6 +193,7 @@ def load_organism():
         config["organism_ncbi_gff"] = config["reference_dir"] + "/other/BOWTIE2/fastq_screen_RNA_indexes/" + config["reference"] + ".ncbi.gff"
         config["organism_ncbi_rRNA"] = config["reference_dir"] + "/other/BOWTIE2/fastq_screen_RNA_indexes/" + config["reference"] + ".ncbi.rRNA.fasta"
         config["organism_ncbi_tRNA"] = config["reference_dir"] + "/other/BOWTIE2/fastq_screen_RNA_indexes/" + config["reference"] + ".ncbi.tRNA.fasta"
+        config["organism_ncbi_fs_conf"] = config["reference_dir"] + "/other/BOWTIE2_fastq_screen_RNA_indexes/fastq_screen.conf"
         config["organism_bwa"] = config["reference_dir"] + "/index/BWA/" + config["reference"] + ".bwt"
         config["organism_bowtie2"] = config["reference_dir"] + "/index/Bowtie2/" + config["reference"] + ".1.bt2"
         config["organism_vep_dir"] = config["reference_dir"] + "/annot/vep/"
