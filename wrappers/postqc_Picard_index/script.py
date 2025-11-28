@@ -24,7 +24,7 @@ print("\n##\n## RULE: postqc_Picard_index \n##\n")
 version = str(subprocess.Popen("conda list 2>&1 ", shell=True, stdout=subprocess.PIPE).communicate()[0], 'utf-8')
 print("## CONDA:\n"+version+"\n")
 
-command = GTF_TO_GENPRED+" -allErrors -genePredExt "+str(snakemake.input.ref)+" "+str(snakemake.output.tmp_flat)+" >> "+ LOG_RUN +" 2>&1"
+command = GTF_TO_GENPRED+" -allErrors -genePredExt -ignoreGroupsWithoutExons "+str(snakemake.input.ref)+" "+str(snakemake.output.tmp_flat)+" >> "+ LOG_RUN +" 2>&1"
 f.write("## COMMAND: "+command+"\n")
 shell(command)
 
