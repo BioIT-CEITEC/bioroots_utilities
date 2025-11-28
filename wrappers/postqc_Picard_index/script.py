@@ -33,7 +33,7 @@ f.write("## COMMAND: "+command+"\n")
 shell(command)
 
 # Convert Gtf to genePred
-command = GTF_TO_GENPRED+" -allErrors "+str(snakemake.input.ref)+" "+str(snakemake.input.ref).replace('.gtf', '')+".genePred >> "+ LOG_RUN +" 2>&1"
+command = GTF_TO_GENPRED+" -allErrors -ignoreGroupsWithoutExons "+str(snakemake.input.ref)+" "+str(snakemake.input.ref).replace('.gtf', '')+".genePred >> "+ LOG_RUN +" 2>&1"
 f.write("## COMMAND: "+command+"\n")
 shell(command)
 
