@@ -15,8 +15,8 @@ f = open(snakemake.log.run, 'wt')
 f.write("## CONDA:\n"+version+"\n")
 f.close()
 
-command = "kallisto index -i " + snakemake.output.gen + " " + snakemake.input.cds + " >> " + snakemake.log.run  
+command = "kallisto index -i " + snakemake.output.gen + " " + snakemake.input.cdna + " >> " + snakemake.log.run  
 f = open(snakemake.log.run, 'wt')
-f.write("## COMMAND:\n"+version+"\n")
+f.write("## COMMAND:\n"+command+"\n")
 f.close()
 shell(command)

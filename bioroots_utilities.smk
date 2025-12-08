@@ -8,15 +8,15 @@ from snakemake.remote.S3 import RemoteProvider as S3RemoteProvider
 
 ##### Check resource path
 def check_resources():
-    if "references_backup" in config["globalResources"]:
-        if "reference" in config:
-            if "_r" in config["reference"]:
-                globresource = "bioit"
-                config["globalResources"] = config["globalResources"].replace("base/references_backup","resources")
-            else:
-                globresource = "bioda"
+    if "references_backup" in config["globalResources"] and "organism" not in config:
+        if "reference" in config and "_r" in config["reference"]:
+            globresource = "bioit"
+            config["globalResources"] = config["globalResources"].replace("base/references_backup", "resources")
+        else:
+            globresource = "bioda"
     else:
         globresource = "bioit"
+        config["globalResources"] = config["globalResources"].replace("base/references_backup", "resources")
     return globresource
 
 ##### Config processing #####
@@ -59,51 +59,51 @@ def set_read_pair_dmtex_tags():
 if not "computing_type" in config:
   config["computing_type"] = "local"
 
-if config["computing_type"] == "kubernetes":
+#if config["computing_type"] == "kubernetes":
 
     # with open(config["globalResources"] + "resources_info/.secret/S3_credentials.json") as f:
     #   S3_credentials = json.load(f)
     #S3 = S3RemoteProvider(host="https://storage-elixir1.cerit-sc.cz",access_key_id=S3_credentials["AWS_ID"],secret_access_key=S3_credentials["AWS_KEY"])
-    S3 = S3RemoteProvider(host="https://storage-elixir1.cerit-sc.cz",access_key_id="acgt",secret_access_key="P84RsiL5TmHu0Ijd")
-    client = boto3.client("s3",aws_access_key_id="acgt",aws_secret_access_key="P84RsiL5TmHu0Ijd",region_name="",endpoint_url="https://storage-elixir1.cerit-sc.cz")
+    #S3 = S3RemoteProvider(host="https://storage-elixir1.cerit-sc.cz",access_key_id="acgt",secret_access_key="P84RsiL5TmHu0Ijd")
+    #client = boto3.client("s3",aws_access_key_id="acgt",aws_secret_access_key="P84RsiL5TmHu0Ijd",region_name="",endpoint_url="https://storage-elixir1.cerit-sc.cz")
     # S3_BUCKET = S3_credentials["S3_BUCKET"]
-    S3_BUCKET = "acgt"
-    task_directory = os.path.join(config["globalTaskPath"], config["task_name"]) + "/"
+    #S3_BUCKET = "acgt"
+    #task_directory = os.path.join(config["globalTaskPath"], config["task_name"]) + "/"
 
-print(config["computing_type"])
+#print(config["computing_type"])
 
 ##### Reference processing #####
 ##
 #
 
 ####################
-def load_dict(file_path):
-    print(file_path)
-    if config["computing_type"] == "kubernetes":
-        if isinstance(file_path,list) and len(file_path) == 1:
-            obj = client.get_object(Bucket=S3_BUCKET,Key=file_path[0])
-            dictionary = json.loads(obj["Body"].read())
-            return dictionary[0]
-        else:
-            if isinstance(file_path,str):
-                obj = client.get_object(Bucket=S3_BUCKET,Key=file_path)
-                dictionary = json.loads(obj["Body"].read())
-                return dictionary
-            else:
-                obj = client.get_object(Bucket=S3_BUCKET,Key=file_path)
-                dictionary = json.loads(obj["Body"].read())
-                return (x for x in dictionary)
-    else:
-        if isinstance(file_path,list) and len(file_path) == 1:
-            obj = open(file_path[0])
-            dictionary = json.load(obj)
-            obj.close()
-            return dictionary[0]
-        else:
-            obj = open(file_path)
-            dictionary = json.load(obj)
-            obj.close()
-            return dictionary
+#def load_dict(file_path):
+#    print(file_path)
+#    if config["computing_type"] == "kubernetes":
+#        if isinstance(file_path,list) and len(file_path) == 1:
+#            obj = client.get_object(Bucket=S3_BUCKET,Key=file_path[0])
+#            dictionary = json.loads(obj["Body"].read())
+#            return dictionary[0]
+#        else:
+#            if isinstance(file_path,str):
+#                obj = client.get_object(Bucket=S3_BUCKET,Key=file_path)
+#                dictionary = json.loads(obj["Body"].read())
+#                return dictionary
+#            else:
+#                obj = client.get_object(Bucket=S3_BUCKET,Key=file_path)
+#                dictionary = json.loads(obj["Body"].read())
+#                return (x for x in dictionary)
+#    else:
+#        if isinstance(file_path,list) and len(file_path) == 1:
+#            obj = open(file_path[0])
+#            dictionary = json.load(obj)
+#            obj.close()
+#            return dictionary[0]
+#        else:
+#            obj = open(file_path)
+#            dictionary = json.load(obj)
+#            obj.close()
+#            return dictionary
 
 
 def load_ref():
@@ -143,9 +143,11 @@ def load_ROI(globresource):
                                        ref_name].keys()][0]
 
         if globresource == "bioit":
-            config["reference"] = [ref_name for ref_name in lib_ROI_dict.keys() if
-                                   isinstance(lib_ROI_dict[ref_name],dict) and config["lib_ROI"] in lib_ROI_dict[
-                                       ref_name].keys()][0]
+            if "organism" not in config:
+                config["reference"] = [ref_name for ref_name in lib_ROI_dict.keys() if
+                                       isinstance(lib_ROI_dict[ref_name],dict) and config["lib_ROI"] in lib_ROI_dict[
+                                           ref_name].keys()][0]
+
             config["lib_ROI"] = config["lib_ROI"].rsplit("_",1)[0]
 
     return config
@@ -163,10 +165,11 @@ def load_organism():358622941
     k = open(os.path.join(config["globalResources"],"reference_info","kegg_reference.json"))
     kegg_dict = json.load(k)
     k.close()
+    organism_tab = pd.read_csv(os.path.join(config["globalResources"],"reference_info","organism_tab.tsv"), sep = "\t")
 
     if "lib_ROI" in config and config["lib_ROI"] != "wgs":
         load_ROI(globresource)
- 
+
     if globresource == "bioda":
         config["species_name"] = [organism_name for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["reference"] in reference_dict[organism_name].keys()][0]
         config["organism"] = config["species_name"].split(" (")[0].lower().replace(" ","_")
@@ -191,6 +194,7 @@ def load_organism():358622941
         config["organism_ncbi_gff"] = config["reference_dir"] + "/other/BOWTIE2/fastq_screen_RNA_indexes/" + config["reference"] + ".ncbi.gff"
         config["organism_ncbi_rRNA"] = config["reference_dir"] + "/other/BOWTIE2/fastq_screen_RNA_indexes/" + config["reference"] + ".ncbi.rRNA.fasta"
         config["organism_ncbi_tRNA"] = config["reference_dir"] + "/other/BOWTIE2/fastq_screen_RNA_indexes/" + config["reference"] + ".ncbi.tRNA.fasta"
+        config["organism_ncbi_fs_conf"] = config["reference_dir"] + "/other/BOWTIE2_fastq_screen_RNA_indexes/fastq_screen.conf"
         config["organism_bwa"] = config["reference_dir"] + "/index/BWA/" + config["reference"] + ".bwt"
         config["organism_bowtie2"] = config["reference_dir"] + "/index/Bowtie2/" + config["reference"] + ".1.bt2"
         config["organism_vep_dir"] = config["reference_dir"] + "/annot/vep/"
@@ -204,16 +208,34 @@ def load_organism():358622941
         config["organism_cytoband"] = config["reference_dir"] + "/other/cytoband/" + config["reference"] + ".cytoband.tsv"        
         config["organism_svdb"] = config["reference_dir"] + "/other/svdb/gnomad_v2.1_sv.sites.vcf"
         config["organism_transcriptome"] = config["reference_dir"] + "/other/cellranger/refdata-gex-" + config["reference"]
+        config["organism_rrna_star"] = config["reference_dir"] + "/index/STAR_rrna/SAindex"
+        config["organism_mirbase"] = config["reference_dir"] + "/seq/hairpin.fa"
+        config["organism_code"] = kegg_dict.get(config["species_name"])
 
     if globresource == "bioit":
-        config["species_name"] = [organism_name for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["reference"] in reference_dict[organism_name].keys()][0]
-        config["organism"] = config["species_name"].split(" (")[0].lower().replace(" ","_")
-        if len(config["species_name"].split(" (")) > 1:
-            config["species"] = config["species_name"].split(" (")[1].replace(")","")
-        config["assembly"] = config["reference"].rsplit("_",1)[0]
-        config["release"] = config["reference"].rsplit("_",1)[1]
+        if "organism" not in config:
+            config["species_name"] = [organism_name for organism_name in reference_dict.keys() 
+                                      if isinstance(reference_dict[organism_name], dict) 
+                                      and config["reference"] in reference_dict[organism_name].keys()][0]
+            config["organism"] = config["species_name"].split(" (")[0].lower().replace(" ", "_")
+            if len(config["species_name"].split(" (")) > 1:
+                config["species"] = config["species_name"].split(" (")[1].replace(")", "")
+            config["assembly"] = config["reference"].rsplit("_", 1)[0]
+            config["release"] = config["reference"].rsplit("_", 1)[1]
+            config["organism_code"] = kegg_dict.get(config["species_name"])
+        else:
+            config["species_name"] = organism_tab[organism_tab["assembly"] == config["assembly"]]["full_name"].values[0]
+            config["organism_code"] = organism_tab[organism_tab["assembly"] == config["assembly"]]["kegg_term"].values[0]
+
+            if "release" not in config or config["release"] == "UNK_UNK":
+                config["release"] = organism_tab[organism_tab["assembly"] == config["assembly"]]["release"].values[0]
+            else:
+                config["release"] = config["release"].rsplit("_", 1)[1]
+
+
         config["reference_dir"] = os.path.join(config["globalResources"] , "references", config["organism"] , config["assembly"])
         config["organism_fasta"] = config["reference_dir"] + "/seq/" + config["assembly"] + ".fa"
+        config["organism_fasta_triophaser"] = config["reference_dir"] + "/seq/" + config["assembly"] + "_ncbi.fa"
         config["organism_ucsc"] = config["reference_dir"] + "/seq/" + config["assembly"] + ".fa.fai.ucsc"
         config["organism_gtf"] = config["reference_dir"] + "/annot/" + config["release"] + "/" + config["assembly"] + ".gtf"
         config["organism_gtf_cellranger"] = config["reference_dir"] + "/annot/" + config["release"] + "/" + config["assembly"] + "_cellranger.gtf"
@@ -225,13 +247,14 @@ def load_organism():358622941
         config["organism_salmon"] = config["reference_dir"] + "/tool_data/Salmon/" + config["release"]
         config["organism_salmon_gentrome"] = config["reference_dir"] + "/tool_data/Salmon/" + config["release"] + "/Salmon_decoy/gentrome.fa"
         config["organism_kallisto"] = config["reference_dir"] + "/tool_data/Kallisto/" + config["release"] + "/Kallisto"
-        config["organism_code"] = kegg_dict.get(config["species_name"])
         config["organism_picard_bed12"] = config["reference_dir"] + "/annot/" + config["release"] + "/Picard/" + config["assembly"] + ".bed12"
         config["organism_picard_refFlat"] = config["reference_dir"] + "/annot/" + config["release"] + "/Picard/" + config["assembly"] + ".refFlat"
         config["organism_ncbi_general"] = config["reference_dir"] + "/seq/BOWTIE2_fastq_screen/" + config["assembly"] + ".ncbi.fna",
+        config["organism_ncbi_fasta"] = config["reference_dir"] + "/seq/" + config["assembly"] + "_ncbi.fa"
         config["organism_ncbi_gff"] = config["reference_dir"] + "/seq/BOWTIE2_fastq_screen/" + config["assembly"] + ".ncbi.gff"
         config["organism_ncbi_rRNA"] = config["reference_dir"] + "/seq/BOWTIE2_fastq_screen/" + config["assembly"] + ".ncbi.rRNA.fasta"
         config["organism_ncbi_tRNA"] = config["reference_dir"] + "/seq/BOWTIE2_fastq_screen/" + config["assembly"] + ".ncbi.tRNA.fasta"
+        config["organism_ncbi_fs_conf"] = config["reference_dir"] + "/seq/BOWTIE2_fastq_screen/fastq_screen.conf"
         config["organism_bwa"] = config["reference_dir"] + "/tool_data/BWA/" + config["assembly"] + ".bwt"
         config["organism_bowtie2"] = config["reference_dir"] + "/tool_data/Bowtie2/" + config["assembly"] + ".1.bt2"
         config["organism_vep_dir"] = config["reference_dir"] + "/annot/" + config["release"] + "/vep/"
@@ -250,6 +273,9 @@ def load_organism():358622941
         config["organism_introns"] = config["reference_dir"] + "/tool_data/GMAP/" + config["release"] + "/" + config["assembly"] + ".introns"
         config["organism_map_splice"] = config["reference_dir"] + "/tool_data/GMAP/" + config["release"]  + "/" + config["assembly"] + ".maps/" + config["assembly"] + ".splicesites.iit"
         config["organism_map_introns"] = config["reference_dir"] + "/tool_data/GMAP/" + config["release"] + "/" + config["assembly"] + ".maps/" + config["assembly"] + ".introns.iit"
+        config["organism_rrna_star"] = config["reference_dir"] + "/tool_data/STAR_rrna/" + config[
+            "release"] + "/SAindex"
+        config["organism_mirbase"] = config["reference_dir"] + "/seq/hairpin.fa"
 
     if "lib_ROI" in config:
         if globresource == "bioda":
@@ -282,6 +308,8 @@ def load_mirna():
     k = open(os.path.join(config["globalResources"],"reference_info","kegg_reference.json"),)
     kegg_dict = json.load(k)
     k.close()
+    organism_tab = pd.read_csv(os.path.join(config["globalResources"],"reference_info","organism_tab.tsv"), sep = "\t")
+
 
     if globresource == "bioda":
         config["species_name"] = [organism_name for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["reference"] in reference_dict[organism_name].keys()][0]
@@ -294,15 +322,26 @@ def load_mirna():
         config["organism_code"] = kegg_dict.get(config["species_name"])
 
     if globresource == "bioit":
-        config["species_name"] = [organism_name for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["reference"] in reference_dict[organism_name].keys()][0]
-        config["organism"] = config["species_name"].split(" (")[0].lower().replace(" ","_")
-        if len(config["species_name"].split(" (")) > 1:
-            config["species"] = config["species_name"].split(" (")[1].replace(")","")
-        config["assembly"] = config["reference"].rsplit("_",1)[1]
-        config["reference_dir"] = os.path.join(config["globalResources"] , "references", config["organism"] , config["assembly"])
-        config["organism_rrna_star"] = config["reference_dir"] + "/tool_data/STAR/SAindex"
+        if "organism" not in config:
+            config["reference"] = [ref_name for ref_name in lib_ROI_dict.keys() if isinstance(lib_ROI_dict[ref_name],dict) and config["lib_ROI"] in lib_ROI_dict[ref_name].keys()][0]
+            config["species_name"] = [organism_name for organism_name in reference_dict.keys() if isinstance(reference_dict[organism_name],dict) and config["reference"] in reference_dict[organism_name].keys()][0]
+            config["organism"] = config["species_name"].split(" (")[0].lower().replace(" ","_")
+            if len(config["species_name"].split(" (")) > 1:
+                config["species"] = config["species_name"].split(" (")[1].replace(")","")
+            config["assembly"] = config["reference"].rsplit("_",1)[1]
+            config["organism_code"] = kegg_dict.get(config["species_name"])
+
+        else:
+            config["organism_code"] = organism_tab[organism_tab["organism"] == config["organism"]]["kegg_term"].values[0]
+            config["release"] = config["release"].rsplit("_",1)[1]
+
+        config["reference_dir"] = os.path.join(
+            config["globalResources"],"references",config["organism"],config["assembly"])
+        config["organism_fasta"] = config["reference_dir"] + "/seq/" + config["assembly"] + ".fa"
+        config["organism_gtf"] = config["reference_dir"] + "/annot/" + config["release"] + "/" + config[
+            "assembly"] + ".gtf"
+        config["organism_rrna_star"] = config["reference_dir"]+"/tool_data/STAR_rrna/"+config["release"]+"/SAindex"
         config["organism_mirbase"] = config["reference_dir"] + "/seq/hairpin.fa"
-        config["organism_code"] = kegg_dict.get(config["species_name"])
 
     return config
 
@@ -349,59 +388,60 @@ def load_and_configure_UMI(wf_config_path):
     return config
 
 
-
+def spikein_reference():
+    return os.path.join(config["globalResources"],"references/escherichia_coli/JM101/tool_data/Bowtie2/JM101.1.bt2")
 
 def reference_directory():
     return os.path.join(config["globalResources"],config["organism"],config["reference"])
 
 
-def remote_input_dir(dir_path: str):
-    if isinstance(dir_path, list):
-        directories = dir_path
-    elif isinstance(dir_path, str):
-        directories = [dir_path]
-    contents = []
-    if config["computing_type"] == "kubernetes":
-        for path in directories:
-            response = client.list_objects_v2(Bucket=S3_BUCKET, Prefix=path)
-            contents += [S3.remote(os.path.join(S3_BUCKET, file_path["Key"])) for file_path in response["Contents"]]
-    else:
-        for path in directories:
-            for root, dirs, files in os.walk(path,followlinks=True):
-                for file in files:
-                    contents.append(os.path.join(root,file))
-    return contents
+#def remote_input_dir(dir_path: str):
+#    if isinstance(dir_path, list):
+#        directories = dir_path
+#    elif isinstance(dir_path, str):
+#        directories = [dir_path]
+#    contents = []
+#    if config["computing_type"] == "kubernetes":
+#        for path in directories:
+#            response = client.list_objects_v2(Bucket=S3_BUCKET, Prefix=path)
+#            contents += [S3.remote(os.path.join(S3_BUCKET, file_path["Key"])) for file_path in response["Contents"]]
+#    else:
+#        for path in directories:
+#            for root, dirs, files in os.walk(path,followlinks=True):
+#                for file in files:
+#                    contents.append(os.path.join(root,file))
+#    return contents
 
 
-def get_path(filename):
-    if len(filename) == 0:
-        return filename
-    if config["computing_type"] == "kubernetes":
-        if os.path.isabs(filename[0]):
-            if isinstance(filename,list) and len(filename) == 1:
-                return S3_BUCKET + filename[0]
-            else:
-                if isinstance(filename,str):
-                    return S3_BUCKET + filename
-                return [S3_BUCKET + x for x in filename]
+#def get_path(filename):
+#    if len(filename) == 0:
+#        return filename
+#    if config["computing_type"] == "kubernetes":
+#        if os.path.isabs(filename[0]):
+#            if isinstance(filename,list) and len(filename) == 1:
+#                return S3_BUCKET + filename[0]
+#            else:
+#                if isinstance(filename,str):
+#                    return S3_BUCKET + filename
+#                return [S3_BUCKET + x for x in filename]
 
-        else:
-            if isinstance(filename,list) and len(filename) == 1:
-                return S3_BUCKET + task_directory + filename[0]
-            else:
-                if isinstance(filename,str):
-                    return S3_BUCKET + task_directory + filename
-                return [S3_BUCKET + task_directory + x for x in filename]
-    else:
-        if isinstance(filename,list) and len(filename) == 1:
-            return filename[0]
-        return filename
+#        else:
+#            if isinstance(filename,list) and len(filename) == 1:
+#                return S3_BUCKET + task_directory + filename[0]
+#            else:
+#                if isinstance(filename,str):
+#                    return S3_BUCKET + task_directory + filename
+#                return [S3_BUCKET + task_directory + x for x in filename]
+#    else:
+#        if isinstance(filename,list) and len(filename) == 1:
+#            return filename[0]
+#        return filename
 
 
-def kubernetes_remote(remote_path):
-     if isinstance(remote_path, list):
-         return [S3.remote(file_path) for file_path in remote_path]
-     return S3.remote(remote_path)
+#def kubernetes_remote(remote_path):
+#     if isinstance(remote_path, list):
+#         return [S3.remote(file_path) for file_path in remote_path]
+#     return S3.remote(remote_path)
 
 
 def remote(file_path):
@@ -411,10 +451,10 @@ def remote(file_path):
     return file_path
 
 
-def get_bucket_name():
-    if config["computing_type"] == "kubernetes":
-        return S3_BUCKET
-    return ""
+#def get_bucket_name():
+#    if config["computing_type"] == "kubernetes":
+#        return S3_BUCKET
+#    return ""
 
 
 ##### Helper functions #####

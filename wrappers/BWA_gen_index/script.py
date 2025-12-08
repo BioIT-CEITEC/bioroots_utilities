@@ -20,7 +20,7 @@ command = "mkdir -p "+snakemake.params.dir+" >> "+snakemake.log.run+" 2>&1"
 print("## COMMAND: "+command+"\n")
 shell(command)
 
-prefix = os.path.join(snakemake.params.dir, snakemake.wildcards.ref)
+prefix = os.path.join(snakemake.params.dir, snakemake.params.assembly)
 command = "$(which time) bwa index -a bwtsw "+snakemake.params.extra+" -p "+prefix+" "+snakemake.input.gen+" >> "+snakemake.log.run+" 2>&1 "
 print("## COMMAND: "+command+"\n")
 shell(command)

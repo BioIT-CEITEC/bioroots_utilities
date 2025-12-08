@@ -247,31 +247,40 @@ convert_to_ucsc = workflow.basedir + "/../scripts/convert_chromosome_names.R"
 #    script: "../wraps/prepare_reference/smallRNA_prep_contam/script.py"
 
 
-rule postqc_RNA_preparation:
+rule postqc_Picard_index:
+    input:  ref = config["organism_gtf"]
+    output: bed12 = config["organism_picard_bed12"],
+            tmp_flat = temp(config["organism_picard_refFlat"]+".tmp"),
+            flat = config["organism_picard_refFlat"]
+    log:    run = config["reference_dir"] + "/annot/" + config["release"] + "/Picard/Picard_preparation.log",
+    threads:   15,
+    params: species = config["organism"]
+    conda:  "../wrappers/postqc_Picard_index/env.yaml"
+    script: "../wrappers/postqc_Picard_index/script.py"
+
+rule postqc_fastq_screen_index:
     input:  ref = config["organism_gtf"],
             ncbi_annot = config["organism_ncbi_gff"],
             ncbi_genomic = config["organism_ncbi_general"]
-    output: bed12 = config["organism_picard_bed12"],
-            tmp_flat = temp(config["organism_picard_refFlat"]+".tmp"),
-            flat = config["organism_picard_refFlat"],
-            fs_conf = config["reference_dir"]+"/seq/BOWTIE2_fastq_screen/fastq_screen.conf",
-    log:    run = config["reference_dir"] + "/annot/" + config["release"] + "/Picard/Picard_preparation.log",
+    output: fs_conf = config["organism_ncbi_fs_conf"],
+    log:    run = config["reference_dir"] + "/seq/BOWTIE2_fastq_screen/fastq_screen_preparation.log",
     threads:   15,
     params: species = config["organism"],
             bowtie2_indexes_fasta = config["reference_dir"] + "/seq/BOWTIE2_fastq_screen/",
             rRNA_prefix = config["organism_ncbi_rRNA"],
             tRNA_prefix = config["organism_ncbi_tRNA"],
-    conda:  "../wrappers/postqc_RNA_preparation/env.yaml"
-    script: "../wrappers/postqc_RNA_preparation/script.py"
+    conda:  "../wrappers/postqc_fastq_screen_index/env.yaml"
+    script: "../wrappers/postqc_fastq_screen_index/script.py"    
 
 rule BWA_gen_index:
     input:  gen = config["organism_fasta"],
             idx = config["organism_fasta"]+".fai",
     output: bwt = config["organism_bwa"],
-    log:    run = config["organism_kallisto"] + "/tool_dir/BWA/BWA.indexation_run.log",
+    log:    run = config["reference_dir"] + "/tool_data/BWA/BWA.indexation_run.log",
     threads:    20
     params: extra = "",
-            dir = config["reference_dir"]+"/tool_dir/BWA/"
+            assembly = config["assembly"],
+            dir = config["reference_dir"]+"/tool_data/BWA/"
     conda:  "../wrappers/BWA_gen_index/env.yaml"
     script: "../wrappers/BWA_gen_index/script.py"
 
@@ -288,6 +297,22 @@ rule STAR_gen_index:
     threads:    30
     conda:  "../wrappers/STAR_gen_index/env.yaml"
     script: "../wrappers/STAR_gen_index/script.py"
+
+rule STAR_rrna_gen_index:
+    input:  gen = config["organism_fasta"],
+            idx = config["organism_fasta"]+".fai",
+            ref = config["organism_gtf"],
+    output: SAindex = config["organism_rrna_star"],
+    params: dir = config["reference_dir"]+"/tool_data/STAR_rrna/"+config["release"],
+            log = config["reference_dir"]+"/tool_data/STAR_rrna/"+config["release"]+"/Log.out",
+            extra = "",
+            rrna_bed = config["reference_dir"] + "/annot/" + config["release"] + "/" + config["assembly"] + ".rRNA.bed",
+            rrna_fa = config["reference_dir"] + "/annot/" + config["release"] + "/" + config["assembly"] + ".rRNA.fa",
+    resources:  mem = 100
+    log:    run = config["reference_dir"]+"/tool_data/STAR_rrna/"+config["release"]+"/"+config["release"]+".indexation_run.log",
+    threads:    20
+    conda:  "../wrappers/STAR_rrna_gen_index/env.yaml"
+    script: "../wrappers/STAR_rrna_gen_index/script.py"
 
 rule create_salmon_index:
   input:  gen = config["organism_fasta"],
@@ -318,8 +343,8 @@ rule create_gene_table:
 rule gtf_to_fasta:
     input:  gen = config["organism_fasta"],
             gtf = config["organism_gtf"]
-    output: cds = config["organism_cds_fasta"],
-            cdna = config["organism_cdna_fasta"],
+    output: cdna = config["organism_cdna_fasta"],
+            # cds = config["organism_cds_fasta"],
     log:    run = config["reference_dir"] + "/annot/" + config["release"] + "/" + config["assembly"] + ".log"
     conda: "../wrappers/gtf_to_fasta/env.yml"
     script: "../wrappers/gtf_to_fasta/script.py"
