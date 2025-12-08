@@ -133,8 +133,9 @@ def load_ROI(globresource):
     lib_ROI_dict = json.load(k)
     k.close()
 
-    if config["lib_ROI"] == "rna":
+    if config["lib_ROI"] == "UNK_UNK":
         config["material"] = "RNA"
+        config["lib_ROI"] = "rna"
     else:
         if globresource == "bioda":
             config["reference"] = [ref_name for ref_name in lib_ROI_dict.keys() if
@@ -150,7 +151,7 @@ def load_ROI(globresource):
     return config
 
 
-def load_organism():
+def load_organism():358622941
     globresource = check_resources()
     print(globresource)
     # setting organism from reference
