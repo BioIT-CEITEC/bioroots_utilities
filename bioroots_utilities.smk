@@ -153,7 +153,7 @@ def load_ROI(globresource):
     return config
 
 
-def load_organism():358622941
+def load_organism():
     globresource = check_resources()
     print(globresource)
     # setting organism from reference
