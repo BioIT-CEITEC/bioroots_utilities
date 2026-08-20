@@ -133,8 +133,9 @@ def load_ROI(globresource):
     lib_ROI_dict = json.load(k)
     k.close()
 
-    if config["lib_ROI"] == "rna":
+    if config["lib_ROI"] == "UNK_UNK":
         config["material"] = "RNA"
+        config["lib_ROI"] = "rna"
     else:
         if globresource == "bioda":
             config["reference"] = [ref_name for ref_name in lib_ROI_dict.keys() if
@@ -193,6 +194,7 @@ def load_organism():
         config["organism_ncbi_gff"] = config["reference_dir"] + "/other/BOWTIE2/fastq_screen_RNA_indexes/" + config["reference"] + ".ncbi.gff"
         config["organism_ncbi_rRNA"] = config["reference_dir"] + "/other/BOWTIE2/fastq_screen_RNA_indexes/" + config["reference"] + ".ncbi.rRNA.fasta"
         config["organism_ncbi_tRNA"] = config["reference_dir"] + "/other/BOWTIE2/fastq_screen_RNA_indexes/" + config["reference"] + ".ncbi.tRNA.fasta"
+        config["organism_ncbi_fs_conf"] = config["reference_dir"] + "/other/BOWTIE2_fastq_screen_RNA_indexes/fastq_screen.conf"
         config["organism_bwa"] = config["reference_dir"] + "/index/BWA/" + config["reference"] + ".bwt"
         config["organism_bowtie2"] = config["reference_dir"] + "/index/Bowtie2/" + config["reference"] + ".1.bt2"
         config["organism_vep_dir"] = config["reference_dir"] + "/annot/vep/"
@@ -252,6 +254,7 @@ def load_organism():
         config["organism_ncbi_gff"] = config["reference_dir"] + "/seq/BOWTIE2_fastq_screen/" + config["assembly"] + ".ncbi.gff"
         config["organism_ncbi_rRNA"] = config["reference_dir"] + "/seq/BOWTIE2_fastq_screen/" + config["assembly"] + ".ncbi.rRNA.fasta"
         config["organism_ncbi_tRNA"] = config["reference_dir"] + "/seq/BOWTIE2_fastq_screen/" + config["assembly"] + ".ncbi.tRNA.fasta"
+        config["organism_ncbi_fs_conf"] = config["reference_dir"] + "/seq/BOWTIE2_fastq_screen/fastq_screen.conf"
         config["organism_bwa"] = config["reference_dir"] + "/tool_data/BWA/" + config["assembly"] + ".bwt"
         config["organism_bowtie2"] = config["reference_dir"] + "/tool_data/Bowtie2/" + config["assembly"] + ".1.bt2"
         config["organism_vep_dir"] = config["reference_dir"] + "/annot/" + config["release"] + "/vep/"

@@ -25,7 +25,13 @@ f.close()
 #f.write("## CONDA:\n"+command+"\n")
 #f.close()
 #shell(command)
-command = "mkdir -p " + dirname(snakemake.output.dec)
+command = "mkdir -p " + dirname(snakemake.output.dec) # create the folder for the decoy.txt file
+f = open(snakemake.log.run, "at")
+f.write("COMMAND:\n"+command+"\n")
+f.close()
+shell(command)
+
+command = "mkdir -p " + dirname(snakemake.output.gen) # create the folder for the gentrome.fa file
 f = open(snakemake.log.run, "at")
 f.write("COMMAND:\n"+command+"\n")
 f.close()
