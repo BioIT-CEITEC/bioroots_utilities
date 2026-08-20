@@ -210,7 +210,7 @@ def load_organism():
         config["organism_transcriptome"] = config["reference_dir"] + "/other/cellranger/refdata-gex-" + config["reference"]
         config["organism_rrna_star"] = config["reference_dir"] + "/index/STAR_rrna/SAindex"
         config["organism_mirbase"] = config["reference_dir"] + "/seq/hairpin.fa"
-        config["organism_code"] = kegg_dict.get(config["species_name"])
+        
 
     if globresource == "bioit":
         if "organism" not in config:
@@ -224,8 +224,13 @@ def load_organism():
             config["release"] = config["reference"].rsplit("_", 1)[1]
             config["organism_code"] = kegg_dict.get(config["species_name"])
         else:
-            config["species_name"] = organism_tab[organism_tab["assembly"] == config["assembly"]]["full_name"].values[0]
-            config["organism_code"] = organism_tab[organism_tab["assembly"] == config["assembly"]]["kegg_term"].values[0]
+            if "species_name" not in config:
+              config["species_name"] = organism_tab[organism_tab["assembly"] == config["assembly"]]["full_name"].values[0]
+            
+            if "ref_KEGG" not in config:
+              config["organism_code"] = organism_tab[organism_tab["assembly"] == config["assembly"]]["kegg_term"].values[0]
+            else:
+              config["organism_code"] = config["ref_KEGG"]
 
             if "release" not in config or config["release"] == "UNK_UNK":
                 config["release"] = organism_tab[organism_tab["assembly"] == config["assembly"]]["release"].values[0]
@@ -240,6 +245,7 @@ def load_organism():
         config["organism_gtf"] = config["reference_dir"] + "/annot/" + config["release"] + "/" + config["assembly"] + ".gtf"
         config["organism_gtf_cellranger"] = config["reference_dir"] + "/annot/" + config["release"] + "/" + config["assembly"] + "_cellranger.gtf"
         config["organism_cds_fasta"] = config["reference_dir"] + "/annot/" + config["release"] + "/" + config["assembly"] + ".cds.fa"
+        # Alignment_RNA resources:
         config["organism_cdna_fasta"] = config["reference_dir"] + "/annot/" + config["release"] + "/" + config["assembly"] + ".cdna.fa"
         config["organism_star"] = config["reference_dir"] + "/tool_data/STAR/" + config["release"] + "/SAindex"
         config["organism_starsolo"] = config["reference_dir"] + "/tool_data/STAR/" + config["release"] + "/STAR_cellranger/SAindex"
@@ -247,16 +253,18 @@ def load_organism():
         config["organism_salmon"] = config["reference_dir"] + "/tool_data/Salmon/" + config["release"]
         config["organism_salmon_gentrome"] = config["reference_dir"] + "/tool_data/Salmon/" + config["release"] + "/Salmon_decoy/gentrome.fa"
         config["organism_kallisto"] = config["reference_dir"] + "/tool_data/Kallisto/" + config["release"] + "/Kallisto"
+        # Alignment_QC resources:
         config["organism_picard_bed12"] = config["reference_dir"] + "/annot/" + config["release"] + "/Picard/" + config["assembly"] + ".bed12"
         config["organism_picard_refFlat"] = config["reference_dir"] + "/annot/" + config["release"] + "/Picard/" + config["assembly"] + ".refFlat"
-        config["organism_ncbi_general"] = config["reference_dir"] + "/seq/BOWTIE2_fastq_screen/" + config["assembly"] + ".ncbi.fna",
-        config["organism_ncbi_fasta"] = config["reference_dir"] + "/seq/" + config["assembly"] + "_ncbi.fa"
-        config["organism_ncbi_gff"] = config["reference_dir"] + "/seq/BOWTIE2_fastq_screen/" + config["assembly"] + ".ncbi.gff"
-        config["organism_ncbi_rRNA"] = config["reference_dir"] + "/seq/BOWTIE2_fastq_screen/" + config["assembly"] + ".ncbi.rRNA.fasta"
-        config["organism_ncbi_tRNA"] = config["reference_dir"] + "/seq/BOWTIE2_fastq_screen/" + config["assembly"] + ".ncbi.tRNA.fasta"
-        config["organism_ncbi_fs_conf"] = config["reference_dir"] + "/seq/BOWTIE2_fastq_screen/fastq_screen.conf"
+        config["organism_ncbi_general"] = config["reference_dir"] + "/tool_data/BOWTIE2_fastq_screen/" + config["assembly"] + ".ncbi.fna",
+        # config["organism_ncbi_fasta"] = config["reference_dir"] + "/seq/" + config["assembly"] + "_ncbi.fa"
+        config["organism_ncbi_gff"] = config["reference_dir"] + "/tool_data/BOWTIE2_fastq_screen/" + config["assembly"] + ".ncbi.gff"
+        config["organism_ncbi_rRNA"] = config["reference_dir"] + "/tool_data/BOWTIE2_fastq_screen/" + config["assembly"] + ".ncbi.rRNA.fasta"
+        config["organism_ncbi_tRNA"] = config["reference_dir"] + "/tool_data/BOWTIE2_fastq_screen/" + config["assembly"] + ".ncbi.tRNA.fasta"
+        config["organism_ncbi_fs_conf"] = config["reference_dir"] + "/tool_data/BOWTIE2_fastq_screen/fastq_screen.conf"
+        # Alignment_DNA resources:
         config["organism_bwa"] = config["reference_dir"] + "/tool_data/BWA/" + config["assembly"] + ".bwt"
-        config["organism_bowtie2"] = config["reference_dir"] + "/tool_data/Bowtie2/" + config["assembly"] + ".1.bt2"
+        config["organism_bowtie2"] = config["reference_dir"] + "/tool_data/BOWTIE2/" + config["assembly"] + ".1.bt2"
         config["organism_vep_dir"] = config["reference_dir"] + "/annot/" + config["release"] + "/vep/"
         config["organism_chr_sizes"] = config["reference_dir"] + "/seq/" + config["assembly"] + ".chrom.sizes"
         config["organism_dict"] = config["reference_dir"] + "/seq/" + config["assembly"] + ".dict"
@@ -273,8 +281,8 @@ def load_organism():
         config["organism_introns"] = config["reference_dir"] + "/tool_data/GMAP/" + config["release"] + "/" + config["assembly"] + ".introns"
         config["organism_map_splice"] = config["reference_dir"] + "/tool_data/GMAP/" + config["release"]  + "/" + config["assembly"] + ".maps/" + config["assembly"] + ".splicesites.iit"
         config["organism_map_introns"] = config["reference_dir"] + "/tool_data/GMAP/" + config["release"] + "/" + config["assembly"] + ".maps/" + config["assembly"] + ".introns.iit"
-        config["organism_rrna_star"] = config["reference_dir"] + "/tool_data/STAR_rrna/" + config[
-            "release"] + "/SAindex"
+        # miRNA resources:
+        config["organism_rrna_star"] = config["reference_dir"] + "/tool_data/STAR_rrna/" + config["release"] + "/SAindex"
         config["organism_mirbase"] = config["reference_dir"] + "/seq/hairpin.fa"
 
     if "lib_ROI" in config:
