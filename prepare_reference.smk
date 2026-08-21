@@ -263,7 +263,7 @@ rule postqc_fastq_screen_index:
             ncbi_annot = config["organism_ncbi_gff"],
             ncbi_genomic = config["organism_ncbi_general"]
     output: fs_conf = config["organism_ncbi_fs_conf"],
-    log:    run = config["reference_dir"] + "/seq/BOWTIE2_fastq_screen/fastq_screen_preparation.log",
+    log:    run = config["reference_dir"] + "/tool_data/BOWTIE2_fastq_screen/fastq_screen_preparation.log",
     threads:   15,
     params: species = config["organism"],
             bowtie2_indexes_fasta = config["reference_dir"] + "/seq/BOWTIE2_fastq_screen/",
