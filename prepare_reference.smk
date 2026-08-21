@@ -266,7 +266,7 @@ rule postqc_fastq_screen_index:
     log:    run = config["reference_dir"] + "/tool_data/BOWTIE2_fastq_screen/fastq_screen_preparation.log",
     threads:   15,
     params: species = config["organism"],
-            bowtie2_indexes_fasta = config["reference_dir"] + "/seq/BOWTIE2_fastq_screen/",
+            bowtie2_indexes_fasta = config["reference_dir"] + "/tool_data/BOWTIE2_fastq_screen/",
             rRNA_prefix = config["organism_ncbi_rRNA"],
             tRNA_prefix = config["organism_ncbi_tRNA"],
     conda:  "../wrappers/postqc_fastq_screen_index/env.yaml"
